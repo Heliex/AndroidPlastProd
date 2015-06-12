@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- View background color !-->
+    <solid android:color="@color/abc_primary_text_material_dark"/>
+
+    <!-- IF somme padding !-->
+    <padding android:right="3dp" android:left="3dp"/>
+
+    <!-- Corner Radius !-->
+    <corners android:radius="2dp" />
+
+</shape>

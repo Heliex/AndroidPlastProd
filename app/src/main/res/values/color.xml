@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="list_fond_debut" type="color">#FFF1E6</item>
+    <item name="list_fond_fin" type="color">#000000</item>
+    <item name="list_selected_fin" type="color">#006363</item>
+    <item name="list_selected_debut" type="color">#5CCCCC</item>
+    <item name="list_normal_nselected_debut" type="color">#FFB273</item>
+    <item name="list_normal_nselected_fin" type="color">#A64B00</item>
+    <item name="background_debut" type="color">#FF9200</item>
+    <item name="background_fin" type="color">#A65F00</item>
+    <item name="textColor" type="color">#FFFFF0</item>
+</resources>

@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">PlastProd</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="drawer_open"> Slider Menu Opened</string>
+    <string name="drawer_close"> Slider Menu Closed</string>
+    <string name="logo">Logo PlastProd</string>
+    <string name="AjouterClient">Ajout Client</string>
+    <string name="BonCommande">Bon de commande</string>
+    <string name="Formulaire">Envoyer formulaire</string>
+    <string name="Suivi">Suivi Client</string>
+    <string name="Infos">Infos Client</string>
+    <string name="Accueil">Accueil</string>
+
+
+    <!-- Nav Left Drawer Item !-->
+    <string-array name="nav_drawer_items">
+        <item>Accueil</item>
+        <item>Ajouter un Client</item>
+        <item>Liste Produits</item>
+        <item>Suivre un Client</item>
+        <item>Infos sur un Client</item>
+        <item>Créer Bon de Commande</item>
+        <item>Envoyer formulaire satisfaction</item>
+    </string-array>
+
+    <!-- Nav  Left Drawer List Item Icons !-->
+    <!-- Keep them in order as the titles are in !-->
+    <array name="nav_drawer_icons">
+        <item>@drawable/home3</item>
+        <item>@drawable/userplus</item>
+        <item>@drawable/stack</item>
+        <item>@drawable/coindollar</item>
+        <item>@drawable/profile</item>
+        <item>@drawable/plus</item>
+        <item>@drawable/mail</item>
+    </array>
+
+    <!-- Nav Right Drawer Item !-->
+    <string-array name="nav_drawer_Right_items">
+        <item>Accueil</item>
+        <item>Menu prospect 2</item>
+        <item>Menu prospect 3</item>
+        <item>Menu prospect 4</item>
+        <item>Menu prospect 5</item>
+        <item>Menu prospect 6</item>
+        <item>Menu prospect 6</item>
+    </string-array>
+
+    <!-- Nav  Right Drawer List Item Icons !-->
+    <!-- Keep them in order as the titles are in !-->
+    <array name="nav_drawer_Right_icons">
+        <item>@drawable/home3</item>
+        <item>@drawable/userplus</item>
+        <item>@drawable/abc_btn_radio_material</item>
+        <item>@drawable/abc_btn_radio_material</item>
+        <item>@drawable/newspaper</item>
+        <item>@drawable/abc_btn_radio_material</item>
+        <item>@drawable/abc_btn_radio_material</item>
+    </array>
+
+    <!-- Content Description !-->
+    <string name="desc_list_item_icon">Item icon</string>
+</resources>
