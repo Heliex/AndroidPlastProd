@@ -3,7 +3,7 @@ package BDD;
 import java.sql.Date;
 
 /**
- * Crated by Christophe on 11/05/2015.
+ * Created by Christophe on 11/05/2015.
  */
 public class Commande {
 
