@@ -35,7 +35,6 @@ public class FormulaireSatisfaction extends Fragment {
             @Override
             public void onClick(View view) {
 
-
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -45,17 +44,7 @@ public class FormulaireSatisfaction extends Fragment {
                             String mail = editText.getText().toString();
                             GmailSender sender = new GmailSender("christophe.gerard8@gmail.com","chris88110");
                             sender.sendMail("Enquête de satisfaction","Venez découvrir notre enquête, elle ne prend que quelques minutes : https://docs.google.com/forms/d/1DGX6i1U-1kPehjOEf3uDdkanB6eu07p8gLKvT-YevXY/viewform?usp=send_form","christophe.gerard8@gmail.com",mail);
-                            Fragment fragment = new HomeFragment();
-                            FragmentManager fragmentManager = getFragmentManager();
-                            fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
-                            ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
-                            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
-                            if(mDrawerList != null) {
-                                mDrawerList.setItemChecked(0, true);
-                                mDrawerList.setSelection(0);
-                            }
-                            getActivity().setTitle(navMenuTitles[0]);
-                            Toast.makeText(getActivity().getApplicationContext(),"Mail envoyé",Toast.LENGTH_SHORT).show();
+
                         }
                         catch(Exception e)
                         {
@@ -64,6 +53,17 @@ public class FormulaireSatisfaction extends Fragment {
                     }
                 }).start();
 
+                Fragment fragment = new HomeFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
+                ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
+                String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+                if(mDrawerList != null) {
+                    mDrawerList.setItemChecked(0, true);
+                    mDrawerList.setSelection(0);
+                }
+                getActivity().setTitle(navMenuTitles[0]);
+                Toast.makeText(getActivity().getApplicationContext(),"Mail envoyé",Toast.LENGTH_SHORT).show();
 
             }
         });
