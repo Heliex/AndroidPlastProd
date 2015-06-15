@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.concurrent.ExecutionException;
+
 import barbeasts.plastprod.R;
 import other.GmailSender;
 
@@ -30,16 +32,23 @@ public class FormulaireSatisfaction extends Fragment {
             @Override
             public void onClick(View view) {
 
-                EditText editText = (EditText) getActivity().findViewById(R.id.editText2);
-                String mail = editText.getText().toString();
-                try {
-                    GmailSender gmail = new GmailSender("christophe.gerard8@gmail.com", "chris88110");
-                    gmail.sendMail("Enquête de satisfaction","Nous vous demandons 5 minutes de votre temps pour consulter ce formulaire : https://docs.google.com/forms/d/1DGX6i1U-1kPehjOEf3uDdkanB6eu07p8gLKvT-YevXY/viewform?usp=send_form","christophe.gerard8@gmail.com",mail);
-                }
-                catch(Exception e)
-                {
-                    Log.e("SendMail", e.getMessage(),e) ;
-                }
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try
+                        {
+                            EditText editText = (EditText) getActivity().findViewById(R.id.editText2);
+                            String mail = editText.getText().toString();
+                            GmailSender sender = new GmailSender("christophe.gerard8@gmail.com","chris88110");
+                            sender.sendMail("Enquête de satisfaction","Venez découvrir notre enquête, elle ne prend que quelques minutes : https://docs.google.com/forms/d/1DGX6i1U-1kPehjOEf3uDdkanB6eu07p8gLKvT-YevXY/viewform?usp=send_form","christophe.gerard8@gmail.com",mail);
+                        }
+                        catch(Exception e)
+                        {
+                            Log.e("MailSender",e.getMessage());
+                        }
+                    }
+                }).start();
             }
         });
         return rootView;
