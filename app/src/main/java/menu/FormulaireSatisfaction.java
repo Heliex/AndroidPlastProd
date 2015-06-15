@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.concurrent.ExecutionException;
@@ -47,7 +48,14 @@ public class FormulaireSatisfaction extends Fragment {
                             Fragment fragment = new HomeFragment();
                             FragmentManager fragmentManager = getFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
-                            Toast.makeText(getActivity().getApplicationContext(),"Mail envoyé",Toast.LENGTH_SHORT);
+                            ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
+                            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+                            if(mDrawerList != null) {
+                                mDrawerList.setItemChecked(0, true);
+                                mDrawerList.setSelection(0);
+                            }
+                            getActivity().setTitle(navMenuTitles[0]);
+                            Toast.makeText(getActivity().getApplicationContext(),"Mail envoyé",Toast.LENGTH_SHORT).show();
                         }
                         catch(Exception e)
                         {
