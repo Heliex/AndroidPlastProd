@@ -27,6 +27,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     // Tables names
     private static final String TABLE_CLIENT = "CLIENT";
     private static final String TABLE_COMMANDE = "COMMANDE";
+    private static final String TABLE_PROSPECT = "PROSPECT";
 
     // Common Columns names
     private static final String KEY_ID = "id";
@@ -51,6 +52,20 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String COMMANDE_KEY_TOTAL = "total";
     private static final String COMMANDE_KEY_CLIENT_ID = "client_id";
 
+
+    // Prospect Tables - Column Names
+    private static final String PROSPECT_KEY_NOM = "nom_prospect";
+    private static final String PROSPECT_KEY_PRENOM = "prenom_prospect";
+    private static final String PROSPECT_KEY_ADRESSE = "adresse_prospect";
+    private static final String PROSPECT_KEY_TELEPHONE = "telephone_prospect";
+    private static final String PROSPECT_KEY_EMAIL = "email_prospect";
+
+    // Creation de la table Prospect
+    private static final String CREATE_TABLE_PROSPECT = "CREATE TABLE " + TABLE_PROSPECT + "(" +
+            KEY_ID + " INTEGER PRIMARY KEY, " + PROSPECT_KEY_NOM + " TEXT, " +
+            PROSPECT_KEY_PRENOM + " TEXT, " + PROSPECT_KEY_ADRESSE + " TEXT, " +
+            PROSPECT_KEY_TELEPHONE + " TEXT, " + PROSPECT_KEY_EMAIL + " TEXT);";
+
     // Creation de la table Commande
     private static final String CREATE_TABLE_COMMANDE=" CREATE TABLE " + TABLE_COMMANDE + "(" + KEY_ID + " INTEGER PRIMARY KEY, " + COMMANDE_KEY_NUMCOMMANDE + " INTEGER, " + " client_id INTEGER, " + COMMANDE_KEY_DATECOMMANDE + " TEXT, " + COMMANDE_KEY_TOTAL + " FLOAT, FOREIGN KEY (client_id)  REFERENCES CLIENT(id));";
 
@@ -64,8 +79,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         Log.i(LOG, CREATE_TABLE_CLIENT);
         Log.i(LOG,CREATE_TABLE_COMMANDE);
+        Log.i(LOG, CREATE_TABLE_PROSPECT);
         db.execSQL(CREATE_TABLE_CLIENT);
         db.execSQL(CREATE_TABLE_COMMANDE);
+        db.execSQL(CREATE_TABLE_PROSPECT);
     }
 
     @Override
@@ -74,6 +91,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         // Drop old tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLIENT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMMANDE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROSPECT);
         // Create news
         onCreate(db);
     }
@@ -234,6 +252,109 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         }
         c.close();
         return commandes;
+    }
+
+    /* Create Prospect */
+
+    public long createProspect(Prospect prospect)
+    {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+
+            values.put(PROSPECT_KEY_NOM, prospect.getNom());
+            values.put(PROSPECT_KEY_PRENOM, prospect.getPrenom());
+            values.put(PROSPECT_KEY_ADRESSE, prospect.getAdresse());
+            values.put(PROSPECT_KEY_TELEPHONE, prospect.getTelephone());
+            values.put(PROSPECT_KEY_EMAIL, prospect.getEmail());
+
+            // Insert row
+            return db.insert(TABLE_PROSPECT, null, values);
+        }
+
+    }
+
+    /* Get Prospect */
+    public Prospect getProspect(long id)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_PROSPECT + " WHERE " + KEY_ID + " = " + id;
+
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c!=null)
+            c.moveToFirst();
+
+        // Create The client object and set all parameters then return object.
+        Prospect prospect = new Prospect();
+        assert c != null;
+        prospect.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+        prospect.setNom(c.getString(c.getColumnIndex(PROSPECT_KEY_NOM)));
+        prospect.setPrenom((c.getString(c.getColumnIndex(PROSPECT_KEY_PRENOM))));
+        prospect.setAdresse((c.getString(c.getColumnIndex(PROSPECT_KEY_ADRESSE))));
+        prospect.setTelephone((c.getString(c.getColumnIndex(PROSPECT_KEY_TELEPHONE))));
+        prospect.setEmail((c.getString(c.getColumnIndex(PROSPECT_KEY_EMAIL))));
+
+        c.close();
+        return prospect;
+    }
+
+    /*
+     * Getting all prospects
+     */
+
+    public List<Prospect> getAllProspects()
+    {
+        List<Prospect> prospects = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_PROSPECT ;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        // Looping through all rows and adding to list
+        if(c.moveToFirst())
+        {
+            do{
+                Prospect prospect = new Prospect();
+                prospect.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                prospect.setNom(c.getString(c.getColumnIndex(PROSPECT_KEY_NOM)));
+                prospect.setPrenom((c.getString(c.getColumnIndex(PROSPECT_KEY_PRENOM))));
+                prospect.setAdresse((c.getString(c.getColumnIndex(PROSPECT_KEY_ADRESSE))));
+                prospect.setTelephone((c.getString(c.getColumnIndex(PROSPECT_KEY_TELEPHONE))));
+                prospect.setEmail((c.getString(c.getColumnIndex(PROSPECT_KEY_EMAIL))));
+
+                // Adding to the prospect list
+                prospects.add(prospect);
+
+            }while(c.moveToNext());
+        }
+        c.close();
+        return prospects;
+    }
+
+    /* Getting prospect from email */
+    public Prospect getProspectsFromEmail(String email)
+    {
+
+        String selectQuery = "SELECT * FROM " + TABLE_PROSPECT + " WHERE " + PROSPECT_KEY_EMAIL + " = " + "\"" + email + "\"";
+
+        Log.e(LOG,selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c!= null)
+            c.moveToFirst();
+
+        Prospect prospect = new Prospect();
+        assert c != null;
+        prospect.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+        prospect.setNom(c.getString(c.getColumnIndex(PROSPECT_KEY_NOM)));
+        prospect.setPrenom((c.getString(c.getColumnIndex(PROSPECT_KEY_PRENOM))));
+        prospect.setAdresse((c.getString(c.getColumnIndex(PROSPECT_KEY_ADRESSE))));
+        prospect.setTelephone((c.getString(c.getColumnIndex(PROSPECT_KEY_TELEPHONE))));
+        prospect.setEmail((c.getString(c.getColumnIndex(PROSPECT_KEY_EMAIL))));
+        c.close();
+        return prospect;
     }
 
     /* Create Commande   */
