@@ -3,7 +3,7 @@ package BDD;
 import java.util.List;
 
 /**
- * Created by christophe on 03/04/2015.
+ * Created by chrisophe on 03/04/2015.
  */
 public class Client {
 
