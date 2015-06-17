@@ -9,6 +9,8 @@ public class Client {
 
         // Id
         private long id;
+
+        private String TROLOLO;
         // Nom
         private String nom;
         // Prenom
