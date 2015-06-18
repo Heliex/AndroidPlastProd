@@ -24,4 +24,6 @@ dependencies {
     compile 'com.google.android.gms:play-services:7.0.0'
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile files('libs/activation.jar')
+    compile files('libs/JSON parser v1.0.3.jar')
+    compile files('libs/json-simple.jar')
 }
