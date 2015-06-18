@@ -4,14 +4,8 @@ import android.app.Activity;
 import android.app.Fragment;
 
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.ComponentName;
-import android.content.ContentUris;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.net.Uri;
-import android.provider.CalendarContract;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,7 +17,6 @@ import android.view.View;
 import android.widget.AdapterView;
 
 
-import android.widget.Button;
 import android.widget.ListView;
 
 
@@ -31,13 +24,14 @@ import java.util.ArrayList;
 import adapter.NavDrawerListAdapter;
 import barbeasts.plastprod.R;
 import menu.AjoutClient;
+import menu.AjoutProspect;
 import menu.BonCommande;
 import menu.FormulaireSatisfaction;
 import menu.HomeFragment;
 import menu.InfosClient;
 import menu.ListeProduits;
 import menu.SuiviClient;
-
+import menu.SuiviProspect;
 
 public class MainActivity extends Activity {
 
@@ -249,7 +243,7 @@ public class MainActivity extends Activity {
                 break;
 
             case 1:
-                //fragment = new AjoutClient();
+                fragment = new AjoutProspect();
                 break;
 
             case 2:
@@ -257,7 +251,7 @@ public class MainActivity extends Activity {
                 break;
 
             case 3:
-                //fragment = new SuiviClient();
+                fragment = new SuiviProspect();
                 break;
 
             case 4:
