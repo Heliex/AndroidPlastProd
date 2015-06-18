@@ -42,7 +42,7 @@ public class FormulaireSatisfaction extends Fragment {
                         {
                             EditText editText = (EditText) getActivity().findViewById(R.id.editText2);
                             String mail = editText.getText().toString();
-                            GmailSender sender = new GmailSender("christophe.gerard8@gmail.com","chris88110");
+                            GmailSender sender = new GmailSender("commercialPlastprod@gmail.com","Commercialplastprod88");
                             sender.sendMail("Enquête de satisfaction","Venez découvrir notre enquête, elle ne prend que quelques minutes : https://docs.google.com/forms/d/1DGX6i1U-1kPehjOEf3uDdkanB6eu07p8gLKvT-YevXY/viewform?usp=send_form","christophe.gerard8@gmail.com",mail);
 
                         }
