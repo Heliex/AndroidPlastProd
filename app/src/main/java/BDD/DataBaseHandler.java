@@ -28,6 +28,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_CLIENT = "CLIENT";
     private static final String TABLE_COMMANDE = "COMMANDE";
     private static final String TABLE_PROSPECT = "PROSPECT";
+    private static final String TABLE_USER = "USER";
 
     // Common Columns names
     private static final String KEY_ID = "id";
@@ -52,6 +53,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String COMMANDE_KEY_TOTAL = "total";
     private static final String COMMANDE_KEY_CLIENT_ID = "client_id";
 
+    // Creation de la table Commande
+    private static final String CREATE_TABLE_COMMANDE=" CREATE TABLE " + TABLE_COMMANDE + "(" + KEY_ID + " INTEGER PRIMARY KEY, " + COMMANDE_KEY_NUMCOMMANDE + " INTEGER, " + " client_id INTEGER, " + COMMANDE_KEY_DATECOMMANDE + " TEXT, " + COMMANDE_KEY_TOTAL + " FLOAT, FOREIGN KEY (client_id)  REFERENCES CLIENT(id));";
 
     // Prospect Tables - Column Names
     private static final String PROSPECT_KEY_NOM = "nom_prospect";
@@ -66,9 +69,14 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             PROSPECT_KEY_PRENOM + " TEXT, " + PROSPECT_KEY_ADRESSE + " TEXT, " +
             PROSPECT_KEY_TELEPHONE + " TEXT, " + PROSPECT_KEY_EMAIL + " TEXT);";
 
-    // Creation de la table Commande
-    private static final String CREATE_TABLE_COMMANDE=" CREATE TABLE " + TABLE_COMMANDE + "(" + KEY_ID + " INTEGER PRIMARY KEY, " + COMMANDE_KEY_NUMCOMMANDE + " INTEGER, " + " client_id INTEGER, " + COMMANDE_KEY_DATECOMMANDE + " TEXT, " + COMMANDE_KEY_TOTAL + " FLOAT, FOREIGN KEY (client_id)  REFERENCES CLIENT(id));";
+    // User Tables - Column Names
+    private static final String USER_KEY_EMAIL ="email_user";
+    private static final String USER_KEY_MDP = "mdp_user";
 
+   // Creation de la table User
+    private static final String CREATE_TABLE_USER = "CREATE TABLE " + TABLE_USER + "(" +
+           KEY_ID + " INTEGER PRIMARY KEY, " + USER_KEY_EMAIL + " TEXT, " +
+           USER_KEY_MDP + " TEXT);";
 
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -80,9 +88,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         Log.i(LOG, CREATE_TABLE_CLIENT);
         Log.i(LOG,CREATE_TABLE_COMMANDE);
         Log.i(LOG, CREATE_TABLE_PROSPECT);
+        Log.i(LOG,CREATE_TABLE_USER);
         db.execSQL(CREATE_TABLE_CLIENT);
         db.execSQL(CREATE_TABLE_COMMANDE);
         db.execSQL(CREATE_TABLE_PROSPECT);
+        db.execSQL(CREATE_TABLE_USER);
+        this.createUser(db);
     }
 
     @Override
@@ -92,6 +103,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CLIENT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMMANDE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROSPECT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         // Create news
         onCreate(db);
     }
@@ -370,5 +382,35 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
             return db.insert(TABLE_COMMANDE,null,values);
         }
+    }
+
+    /* Create user */
+    public void  createUser(SQLiteDatabase db)
+    {
+            ContentValues values = new ContentValues();
+            values.put(USER_KEY_EMAIL,"commercialplastprod@gmail.com");
+            values.put(USER_KEY_MDP,"Commercialplastprod88");
+
+            db.insert(TABLE_USER, null, values);
+            Log.i(LOG, "USER CREE");
+            System.out.println("UTILISATEUR BIEN CREE DANS LA BDD LOCALE DU TELEPHONE MDR");
+    }
+
+    /* Get User */
+    public User getUser()
+    {
+        String selectQuery = "SELECT * FROM " + TABLE_USER ;
+        Log.e(LOG,selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c!= null)
+            c.moveToFirst();
+
+        User user = new User();
+        user.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+        user.setEmail_user(c.getString(c.getColumnIndex(USER_KEY_EMAIL)));
+        user.setMdp_user(c.getString(c.getColumnIndex(USER_KEY_MDP)));
+
+        return user;
     }
 }
