@@ -2,7 +2,6 @@ package model;
 
 import android.app.Activity;
 import android.app.Fragment;
-
 import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -15,11 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-
-
 import android.widget.ListView;
-
-
 import java.util.ArrayList;
 import adapter.NavDrawerListAdapter;
 import barbeasts.plastprod.R;
@@ -348,5 +343,11 @@ public class MainActivity extends Activity {
             fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
             // Ces deux lignes permettent de remplacer un fragment par un autre.
         }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+
     }
 }
