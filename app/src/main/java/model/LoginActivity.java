@@ -53,6 +53,7 @@ public class LoginActivity extends Activity {
                     if(mdp.equals(user.getMdp_user())) // Si mdp == mdp dans la bdd
                     {
                         startActivity(main); // On lance le mainActivity=> Redirige vers l'accueil
+                        Toast.makeText(getApplicationContext(),"Connecté",Toast.LENGTH_SHORT).show();
                     }
                     else // Sinon erreur dans le mdp
                     {
