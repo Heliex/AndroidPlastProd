@@ -4,21 +4,35 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import BDD.Client;
 import BDD.Commande;
 import BDD.DataBaseHandler;
+import BDD.Matiere;
+import BDD.Nomenclature;
 import adapter.ListeClientAdapter;
+import adapter.ListeNomenclatureAdapter;
 import barbeasts.plastprod.R;
 
 /**
@@ -47,32 +61,19 @@ public class BonCommande extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                Client c = (Client)listeView.getItemAtPosition(i);
+                Client c = (Client) listeView.getItemAtPosition(i);
                 listeView.setVisibility(View.INVISIBLE);
-
-                EditText montant = (EditText) rootView.findViewById(R.id.montantCommande);
-                Button b = (Button) rootView.findViewById(R.id.validerCommande);
-
-                b.setVisibility(View.VISIBLE);
-                montant.setVisibility(View.VISIBLE);
-                Button button = new Button(getActivity().getApplicationContext());
-                button.setText("Precedent");
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Fragment fragment = new BonCommande();
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-                    }
-                });
-                RelativeLayout rl = (RelativeLayout) rootView.findViewById(R.id.layoutbdc);
-                rl.removeAllViewsInLayout();
-                rl.addView(montant);
-                rl.addView(b);
-                rl.addView(button);
-
+                ListView listeNomenclature = (ListView) getActivity().findViewById(R.id.ListeNomenclature);
+                listeNomenclature.setVisibility(View.VISIBLE);
+                DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
+                ArrayList<Nomenclature> nomenclatures = db.getAllNomenclature();
+                ListeNomenclatureAdapter adapterNomenclature = new ListeNomenclatureAdapter(getActivity().getApplicationContext(),nomenclatures);
+                listeNomenclature.setAdapter(adapterNomenclature);
+                TextView total = (TextView) getActivity().findViewById(R.id.montant);
+                total.setVisibility(View.VISIBLE);
             }
         });
         return rootView;
     }
+
 }
