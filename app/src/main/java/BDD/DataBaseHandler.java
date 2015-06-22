@@ -19,7 +19,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
 
     // Database version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Database Name
     private static final String DATABASE_NAME ="PlastProd";
@@ -29,6 +29,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_COMMANDE = "COMMANDE";
     private static final String TABLE_PROSPECT = "PROSPECT";
     private static final String TABLE_USER = "USER";
+    private static final String TABLE_MATIERE = "MATIERE";
+    private static final String TABLE_NOMENCLATURE = "NOMENCLATURE";
+    private static final String TABLE_AFFECTATION_MATIERE = "AFFECTATION_MATIERE";
 
     // Common Columns names
     private static final String KEY_ID = "id";
@@ -42,7 +45,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     // Creation de la table Client
     private static final String CREATE_TABLE_CLIENT = "CREATE TABLE " + TABLE_CLIENT + "(" +
-            KEY_ID + " INTEGER PRIMARY KEY, " + CLIENT_KEY_NOM + " TEXT, " +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + CLIENT_KEY_NOM + " TEXT, " +
             CLIENT_KEY_PRENOM + " TEXT, " + CLIENT_KEY_ADRESSE + " TEXT, " +
             CLIENT_KEY_TELEPHONE + " TEXT, " + CLIENT_KEY_EMAIL + " TEXT);";
 
@@ -54,7 +57,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String COMMANDE_KEY_CLIENT_ID = "client_id";
 
     // Creation de la table Commande
-    private static final String CREATE_TABLE_COMMANDE=" CREATE TABLE " + TABLE_COMMANDE + "(" + KEY_ID + " INTEGER PRIMARY KEY, " + COMMANDE_KEY_NUMCOMMANDE + " INTEGER, " + " client_id INTEGER, " + COMMANDE_KEY_DATECOMMANDE + " TEXT, " + COMMANDE_KEY_TOTAL + " FLOAT, FOREIGN KEY (client_id)  REFERENCES CLIENT(id));";
+    private static final String CREATE_TABLE_COMMANDE=" CREATE TABLE " + TABLE_COMMANDE + "(" + KEY_ID + " INTEGER PRIMARY KEY, " + COMMANDE_KEY_NUMCOMMANDE + " INTEGER, " + " client_id INTEGER, " + COMMANDE_KEY_DATECOMMANDE + " TEXT, " + COMMANDE_KEY_TOTAL + " FLOAT, FOREIGN KEY (" + COMMANDE_KEY_CLIENT_ID +  ")  REFERENCES "+ TABLE_CLIENT + "(" + KEY_ID + "));";
 
     // Prospect Tables - Column Names
     private static final String PROSPECT_KEY_NOM = "nom_prospect";
@@ -65,7 +68,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     // Creation de la table Prospect
     private static final String CREATE_TABLE_PROSPECT = "CREATE TABLE " + TABLE_PROSPECT + "(" +
-            KEY_ID + " INTEGER PRIMARY KEY, " + PROSPECT_KEY_NOM + " TEXT, " +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + PROSPECT_KEY_NOM + " TEXT, " +
             PROSPECT_KEY_PRENOM + " TEXT, " + PROSPECT_KEY_ADRESSE + " TEXT, " +
             PROSPECT_KEY_TELEPHONE + " TEXT, " + PROSPECT_KEY_EMAIL + " TEXT);";
 
@@ -75,8 +78,35 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
    // Creation de la table User
     private static final String CREATE_TABLE_USER = "CREATE TABLE " + TABLE_USER + "(" +
-           KEY_ID + " INTEGER PRIMARY KEY, " + USER_KEY_EMAIL + " TEXT, " +
+           KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + USER_KEY_EMAIL + " TEXT, " +
            USER_KEY_MDP + " TEXT);";
+
+    // Matiere Tables - Column Names
+    private static final String MATIERE_KEY_NOM = "nom_matiere";
+    private static final String MATIERE_KEY_PRIX = "prix_matiere";
+
+    // Creation de la table Matiere
+    private static final String CREATE_TABLE_MATIERE = "CREATE TABLE " + TABLE_MATIERE + "(" +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + MATIERE_KEY_NOM + " TEXT, " +
+            MATIERE_KEY_PRIX + " REAL);";
+
+    // Nomenclature Tables - Column Names
+    private static final String NOMENCLATURE_KEY_NOM = "nom_nomenclature";
+
+    // Creation de la table Nomenclature
+    private static final String CREATE_TABLE_NOMENCLATURE = "CREATE TABLE " + TABLE_NOMENCLATURE + "(" +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + NOMENCLATURE_KEY_NOM + " TEXT);";
+
+    // Affectation Matiere Tables - Column Names
+    private static final String AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE="id_nomenclature";
+    private static final String AFFECTATION_MATIERE_KEY_ID_MATIERE = "id_matiere";
+    private static final String AFFECTATION_MATIERE_KEY_QUANTITE = "quantite";
+
+    // Creation de la table AffectationMatiere
+
+    private static final String CREATE_TABLE_AFFECTATION_MATIERE = "CREATE TABLE " + TABLE_AFFECTATION_MATIERE + "(" +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + AFFECTATION_MATIERE_KEY_QUANTITE + " INTEGER, " +
+            AFFECTATION_MATIERE_KEY_ID_MATIERE + " INTEGER, " + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + " INTEGER ,FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE +  ")  REFERENCES " + TABLE_NOMENCLATURE + "(" + KEY_ID + "), FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_MATIERE + ") REFERENCES " + TABLE_MATIERE + "(" + KEY_ID + "));";
 
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -89,11 +119,20 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         Log.i(LOG,CREATE_TABLE_COMMANDE);
         Log.i(LOG, CREATE_TABLE_PROSPECT);
         Log.i(LOG,CREATE_TABLE_USER);
+        Log.i(LOG,CREATE_TABLE_NOMENCLATURE);
+        Log.i(LOG, CREATE_TABLE_MATIERE);
+        Log.i(LOG,CREATE_TABLE_AFFECTATION_MATIERE);
         db.execSQL(CREATE_TABLE_CLIENT);
         db.execSQL(CREATE_TABLE_COMMANDE);
         db.execSQL(CREATE_TABLE_PROSPECT);
         db.execSQL(CREATE_TABLE_USER);
+        db.execSQL(CREATE_TABLE_MATIERE);
+        db.execSQL(CREATE_TABLE_NOMENCLATURE);
+        db.execSQL(CREATE_TABLE_AFFECTATION_MATIERE);
         this.createUser(db);
+        this.createFakeAffectationMatiere(db);
+        this.createFakeNomenclature(db);
+        this.createFakeMatiere(db);
     }
 
     @Override
@@ -104,6 +143,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMMANDE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROSPECT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATIERE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOMENCLATURE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_AFFECTATION_MATIERE);
         // Create news
         onCreate(db);
     }
@@ -163,7 +205,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         List<Client> clients = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_CLIENT ;
 
-        Log.e(LOG,selectQuery);
+        Log.i(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
@@ -195,7 +237,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         String selectQuery = "SELECT * FROM " + TABLE_CLIENT + " WHERE " + CLIENT_KEY_EMAIL + " = " + "\"" + email + "\"";
 
-        Log.e(LOG,selectQuery);
+        Log.i(LOG, selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = db.rawQuery(selectQuery,null);
@@ -214,14 +256,14 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return client;
     }
 
-    /* Commande Table Methods */
+    // ----------------------------------- Commande table methods ------------------------------- //
 
     // GetCommande from Id
     public Commande getCommande(long id)
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + " WHERE " + KEY_ID + " = " + id;
-
+        Log.i(LOG,selectQuery);
         Cursor c = db.rawQuery(selectQuery,null);
         if(c!=null)
             c.moveToFirst();
@@ -241,7 +283,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         List<Commande> commandes = new ArrayList<Commande>();
         String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + " WHERE " + COMMANDE_KEY_CLIENT_ID + " = " + id  ;
-        Log.e(LOG, selectQuery);
+        Log.i(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
@@ -265,6 +307,23 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         c.close();
         return commandes;
     }
+
+    /* Create Commande   */
+    public long createCommande(Commande commande)
+    {
+        try(SQLiteDatabase db = this.getWritableDatabase())
+        {
+            ContentValues values = new ContentValues();
+            values.put(COMMANDE_KEY_CLIENT_ID,commande.getClientId());
+            values.put(COMMANDE_KEY_DATECOMMANDE,commande.getDateCommande().toString());
+            values.put(COMMANDE_KEY_NUMCOMMANDE,commande.getNumCommande());
+            values.put(COMMANDE_KEY_TOTAL,commande.getTotal());
+
+            return db.insert(TABLE_COMMANDE,null,values);
+        }
+    }
+
+    // ----------------------------------- Prospect table methods ------------------------------- //
 
     /* Create Prospect */
 
@@ -290,8 +349,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_PROSPECT + " WHERE " + KEY_ID + " = " + id;
-
-        Cursor c = db.rawQuery(selectQuery,null);
+        Log.i(LOG,selectQuery);
+        Cursor c = db.rawQuery(selectQuery, null);
         if(c!=null)
             c.moveToFirst();
 
@@ -318,7 +377,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         List<Prospect> prospects = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_PROSPECT ;
 
-        Log.e(LOG, selectQuery);
+        Log.i(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
@@ -350,7 +409,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         String selectQuery = "SELECT * FROM " + TABLE_PROSPECT + " WHERE " + PROSPECT_KEY_EMAIL + " = " + "\"" + email + "\"";
 
-        Log.e(LOG,selectQuery);
+        Log.i(LOG, selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = db.rawQuery(selectQuery,null);
@@ -369,27 +428,14 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return prospect;
     }
 
-    /* Create Commande   */
-    public long createCommande(Commande commande)
-    {
-        try(SQLiteDatabase db = this.getWritableDatabase())
-        {
-            ContentValues values = new ContentValues();
-            values.put(COMMANDE_KEY_CLIENT_ID,commande.getClientId());
-            values.put(COMMANDE_KEY_DATECOMMANDE,commande.getDateCommande().toString());
-            values.put(COMMANDE_KEY_NUMCOMMANDE,commande.getNumCommande());
-            values.put(COMMANDE_KEY_TOTAL,commande.getTotal());
 
-            return db.insert(TABLE_COMMANDE,null,values);
-        }
-    }
-
+    // ----------------------------------- User table methods ------------------------------- //
     /* Create user */
     public void  createUser(SQLiteDatabase db)
     {
             ContentValues values = new ContentValues();
-            values.put(USER_KEY_EMAIL,"commercialplastprod@gmail.com");
-            values.put(USER_KEY_MDP,"Commercialplastprod88");
+            values.put(USER_KEY_EMAIL, "commercialplastprod@gmail.com");
+            values.put(USER_KEY_MDP, "Commercialplastprod88");
 
             db.insert(TABLE_USER, null, values);
             Log.i(LOG, "USER CREE");
@@ -400,7 +446,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     public User getUser()
     {
         String selectQuery = "SELECT * FROM " + TABLE_USER ;
-        Log.e(LOG,selectQuery);
+        Log.i(LOG, selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
         if(c!= null)
@@ -413,4 +459,204 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         return user;
     }
+
+    // ----------------------------------- Matiere table methods ------------------------------- //
+    // Get Quantite Matiere
+    public int getQuantiteMatiere(long id_nomenclature,long id_matiere)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_AFFECTATION_MATIERE + " WHERE " + AFFECTATION_MATIERE_KEY_ID_MATIERE + " = " +  id_matiere + " AND " + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + " = " + id_nomenclature + " ;";
+        Log.i(LOG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c!=null)
+            c.moveToFirst();
+
+        int quantite = c.getInt(c.getColumnIndex(AFFECTATION_MATIERE_KEY_QUANTITE));
+        return quantite;
+    }
+
+    public Matiere getMatiere(long id)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_MATIERE + " WHERE " + KEY_ID + " = " + id  + ";";
+        Log.i(LOG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c!=null)
+            c.moveToFirst();
+        Matiere matiere = new Matiere();
+        matiere.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+        matiere.setNom(c.getString(c.getColumnIndex(MATIERE_KEY_NOM)));
+        matiere.setPrix(c.getFloat(c.getColumnIndex(MATIERE_KEY_PRIX)));
+
+        return matiere;
+    }
+
+    public ArrayList<Matiere> getAllMatieres()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
+        String selectQuery = "SELECT * FROM " + TABLE_MATIERE;
+        Log.i(LOG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.moveToFirst())
+        {
+            do {
+
+                Matiere matiere = new Matiere();
+                matiere.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                matiere.setNom(c.getString(c.getColumnIndex(MATIERE_KEY_NOM)));
+                matiere.setPrix(c.getFloat(c.getColumnIndex(MATIERE_KEY_PRIX)));
+
+                listeMatieres.add(matiere);
+
+            }while(c.moveToNext());
+        }
+
+        return listeMatieres;
+    }
+
+    public ArrayList<Matiere> getAllMatiereForOneNomenclatureById(long id_nomenclature)
+    {
+        ArrayList<Matiere> listeMatiere = new ArrayList<Matiere>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT MATIERE.id as mat, MATIERE.prix_matiere as matprix, MATIERE.nom_matiere as matnom FROM NOMENCLATURE,MATIERE,AFFECTATION_MATIERE WHERE NOMENCLATURE."+ KEY_ID + " = AFFECTATION_MATIERE.id_nomenclature AND MATIERE." + KEY_ID + " = AFFECTATION_MATIERE.id_matiere AND NOMENCLATURE.id = " + id_nomenclature + ";";
+        Log.i(LOG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c!=null)
+            if(c.moveToFirst())
+            {
+                do {
+                    Matiere matiere = new Matiere();
+                    matiere.setId(c.getInt(c.getColumnIndex("mat")));
+                    matiere.setPrix(c.getDouble(c.getColumnIndex("matprix")));
+                    matiere.setNom(c.getString(c.getColumnIndex("matnom")));
+                    listeMatiere.add(matiere);
+
+                }while(c.moveToNext());
+            }
+        return listeMatiere;
+    }
+
+
+    // ----------------------------------- Nomenclature table methods ------------------------------- //
+    public ArrayList<Nomenclature> getAllNomenclature()
+    {
+        ArrayList<Nomenclature> nomenclatures = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_NOMENCLATURE + ";";
+        Log.i(LOG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c.moveToFirst())
+        {
+            do {
+                int id = c.getInt(c.getColumnIndex(KEY_ID));
+                ArrayList<Matiere> matiere = getAllMatiereForOneNomenclatureById(id);
+                Nomenclature nomenclature = new Nomenclature();
+                nomenclature.setId(id);
+                nomenclature.setNom(c.getString(c.getColumnIndex(NOMENCLATURE_KEY_NOM)));
+                nomenclature.setListeMatiere(matiere);
+                nomenclatures.add(nomenclature);
+
+            }while(c.moveToNext());
+        }
+
+        return nomenclatures;
+    }
+    public Nomenclature getNomenclatureById(long id)
+    {
+        String selectQuery = "SELECT * FROM " + TABLE_NOMENCLATURE + " WHERE " + KEY_ID + " = " + id + ";";
+        Log.i(LOG,selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+        Nomenclature nomenclature = new Nomenclature();
+        if(c.moveToFirst())
+        {
+
+            nomenclature.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+            nomenclature.setNom(c.getString(c.getColumnIndex(NOMENCLATURE_KEY_NOM)));
+            ArrayList<Matiere> matieres = this.getAllMatiereForOneNomenclatureById(id);
+            nomenclature.setListeMatiere(matieres);
+        }
+
+        return nomenclature;
+    }
+    // ----------------------------------- Test table methods ------------------------------- //
+    // Création de nomenclature.
+    public void createFakeNomenclature(SQLiteDatabase db)
+    {
+        ContentValues values = new ContentValues();
+        values.put(NOMENCLATURE_KEY_NOM,"TABLE PLASTIQUE");
+        db.insert(TABLE_NOMENCLATURE, null, values);
+        values = new ContentValues();
+        values.put(NOMENCLATURE_KEY_NOM,"TUYAUX PLASTIQUE 1M");
+        db.insert(TABLE_NOMENCLATURE, null, values);
+        values = new ContentValues();
+        values.put(NOMENCLATURE_KEY_NOM,"VOITURE PLASTIQUE");
+        db.insert(TABLE_NOMENCLATURE, null, values);
+        values = new ContentValues();
+        values.put(NOMENCLATURE_KEY_NOM,"BOUTON PLASTIQUE");
+        db.insert(TABLE_NOMENCLATURE, null, values);
+    }
+
+    // Creation de matiere
+    public void createFakeMatiere(SQLiteDatabase db)
+    {
+        ContentValues values = new ContentValues();
+        values.put(MATIERE_KEY_NOM, "TUYAUX 1M PLASTIQUE");
+        values.put(MATIERE_KEY_PRIX,7.50);
+        db.insert(TABLE_MATIERE, null, values);
+        values = new ContentValues();
+        values.put(MATIERE_KEY_NOM, "PIECE PLASTIQUE 5CM");
+        values.put(MATIERE_KEY_PRIX,0.50);
+        db.insert(TABLE_MATIERE, null, values);
+        values = new ContentValues();
+        values.put(MATIERE_KEY_NOM, "PIECE PLASTIQUE 1CM");
+        values.put(MATIERE_KEY_PRIX, 5.50);
+        db.insert(TABLE_MATIERE, null, values);
+        values = new ContentValues();
+        values.put(MATIERE_KEY_NOM, "PIECE PLASTIQUE 2CM");
+        values.put(MATIERE_KEY_PRIX,4.50);
+        db.insert(TABLE_MATIERE, null, values);
+        values = new ContentValues();
+        values.put(MATIERE_KEY_NOM,"PIECE PLASTQIUE 6CM");
+        values.put(MATIERE_KEY_PRIX,7.50);
+        db.insert(TABLE_MATIERE,null,values);
+    }
+
+    // CReate FakeAffectationMatiere
+    public void createFakeAffectationMatiere(SQLiteDatabase db)
+    {
+        ContentValues values = new ContentValues();
+        values.put(AFFECTATION_MATIERE_KEY_ID_MATIERE,1);
+        values.put(AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE,1);
+        values.put(AFFECTATION_MATIERE_KEY_QUANTITE,50);
+        db.insert(TABLE_AFFECTATION_MATIERE,null,values);
+
+        values = new ContentValues();
+        values.put(AFFECTATION_MATIERE_KEY_ID_MATIERE,2);
+        values.put(AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE,1);
+        values.put(AFFECTATION_MATIERE_KEY_QUANTITE,600);
+        db.insert(TABLE_AFFECTATION_MATIERE, null, values);
+
+        values = new ContentValues();
+        values.put(AFFECTATION_MATIERE_KEY_ID_MATIERE,3);
+        values.put(AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE,1);
+        values.put(AFFECTATION_MATIERE_KEY_QUANTITE,350);
+        db.insert(TABLE_AFFECTATION_MATIERE, null, values);
+
+        values = new ContentValues();
+        values.put(AFFECTATION_MATIERE_KEY_ID_MATIERE,4);
+        values.put(AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE,2);
+        values.put(AFFECTATION_MATIERE_KEY_QUANTITE,10);
+        db.insert(TABLE_AFFECTATION_MATIERE, null, values);
+
+        values = new ContentValues();
+        values.put(AFFECTATION_MATIERE_KEY_ID_MATIERE,5);
+        values.put(AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE,2);
+        values.put(AFFECTATION_MATIERE_KEY_QUANTITE,150);
+        db.insert(TABLE_AFFECTATION_MATIERE,null,values);
+    }
+
+
 }
