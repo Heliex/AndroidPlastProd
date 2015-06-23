@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -63,14 +64,16 @@ public class BonCommande extends Fragment {
 
                 Client c = (Client) listeView.getItemAtPosition(i);
                 listeView.setVisibility(View.INVISIBLE);
-                ListView listeNomenclature = (ListView) getActivity().findViewById(R.id.ListeNomenclature);
+                final ListView listeNomenclature = (ListView) getActivity().findViewById(R.id.ListeNomenclature);
                 listeNomenclature.setVisibility(View.VISIBLE);
                 DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
                 ArrayList<Nomenclature> nomenclatures = db.getAllNomenclature();
-                ListeNomenclatureAdapter adapterNomenclature = new ListeNomenclatureAdapter(getActivity().getApplicationContext(),nomenclatures);
+                TextView somme = (TextView) getActivity().findViewById(R.id.somme);
+                ListeNomenclatureAdapter adapterNomenclature = new ListeNomenclatureAdapter(getActivity().getApplicationContext(), nomenclatures,somme);
                 listeNomenclature.setAdapter(adapterNomenclature);
                 TextView total = (TextView) getActivity().findViewById(R.id.montant);
                 total.setVisibility(View.VISIBLE);
+                
             }
         });
         return rootView;

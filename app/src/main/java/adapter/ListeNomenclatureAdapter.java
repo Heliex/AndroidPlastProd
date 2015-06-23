@@ -9,10 +9,13 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import BDD.Client;
+import BDD.DataBaseHandler;
 import BDD.Nomenclature;
 import barbeasts.plastprod.R;
 
@@ -21,17 +24,20 @@ import barbeasts.plastprod.R;
  */
 public class ListeNomenclatureAdapter extends BaseAdapter{
 
-
+    private double somme;
     private LayoutInflater layoutInflater;
     private ArrayList<Nomenclature> nomenclatures;
     private Context context;
+    private TextView prixTotal;
     ViewHolder holder;
 
-    public ListeNomenclatureAdapter(Context context,ArrayList<Nomenclature> nomenclatures)
+    public ListeNomenclatureAdapter(Context context,ArrayList<Nomenclature> nomenclatures,TextView somme)
     {
         this.context = context;
         this.nomenclatures = nomenclatures;
         this.layoutInflater = LayoutInflater.from(context);
+        this.somme = 0;
+        this.prixTotal = somme;
     }
 
     @Override
@@ -50,27 +56,35 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int i, View view, final ViewGroup viewGroup) {
 
         if(view == null)
         {
+            // Récupere la nomenclature au bon id.
+            final Nomenclature nomenclature = nomenclatures.get(i);
             view = layoutInflater.inflate(R.layout.row_liste_nomenclature,null);
             holder = new ViewHolder();
             holder.Nom = (TextView)view.findViewById(R.id.Nom_nomenclature);
             holder.checkbox = (CheckBox) view.findViewById(R.id.checkBox);
-            holder.checkbox.setOnClickListener(new View.OnClickListener() {
+            CheckBox box =(CheckBox) view.findViewById(R.id.checkBox);
+            box.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!getHolder().checkbox.isChecked()) // Calcul du total avec la nomenclature  en -.
+                    CheckBox box = (CheckBox) view.findViewById(R.id.checkBox);
+                    final boolean isChecked = box.isChecked();
+                    if(isChecked) // Si on check, calculer le cout total
                     {
-                        Toast.makeText(getContext(), "UnChecked", Toast.LENGTH_SHORT).show();
-
+                        double prix = nomenclature.getPrixTotal(new DataBaseHandler(getContext()),nomenclature.getId());
+                       ajouterSomme(prix);
                     }
-                    if(getHolder().checkbox.isChecked()) // Calcul du total avec la nomenclature en +.
+                    else // Sinon  supprimer du cout total
                     {
-                        Toast.makeText(getContext(), "Checked", Toast.LENGTH_SHORT).show();
+                        double prix = nomenclature.getPrixTotal(new DataBaseHandler(getContext()),nomenclature.getId());
+                        soustraireSomme(prix);
                     }
 
+                    getPrixTotal().setText(String.valueOf(getSomme()+"€"));
+                    getPrixTotal().setVisibility(View.VISIBLE);
                 }
             });
             view.setTag(holder);
@@ -98,5 +112,35 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
     public ViewHolder getHolder()
     {
         return this.holder;
+    }
+
+    public double getSomme()
+    {
+        return this.somme;
+    }
+
+    public void setSomme(double somme)
+    {
+        this.somme = somme;
+    }
+
+    public void ajouterSomme(double prix)
+    {
+        this.somme = somme + prix;
+    }
+
+    public void soustraireSomme(double prix)
+    {
+        this.somme = somme - prix;
+    }
+
+    public TextView getPrixTotal()
+    {
+        return this.prixTotal;
+    }
+
+    public void setPrixTotal(TextView tx)
+    {
+        this.prixTotal = tx;
     }
 }
