@@ -6,13 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import BDD.Client;
 import BDD.DataBaseHandler;
@@ -66,24 +63,34 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
             holder = new ViewHolder();
             holder.Nom = (TextView)view.findViewById(R.id.Nom_nomenclature);
             holder.checkbox = (CheckBox) view.findViewById(R.id.checkBox);
+            holder.numberPicker = (NumberPicker)view.findViewById(R.id.numberPicker);
+            holder.numberPicker.setMinValue(0);
+            holder.numberPicker.setMaxValue(20);
+
             CheckBox box =(CheckBox) view.findViewById(R.id.checkBox);
+            final NumberPicker picker = (NumberPicker)view.findViewById(R.id.numberPicker);
             box.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     CheckBox box = (CheckBox) view.findViewById(R.id.checkBox);
+                    int quantite = picker.getValue(); // Recupere la quantite du picker
                     final boolean isChecked = box.isChecked();
                     if(isChecked) // Si on check, calculer le cout total
                     {
+                        picker.setEnabled(false); // On desactive la modif sur le picker
                         double prix = nomenclature.getPrixTotal(new DataBaseHandler(getContext()),nomenclature.getId());
-                       ajouterSomme(prix);
+                        nomenclature.setQuantite(quantite);
+                        ajouterSomme(prix,quantite);
+                        getPrixTotal().setText(String.valueOf(getSomme() + "€"));
                     }
                     else // Sinon  supprimer du cout total
                     {
+                        picker.setEnabled(true); // On réactive la modif sur le picker
+                        nomenclature.setQuantite(quantite);
                         double prix = nomenclature.getPrixTotal(new DataBaseHandler(getContext()),nomenclature.getId());
-                        soustraireSomme(prix);
+                        soustraireSomme(prix,quantite);
+                        getPrixTotal().setText(String.valueOf(getSomme() + "€"));
                     }
-
-                    getPrixTotal().setText(String.valueOf(getSomme()+"€"));
                     getPrixTotal().setVisibility(View.VISIBLE);
                 }
             });
@@ -99,6 +106,11 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         return view;
     }
 
+    public ArrayList<Nomenclature> getNomenclatures()
+    {
+        return this.nomenclatures;
+    }
+
     public Context getContext()
     {
         return this.context;
@@ -108,6 +120,7 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
     {
         TextView Nom;
         CheckBox checkbox;
+        NumberPicker numberPicker;
     }
     public ViewHolder getHolder()
     {
@@ -124,14 +137,14 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         this.somme = somme;
     }
 
-    public void ajouterSomme(double prix)
+    public void ajouterSomme(double prix,int quantite)
     {
-        this.somme = somme + prix;
+        this.somme = somme + ( prix * quantite);
     }
 
-    public void soustraireSomme(double prix)
+    public void soustraireSomme(double prix,int quantite)
     {
-        this.somme = somme - prix;
+        this.somme = somme - ( prix * quantite);
     }
 
     public TextView getPrixTotal()

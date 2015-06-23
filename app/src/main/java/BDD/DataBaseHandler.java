@@ -19,7 +19,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
 
     // Database version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 9;
 
     // Database Name
     private static final String DATABASE_NAME ="PlastProd";
@@ -32,6 +32,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_MATIERE = "MATIERE";
     private static final String TABLE_NOMENCLATURE = "NOMENCLATURE";
     private static final String TABLE_AFFECTATION_MATIERE = "AFFECTATION_MATIERE";
+    private static final String TABLE_AFFECTATION_COMMANDE = "AFFECTATION_COMMANDE";
 
     // Common Columns names
     private static final String KEY_ID = "id";
@@ -108,6 +109,19 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + AFFECTATION_MATIERE_KEY_QUANTITE + " INTEGER, " +
             AFFECTATION_MATIERE_KEY_ID_MATIERE + " INTEGER, " + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + " INTEGER ,FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE +  ")  REFERENCES " + TABLE_NOMENCLATURE + "(" + KEY_ID + "), FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_MATIERE + ") REFERENCES " + TABLE_MATIERE + "(" + KEY_ID + "));";
 
+    // AffectationCommande Tables - Column Names
+    private static final String AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE="id_nomenclature";
+    private static final String AFFECTATION_COMMANDE_KEY_ID_COMMANDE = "id_commande";
+    private static final String AFFECTATION_COMMANDE_KEY_QUANTITE ="quantite";
+
+    // Creation de la table AffectationCommande
+
+    private static final String CREATE_TABLE_AFFECTATION_COMMANDE = "CREATE TABLE " + TABLE_AFFECTATION_COMMANDE + "(" +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + AFFECTATION_COMMANDE_KEY_QUANTITE + " INTEGER, " +
+            AFFECTATION_COMMANDE_KEY_ID_COMMANDE + " INTEGER, " + AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE + " INTEGER, " +
+            "FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + ") REFERENCES " + TABLE_NOMENCLATURE +
+            "(" + KEY_ID + "), FOREIGN KEY ( " + AFFECTATION_COMMANDE_KEY_ID_COMMANDE + ") REFERENCES " + TABLE_COMMANDE + "(" + KEY_ID + "));";
+
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -122,6 +136,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         Log.i(LOG,CREATE_TABLE_NOMENCLATURE);
         Log.i(LOG, CREATE_TABLE_MATIERE);
         Log.i(LOG,CREATE_TABLE_AFFECTATION_MATIERE);
+        Log.i(LOG,CREATE_TABLE_AFFECTATION_COMMANDE);
         db.execSQL(CREATE_TABLE_CLIENT);
         db.execSQL(CREATE_TABLE_COMMANDE);
         db.execSQL(CREATE_TABLE_PROSPECT);
@@ -129,6 +144,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_MATIERE);
         db.execSQL(CREATE_TABLE_NOMENCLATURE);
         db.execSQL(CREATE_TABLE_AFFECTATION_MATIERE);
+        db.execSQL(CREATE_TABLE_AFFECTATION_COMMANDE);
         this.createUser(db);
         this.createFakeAffectationMatiere(db);
         this.createFakeNomenclature(db);
@@ -146,6 +162,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATIERE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOMENCLATURE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_AFFECTATION_MATIERE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_AFFECTATION_COMMANDE);
         // Create news
         onCreate(db);
     }
@@ -256,6 +273,37 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return client;
     }
 
+    public ArrayList<Nomenclature> getAllNomenclatureFromIdClient(long id)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<Nomenclature> listeNomenclatures = new ArrayList<>();
+        String selectQuery = "SELECT " + TABLE_NOMENCLATURE + "." + KEY_ID + " as idNomenclature, " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " as nomNomenclature, " +
+                TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_QUANTITE + " as quantiteNomenclature FROM " + TABLE_NOMENCLATURE + ", " + TABLE_COMMANDE +
+                ", " + TABLE_AFFECTATION_COMMANDE + ", " + TABLE_CLIENT + " WHERE " + TABLE_CLIENT + "." + KEY_ID + " = " + id + " AND " + TABLE_NOMENCLATURE + "." + KEY_ID + " = " +
+                    TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE + " AND " + TABLE_COMMANDE + "." + KEY_ID + " = " + TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_COMMANDE + ";" ;
+
+        Log.i(LOG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c!= null)
+        {
+            if(c.moveToFirst())
+            {
+                do {
+
+                    Nomenclature nomenclature = new Nomenclature();
+                    nomenclature.setId(c.getLong(c.getColumnIndex("idNomenclature")));
+                    nomenclature.setNom(c.getString(c.getColumnIndex("nomNomenclature")));
+                    nomenclature.setQuantite(c.getInt(c.getColumnIndex("quantiteNomenclature")));
+                    nomenclature.setListeMatiere(this.getAllMatiereForOneNomenclatureById(nomenclature.getId()));
+                    listeNomenclatures.add(nomenclature);
+
+                }while(c.moveToNext());
+            }
+            c.close();
+        }
+
+        return listeNomenclatures;
+    }
     // ----------------------------------- Commande table methods ------------------------------- //
 
     // GetCommande from Id
@@ -315,12 +363,33 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         {
             ContentValues values = new ContentValues();
             values.put(COMMANDE_KEY_CLIENT_ID,commande.getClientId());
-            values.put(COMMANDE_KEY_DATECOMMANDE,commande.getDateCommande().toString());
+            values.put(COMMANDE_KEY_DATECOMMANDE,commande.getDateCommande());
             values.put(COMMANDE_KEY_NUMCOMMANDE,commande.getNumCommande());
             values.put(COMMANDE_KEY_TOTAL,commande.getTotal());
 
-            return db.insert(TABLE_COMMANDE,null,values);
+            long id_commande = db.insert(TABLE_COMMANDE,null,values);
+
+            // Gestion de la liste de nomenclature
+            for(int i = 0 ; i < commande.getListeNomenclature().size(); i++) // Pour chaque nomenclature il faut que j'ajoute l'id de commande et la quantite correspondante.
+            {
+                int quantite = commande.getListeNomenclature().get(i).getQuantite();
+                long id_nomenclature = commande.getListeNomenclature().get(i).getId();
+                createAffectionMatiere(id_nomenclature,id_commande,quantite,db);
+            }
+
+            return id_commande ;
         }
+    }
+
+    /* Create AffectationMAtiere -> Appelée implicitement par la méthode createCommande */
+    public long createAffectionMatiere(long id_nomenclature,long id_commande,int quantite,SQLiteDatabase db)
+    {
+            ContentValues values = new ContentValues();
+            values.put(AFFECTATION_COMMANDE_KEY_QUANTITE,quantite);
+            values.put(AFFECTATION_COMMANDE_KEY_ID_COMMANDE, id_commande);
+        values.put(AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE,id_nomenclature);
+
+            return db.insert(TABLE_AFFECTATION_COMMANDE, null, values);
     }
 
     // ----------------------------------- Prospect table methods ------------------------------- //
@@ -520,7 +589,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         ArrayList<Matiere> listeMatiere = new ArrayList<Matiere>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT MATIERE.id as mat, MATIERE.prix_matiere as matprix, MATIERE.nom_matiere as matnom FROM NOMENCLATURE,MATIERE,AFFECTATION_MATIERE WHERE NOMENCLATURE."+ KEY_ID + " = AFFECTATION_MATIERE.id_nomenclature AND MATIERE." + KEY_ID + " = AFFECTATION_MATIERE.id_matiere AND NOMENCLATURE.id = " + id_nomenclature + ";";
+        String selectQuery = "SELECT " + TABLE_MATIERE + "." + KEY_ID + " as mat, " + TABLE_MATIERE + "." + MATIERE_KEY_PRIX + " as matprix, " + TABLE_MATIERE + "." + MATIERE_KEY_NOM  + " as matnom FROM " + TABLE_NOMENCLATURE + "," + TABLE_MATIERE + "," + TABLE_AFFECTATION_MATIERE + " WHERE " +TABLE_NOMENCLATURE + "." + KEY_ID + " = " + TABLE_AFFECTATION_MATIERE + "." + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + " AND " + TABLE_MATIERE + "." + KEY_ID + " = " + TABLE_AFFECTATION_MATIERE + "." + AFFECTATION_MATIERE_KEY_ID_MATIERE + " AND " + TABLE_NOMENCLATURE  + "." + KEY_ID + " = " + id_nomenclature + ";";
         Log.i(LOG, selectQuery);
         Cursor c = db.rawQuery(selectQuery,null);
         if(c!=null)
@@ -581,6 +650,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         return nomenclature;
     }
+
     // ----------------------------------- Test table methods ------------------------------- //
     // Création de nomenclature.
     public void createFakeNomenclature(SQLiteDatabase db)

@@ -49,4 +49,16 @@
         android:layout_alignTop="@+id/montant"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Valider la commande"
+        android:id="@+id/validerCommande"
+        android:layout_alignTop="@+id/somme"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp"
+        android:layout_toEndOf="@+id/somme"
+        android:visibility="invisible" />
+
 </RelativeLayout>

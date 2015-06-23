@@ -10,10 +10,10 @@ public class Nomenclature {
     private String nom;
     private long id;
     private ArrayList<Matiere> listeMatiere;
+    private int quantite;
 
     public Nomenclature()
     {
-        this.listeMatiere = new ArrayList<Matiere>();
     }
 
     public long getId()
@@ -58,5 +58,15 @@ public class Nomenclature {
         }
 
         return somme;
+    }
+
+    public int getQuantite()
+    {
+        return this.quantite;
+    }
+
+    public void setQuantite(int qte)
+    {
+        this.quantite = qte;
     }
 }

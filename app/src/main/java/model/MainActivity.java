@@ -173,6 +173,7 @@ public class MainActivity extends Activity {
     {
         // Update the main content by replacing fragment
         Fragment fragment = null;
+        String TAG = "";
         switch(position)
         {
             case 0:
@@ -341,6 +342,13 @@ public class MainActivity extends Activity {
         {
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
+            ListView mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
+            String[] navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
+            if(mDrawerList != null) {
+                mDrawerList.setItemChecked(0, true);
+                mDrawerList.setSelection(0);
+            }
+            setTitle(navMenuTitles[0]);
             // Ces deux lignes permettent de remplacer un fragment par un autre.
         }
     }

@@ -1,28 +1,15 @@
 package menu;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +17,6 @@ import java.util.List;
 import BDD.Client;
 import BDD.Commande;
 import BDD.DataBaseHandler;
-import BDD.Matiere;
 import BDD.Nomenclature;
 import adapter.ListeClientAdapter;
 import adapter.ListeNomenclatureAdapter;
@@ -41,7 +27,8 @@ import barbeasts.plastprod.R;
  */
 public class BonCommande extends Fragment {
 
-    public BonCommande() {}
+    public BonCommande() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -62,21 +49,47 @@ public class BonCommande extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                Client c = (Client) listeView.getItemAtPosition(i);
+                final Client c = (Client) listeView.getItemAtPosition(i);
+                TextView tx = (TextView) getActivity().findViewById(R.id.validerCommande);
+                tx.setVisibility(View.VISIBLE);
                 listeView.setVisibility(View.INVISIBLE);
                 final ListView listeNomenclature = (ListView) getActivity().findViewById(R.id.ListeNomenclature);
                 listeNomenclature.setVisibility(View.VISIBLE);
-                DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
+                final  DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
                 ArrayList<Nomenclature> nomenclatures = db.getAllNomenclature();
-                TextView somme = (TextView) getActivity().findViewById(R.id.somme);
-                ListeNomenclatureAdapter adapterNomenclature = new ListeNomenclatureAdapter(getActivity().getApplicationContext(), nomenclatures,somme);
+                final TextView somme = (TextView) getActivity().findViewById(R.id.somme);
+                final ListeNomenclatureAdapter adapterNomenclature = new ListeNomenclatureAdapter(getActivity().getApplicationContext(), nomenclatures,somme);
                 listeNomenclature.setAdapter(adapterNomenclature);
-                TextView total = (TextView) getActivity().findViewById(R.id.montant);
+                final TextView total = (TextView) getActivity().findViewById(R.id.montant);
                 total.setVisibility(View.VISIBLE);
+                tx.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                       double prixTotal = Double.parseDouble(somme.getText().toString().replace("€", ""));
+                       ArrayList<Nomenclature> listeNomenclatures = adapterNomenclature.getNomenclatures();
+                       trierListeNomenclature(listeNomenclatures);
+                       Commande commande = new Commande(c.getId(),prixTotal,(int)System.currentTimeMillis(),listeNomenclatures);
+                       db.createCommande(commande);
+                       Toast.makeText(getActivity().getApplicationContext(),"Commande crée",Toast.LENGTH_SHORT).show();
+                    }
+                });
                 
             }
         });
         return rootView;
     }
 
+
+    public static void trierListeNomenclature(ArrayList<Nomenclature> listeNomenclatures)
+    {
+        for(int i = 0; i < listeNomenclatures.size() ; i++)
+        {
+            if(listeNomenclatures.get(i).getQuantite() == 0)
+            {
+                listeNomenclatures.remove(listeNomenclatures.get(i));
+                i= 0;
+            }
+        }
+    }
 }

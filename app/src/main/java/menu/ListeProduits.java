@@ -19,8 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import BDD.Client;
+import BDD.Commande;
 import BDD.DataBaseHandler;
+import BDD.Nomenclature;
 import adapter.ListeClientAdapter;
+import adapter.ListeProduitAdapter;
 import barbeasts.plastprod.R;
 import model.MainActivity;
 
@@ -36,44 +39,32 @@ public class ListeProduits extends Fragment{
     {
         final View rootView = inflater.inflate(R.layout.fragment_listesproduits,container,false);
         // Je récupère la vue de la liste depuis son id.
-        final ListView listeProduits = (ListView) rootView.findViewById(R.id.listView);
+        final ListView listeClients = (ListView) rootView.findViewById(R.id.listView);
         // Je crée la connexion a la base
-        DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
+        final DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
 
         // Je recupère ma liste de client.
         List<Client> listClient;
         listClient = db.getAllClients();
 
         // adapter pour pouvoir faire du traitement sur le client.
-        ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),listClient);
-        listeProduits.setAdapter(adapter);
+        final ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),listClient);
+        listeClients.setAdapter(adapter);
 
         // Listener sur la liste pour pouvoir choisir le user à traiter
-        listeProduits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listeClients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Client c = (Client)listeProduits.getItemAtPosition(i);
-                listeProduits.setVisibility(View.INVISIBLE);
-                rootView.findViewById(R.id.Titre).setVisibility(View.VISIBLE);
+                // JE recupere le clients sur lequels j'ai cliquer
+                Client c = (Client)listeClients.getItemAtPosition(i);
+                listeClients.setVisibility(View.INVISIBLE);
+                ArrayList<Nomenclature> nomenclatures = db.getAllNomenclatureFromIdClient(c.getId());
+                System.out.println(nomenclatures);
+                final ListView listeNomenclatures = (ListView)rootView.findViewById(R.id.listeProduits);
+                ListeProduitAdapter listeProduitAdapter = new ListeProduitAdapter(getActivity().getApplicationContext(),nomenclatures);
+                listeNomenclatures.setAdapter(listeProduitAdapter);
+                listeNomenclatures.setVisibility(View.VISIBLE);
 
-                TextView tx = (TextView) rootView.findViewById(R.id.Titre);
-                RelativeLayout rl = (RelativeLayout) rootView.findViewById(R.id.listeproduits);
-                rl.removeAllViewsInLayout();
-                rl.addView(tx);
-                Button b = new Button(getActivity().getApplicationContext());
-                b.setText("Precedent");
-                b.setGravity(View.TEXT_ALIGNMENT_CENTER);
-                // J'ai mis en place un système qui permet de recharger le fragment actuelle sur le clique du bouton précédent.
-                b.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Fragment fragment = new ListeProduits();
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
-
-                    }
-                });
-                rl.addView(b);
 
             }
         });
