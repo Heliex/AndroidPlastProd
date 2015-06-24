@@ -280,7 +280,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         String selectQuery = "SELECT " + TABLE_NOMENCLATURE + "." + KEY_ID + " as idNomenclature, " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " as nomNomenclature, " +
                 TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_QUANTITE + " as quantiteNomenclature FROM " + TABLE_NOMENCLATURE + ", " + TABLE_COMMANDE +
                 ", " + TABLE_AFFECTATION_COMMANDE + ", " + TABLE_CLIENT + " WHERE " + TABLE_CLIENT + "." + KEY_ID + " = " + id + " AND " + TABLE_NOMENCLATURE + "." + KEY_ID + " = " +
-                    TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE + " AND " + TABLE_COMMANDE + "." + KEY_ID + " = " + TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_COMMANDE + ";" ;
+                    TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE + " AND " + TABLE_COMMANDE + "." + KEY_ID + " = " + TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_COMMANDE + " AND " + TABLE_CLIENT + "." + KEY_ID + " = " + TABLE_COMMANDE + "." + COMMANDE_KEY_CLIENT_ID + ";" ;
 
         Log.i(LOG, selectQuery);
         Cursor c = db.rawQuery(selectQuery,null);

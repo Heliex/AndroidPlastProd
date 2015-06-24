@@ -7,5 +7,36 @@
     <ListView
         android:id="@+id/listView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_marginTop="80dp" />
+
+    <ListView
+        android:id="@+id/listeProduits"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="80dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Liste des clients :"
+        android:id="@+id/listeClient"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Liste des produits commandés par ce client :"
+        android:id="@+id/listeProduitsCommandes"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"
+        android:layout_marginBottom="50dp" />
 </RelativeLayout>

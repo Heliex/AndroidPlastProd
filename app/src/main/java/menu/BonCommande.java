@@ -3,11 +3,17 @@ package menu;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.NumberPicker;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +48,7 @@ public class BonCommande extends Fragment {
 
         List<Client> clients;
         clients = db.getAllClients();
-        ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),clients);
+        final ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),clients);
         listeView.setAdapter(adapter);
 
         listeView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -55,10 +61,10 @@ public class BonCommande extends Fragment {
                 listeView.setVisibility(View.INVISIBLE);
                 final ListView listeNomenclature = (ListView) getActivity().findViewById(R.id.ListeNomenclature);
                 listeNomenclature.setVisibility(View.VISIBLE);
-                final  DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
-                ArrayList<Nomenclature> nomenclatures = db.getAllNomenclature();
+                final DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
+                final ArrayList<Nomenclature> nomenclatures = db.getAllNomenclature();
                 final TextView somme = (TextView) getActivity().findViewById(R.id.somme);
-                final ListeNomenclatureAdapter adapterNomenclature = new ListeNomenclatureAdapter(getActivity().getApplicationContext(), nomenclatures,somme);
+                final ListeNomenclatureAdapter adapterNomenclature = new ListeNomenclatureAdapter(getActivity().getApplicationContext(), nomenclatures, somme);
                 listeNomenclature.setAdapter(adapterNomenclature);
                 final TextView total = (TextView) getActivity().findViewById(R.id.montant);
                 total.setVisibility(View.VISIBLE);
@@ -66,30 +72,35 @@ public class BonCommande extends Fragment {
                     @Override
                     public void onClick(View view) {
 
-                       double prixTotal = Double.parseDouble(somme.getText().toString().replace("€", ""));
-                       ArrayList<Nomenclature> listeNomenclatures = adapterNomenclature.getNomenclatures();
-                       trierListeNomenclature(listeNomenclatures);
-                       Commande commande = new Commande(c.getId(),prixTotal,(int)System.currentTimeMillis(),listeNomenclatures);
-                       db.createCommande(commande);
-                       Toast.makeText(getActivity().getApplicationContext(),"Commande crée",Toast.LENGTH_SHORT).show();
+                        if (!somme.getText().equals("")) {
+                            boolean estValide = true;
+                            double prixTotal = Double.parseDouble(somme.getText().toString().replace("€", ""));
+                            ArrayList<Nomenclature> nomenclatures = adapterNomenclature.getNomenclatures();
+                            for (int i = 0; i < nomenclatures.size(); i++) {
+                                View childView = listeNomenclature.getChildAt(i);
+                                if (childView != null) {
+                                    CheckBox box = (CheckBox) childView.findViewById(R.id.checkBox);
+                                    NumberPicker picker = (NumberPicker) childView.findViewById(R.id.numberPicker);
+                                    if (!box.isChecked() && picker.getValue() > 0) {
+                                        estValide = false;
+                                    }
+                                }
+                            }
+                            if (estValide) {
+                                Commande commande = new Commande(c.getId(), prixTotal, (int) System.currentTimeMillis(), nomenclatures);
+                                db.createCommande(commande);
+                                Toast.makeText(getActivity().getApplicationContext(), "Commande crée", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity().getApplicationContext(),"Vous avez oubliez de coché le produit qui à une quantité positive",Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getActivity().getApplicationContext(), "Erreur dans la commande", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
-                
+
             }
         });
         return rootView;
-    }
-
-
-    public static void trierListeNomenclature(ArrayList<Nomenclature> listeNomenclatures)
-    {
-        for(int i = 0; i < listeNomenclatures.size() ; i++)
-        {
-            if(listeNomenclatures.get(i).getQuantite() == 0)
-            {
-                listeNomenclatures.remove(listeNomenclatures.get(i));
-                i= 0;
-            }
-        }
     }
 }

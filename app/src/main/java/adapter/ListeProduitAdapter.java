@@ -14,7 +14,7 @@ import BDD.Nomenclature;
 import barbeasts.plastprod.R;
 
 /**
- * Created by Christophe on 23/06/2015. For PlastProd Project
+ * Created by Christophe on 24/06/2015. For PlastProd Project
  */
 public class ListeProduitAdapter extends BaseAdapter {
 
@@ -50,8 +50,8 @@ public class ListeProduitAdapter extends BaseAdapter {
         {
             view = layoutInflater.inflate(R.layout.row_listeproduits,null);
             holder = new ViewHolder();
-            holder.nomProduits = (TextView)view.findViewById(R.id.nomProduits);
-            holder.quantiteProduits = (TextView) view.findViewById(R.id.quantiteProduits);
+            holder.Nom = (TextView)view.findViewById(R.id.nomProduits);
+            holder.Quantite = (TextView) view.findViewById(R.id.quantiteProduits);
             view.setTag(holder);
         }
         else
@@ -60,15 +60,15 @@ public class ListeProduitAdapter extends BaseAdapter {
         }
 
         // Mettre les données dans les composants.
-        holder.nomProduits.setText(nomenclatures.get(i).getNom());
-        holder.quantiteProduits.setText(String.valueOf(nomenclatures.get(i).getQuantite()));
+        holder.Nom.setText(nomenclatures.get(i).getNom());
+        holder.Quantite.setText(String.valueOf(nomenclatures.get(i).getQuantite()));
 
         return view;
     }
 
     static class ViewHolder
     {
-        TextView nomProduits;
-        TextView quantiteProduits;
+        TextView Nom;
+        TextView Quantite;
     }
 }

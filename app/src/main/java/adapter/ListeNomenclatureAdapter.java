@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -67,29 +68,36 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
             holder.numberPicker.setMinValue(0);
             holder.numberPicker.setMaxValue(20);
 
-            CheckBox box =(CheckBox) view.findViewById(R.id.checkBox);
+            final CheckBox box =(CheckBox) view.findViewById(R.id.checkBox);
             final NumberPicker picker = (NumberPicker)view.findViewById(R.id.numberPicker);
+            picker.setWrapSelectorWheel(false);
+
             box.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     CheckBox box = (CheckBox) view.findViewById(R.id.checkBox);
                     int quantite = picker.getValue(); // Recupere la quantite du picker
                     final boolean isChecked = box.isChecked();
-                    if(isChecked) // Si on check, calculer le cout total
+                    if(isChecked && quantite > 0) // Si on check, calculer le cout total
                     {
                         picker.setEnabled(false); // On desactive la modif sur le picker
                         double prix = nomenclature.getPrixTotal(new DataBaseHandler(getContext()),nomenclature.getId());
                         nomenclature.setQuantite(quantite);
-                        ajouterSomme(prix,quantite);
+                        ajouterSomme(prix, quantite);
                         getPrixTotal().setText(String.valueOf(getSomme() + "€"));
                     }
-                    else // Sinon  supprimer du cout total
+                    else if(!isChecked && quantite > 0) // Sinon  supprimer du cout total
                     {
                         picker.setEnabled(true); // On réactive la modif sur le picker
                         nomenclature.setQuantite(quantite);
                         double prix = nomenclature.getPrixTotal(new DataBaseHandler(getContext()),nomenclature.getId());
                         soustraireSomme(prix,quantite);
                         getPrixTotal().setText(String.valueOf(getSomme() + "€"));
+                    }
+                    else if(isChecked && quantite ==0)
+                    {
+                        Toast.makeText(getContext(),"vous devez mettre une quantité positive ou ne pas cocher la nomenclature",Toast.LENGTH_SHORT).show();
+                        box.setChecked(false);
                     }
                     getPrixTotal().setVisibility(View.VISIBLE);
                 }
