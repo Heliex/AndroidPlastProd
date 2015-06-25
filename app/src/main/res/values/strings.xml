@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">PlastProd</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="drawer_open"> Slider Menu Opened</string>
     <string name="drawer_close"> Slider Menu Closed</string>
@@ -21,7 +20,7 @@
         <item>Suivre un Client</item>
         <item>Infos sur un Client</item>
         <item>Créer Bon de Commande</item>
-        <item>Envoyer formulaire satisfaction</item>
+        <item>Formulaire satisfaction</item>
     </string-array>
 
     <!-- Nav  Left Drawer List Item Icons !-->

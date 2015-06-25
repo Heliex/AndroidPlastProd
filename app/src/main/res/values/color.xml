@@ -9,5 +9,7 @@
     <item name="list_normal_nselected_fin" type="color">#A64B00</item>
     <item name="background_debut" type="color">#FF9200</item>
     <item name="background_fin" type="color">#A65F00</item>
+    <item name="background_actionBarDebut" type="color">#9F5600</item>
+    <item name="background_actionBarFin" type="color">#F0962B</item>
     <item name="textColor" type="color">#FFFFF0</item>
 </resources>

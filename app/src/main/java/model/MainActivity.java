@@ -1,5 +1,6 @@
 package model;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -10,11 +11,18 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import adapter.NavDrawerListAdapter;
 import barbeasts.plastprod.R;
@@ -36,6 +44,8 @@ public class MainActivity extends Activity {
     private ListView mDrawerList;
     private ListView mDrawerRightList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private ActionBar mActionBar;
+    private static String nomFragment;
 
     // Nav drawer title
     private CharSequence mDrawerTitle;
@@ -54,6 +64,24 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mActionBar = getActionBar();
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setDisplayShowTitleEnabled(false);
+        LayoutInflater mInflater = LayoutInflater.from(this);
+        final View mCustomView = mInflater.inflate(R.layout.action_bar, null);
+        ImageButton imageButton = (ImageButton) mCustomView.findViewById(R.id.action_bar_imageButton);
+        imageButton.setOnClickListener(new View.OnClickListener() { // Gestion de la déconnexion
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(),"Déconnecté",Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+        mActionBar.setCustomView(mCustomView);
+        mActionBar.setDisplayShowCustomEnabled(true);
+        TextView mTitleTextView = (TextView)mCustomView.findViewById(R.id.action_bar_title);
+        mTitleTextView.setText("Accueil");
         TypedArray navMenuIcons;
         TypedArray navMenuIconsRight;
 
@@ -62,7 +90,6 @@ public class MainActivity extends Activity {
         NavDrawerListAdapter adapter;
         NavDrawerListAdapter adapterRight;
 
-        mTitle = getTitle();
         mDrawerTitle  = "Client";
         mDrawerTitleRight ="Prospect" ;
         // Load slides menu items
@@ -118,8 +145,11 @@ public class MainActivity extends Activity {
         {
           public void onDrawerClosed(View view)
           {
-              if(getActionBar() != null)
-                  getActionBar().setTitle(mTitle);
+              if(mActionBar != null)
+              {
+                  TextView tx = (TextView)mCustomView.findViewById(R.id.action_bar_title);
+                  tx.setText(mTitle);
+              }
               invalidateOptionsMenu();
           }
 
@@ -127,13 +157,19 @@ public class MainActivity extends Activity {
             {
                 if(drawerView.findViewById(R.id.list_Rightslidermenu) != null)
                 {
-                    if(getActionBar() != null)
-                    getActionBar().setTitle(mDrawerTitleRight);
+                    if(mActionBar != null)
+                    {
+                        TextView tx = (TextView)mCustomView.findViewById(R.id.action_bar_title);
+                        tx.setText(mDrawerTitleRight);
+                    }
                 }
                 else
                 {
-                    if(getActionBar() != null)
-                    getActionBar().setTitle(mDrawerTitle);
+                    if(mActionBar != null)
+                    {
+                        TextView tx = (TextView)mCustomView.findViewById(R.id.action_bar_title);
+                        tx.setText(mDrawerTitle);
+                    }
                 }
                 invalidateOptionsMenu();
             }
@@ -209,7 +245,7 @@ public class MainActivity extends Activity {
         if(fragment != null)
         {
             FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.frame_container,fragment,"Fragment").commit();
             // Ces deux lignes permettent de remplacer un fragment par un autre.
 
             // Update selected item and title, then close the drawer
@@ -225,7 +261,7 @@ public class MainActivity extends Activity {
                     mDrawerRightList.setItemChecked(i,false);
                 }
             }
-            mDrawerList.setItemChecked(position,true);
+            mDrawerList.setItemChecked(position, true);
             mDrawerList.setSelection(position);
             setTitle(navMenuTitles[position]);
             mDrawerLayout.closeDrawer(mDrawerList);
@@ -233,7 +269,7 @@ public class MainActivity extends Activity {
         else
         {
             // Error in creating fragment
-            Log.e("MainActivity", "Error in creating fragment");
+            Log.i("MainActivity", "Error in creating fragment");
         }
     }
 
@@ -279,7 +315,7 @@ public class MainActivity extends Activity {
         if(fragment != null)
         {
             FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.frame_container,fragment,"Fragment").commit();
             // Ces deux lignes permettent de remplacer un fragment par un autre.
 
             if(fragment instanceof HomeFragment)
@@ -295,7 +331,7 @@ public class MainActivity extends Activity {
                 }
             }
             // Update selected item and title, the close +the drawer
-            mDrawerRightList.setItemChecked(position,true);
+            mDrawerRightList.setItemChecked(position, true);
             mDrawerRightList.setSelection(position);
             setTitle(navMenuTitlesRight[position]);
             mDrawerLayout.closeDrawer(mDrawerRightList);
@@ -303,7 +339,7 @@ public class MainActivity extends Activity {
         else
         {
             // Error in creating fragment
-            Log.e("MainActivity","Error in creating fragment");
+            Log.e("MainActivity", "Error in creating fragment");
         }
 
     }
@@ -356,28 +392,35 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public void onPostResume()
-    {
-        super.onPostResume();
-        Fragment fragment =  new HomeFragment();
-        if(fragment != null)
-        {
-            FragmentManager fragmentManager = getFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
-            ListView mDrawerList = (ListView) findViewById(R.id.list_slidermenu);
-            String[] navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
-            if(mDrawerList != null) {
-                mDrawerList.setItemChecked(0, true);
-                mDrawerList.setSelection(0);
-            }
-            setTitle(navMenuTitles[0]);
-            // Ces deux lignes permettent de remplacer un fragment par un autre.
-        }
-    }
-
-    @Override
     public void onBackPressed()
     {
 
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        nomFragment = getFragmentManager().findFragmentByTag("Fragment").getClass().getName();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if(nomFragment != null)
+        {
+            String instance = nomFragment.replace("menu.","");
+            switch(instance)
+            {
+                case "HomeFragment":
+                    Fragment fragment = new HomeFragment();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.frame_container,fragment,"Fragment").commit();
+                    TextView tx = (TextView)mActionBar.getCustomView().findViewById(R.id.action_bar_title);
+                    tx.setText("Accueil");
+                    break;
+            }
+        }
     }
 }
