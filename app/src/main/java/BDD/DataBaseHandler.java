@@ -330,7 +330,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     public List<Commande> getAllCommandeByClient(long id)
     {
         List<Commande> commandes = new ArrayList<Commande>();
-        String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + " WHERE " + COMMANDE_KEY_CLIENT_ID + " = " + id  ;
+        String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + " WHERE " + COMMANDE_KEY_CLIENT_ID + " = " + id + " ORDER BY " + COMMANDE_KEY_DATECOMMANDE + " ASC ;"  ;
         Log.i(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();

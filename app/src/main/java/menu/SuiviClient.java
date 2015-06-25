@@ -8,10 +8,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
 import BDD.Client;
+import BDD.Commande;
 import BDD.DataBaseHandler;
 import adapter.ListeClientAdapter;
 import barbeasts.plastprod.R;
@@ -27,23 +31,43 @@ public class SuiviClient extends Fragment {
     {
         View rootView = inflater.inflate(R.layout.fragment_suivi,container,false);
         // Je récupère la vue de la liste depuis son id.
-        final ListView listeProduits = (ListView) rootView.findViewById(R.id.ListViewSuivi);
+        final ListView listeClients = (ListView) rootView.findViewById(R.id.ListViewSuivi);
         // Je crée la connexion a la base
-        DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
+        final DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
 
         // Je recupère ma liste de client.
-        List<Client> listClient;
+        final List<Client> listClient;
         listClient = db.getAllClients();
 
         // adapter pour pouvoir faire du traitement sur le client.
         ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),listClient);
-        listeProduits.setAdapter(adapter);
+        listeClients.setAdapter(adapter);
 
         // Listener sur la liste pour pouvoir choisir le user à traiter
-        listeProduits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listeClients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Client c = (Client)listeProduits.getItemAtPosition(i);
+                Client c = (Client)listeClients.getItemAtPosition(i);
+                List<Commande> listeCommandes = db.getAllCommandeByClient(c.getId());
+                double total = 0;
+                for(int m=0; m < listeCommandes.size(); m++)
+                {
+                     total+=listeCommandes.get(m).getTotal();
+                }
+                String dateDerniereCommande = listeCommandes.get((listeCommandes.size()-1)).getDateCommande();
+                listeClients.setVisibility(View.INVISIBLE);
+                TextView CA = (TextView) getActivity().findViewById(R.id.CAclient);
+                TextView DateD = (TextView) getActivity().findViewById(R.id.dateDerniereCommande);
+                TextView CAAfficher = (TextView) getActivity().findViewById(R.id.CaAfficher);
+                TextView DateDAfficher = (TextView)getActivity().findViewById(R.id.dateDerniereCommandeAffichee);
+
+                CAAfficher.setText(String.valueOf(total) + " €");
+                DateDAfficher.setText(dateDerniereCommande);
+
+                CA.setVisibility(View.VISIBLE);
+                DateD.setVisibility(View.VISIBLE);
+                CAAfficher.setVisibility(View.VISIBLE);
+                DateDAfficher.setVisibility(View.VISIBLE);
             }
         });
         return rootView;
