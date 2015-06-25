@@ -145,7 +145,6 @@ public class MainActivity extends Activity {
         {
             displayView(0);
         }
-        // Chargement du calendar pour test
     }
 
     private class SlideMenuClickListener implements ListView.OnItemClickListener
@@ -173,7 +172,6 @@ public class MainActivity extends Activity {
     {
         // Update the main content by replacing fragment
         Fragment fragment = null;
-        String TAG = "";
         switch(position)
         {
             case 0:
@@ -215,6 +213,18 @@ public class MainActivity extends Activity {
             // Ces deux lignes permettent de remplacer un fragment par un autre.
 
             // Update selected item and title, then close the drawer
+            if(fragment instanceof HomeFragment)
+            {
+                mDrawerRightList.setItemChecked(position,true);
+                mDrawerRightList.setSelection(position);
+            }
+            else
+            {
+                for(int i = 0 ; i < mDrawerRightList.getCount(); i++)
+                {
+                    mDrawerRightList.setItemChecked(i,false);
+                }
+            }
             mDrawerList.setItemChecked(position,true);
             mDrawerList.setSelection(position);
             setTitle(navMenuTitles[position]);
@@ -272,6 +282,18 @@ public class MainActivity extends Activity {
             fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
             // Ces deux lignes permettent de remplacer un fragment par un autre.
 
+            if(fragment instanceof HomeFragment)
+            {
+                mDrawerList.setItemChecked(position, true);
+                mDrawerList.setSelection(position);
+            }
+            else
+            {
+                for(int i =0; i < mDrawerList.getCount();i++)
+                {
+                    mDrawerList.setItemChecked(i,false);
+                }
+            }
             // Update selected item and title, the close +the drawer
             mDrawerRightList.setItemChecked(position,true);
             mDrawerRightList.setSelection(position);
