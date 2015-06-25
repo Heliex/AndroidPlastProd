@@ -10,6 +10,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import BDD.Client;
@@ -28,6 +29,8 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
     private Context context;
     private TextView prixTotal;
     ViewHolder holder;
+    private double valeurAjoutee;
+    private double valeurSoustraite;
 
     public ListeNomenclatureAdapter(Context context,ArrayList<Nomenclature> nomenclatures,TextView somme)
     {
@@ -36,6 +39,8 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         this.layoutInflater = LayoutInflater.from(context);
         this.somme = 0;
         this.prixTotal = somme;
+        this.valeurAjoutee = 0;
+        this.valeurSoustraite = 0;
     }
 
     @Override
@@ -72,10 +77,11 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
             final NumberPicker picker = (NumberPicker)view.findViewById(R.id.numberPicker);
             picker.setWrapSelectorWheel(false);
 
+
             box.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    CheckBox box = (CheckBox) view.findViewById(R.id.checkBox);
+                public void onClick(View view) { // Lister sur la checkbox
+                    CheckBox box = (CheckBox) view.findViewById(R.id.checkBox); // Je récupère la checkbox
                     int quantite = picker.getValue(); // Recupere la quantite du picker
                     final boolean isChecked = box.isChecked();
                     if(isChecked && quantite > 0) // Si on check, calculer le cout total
@@ -83,7 +89,7 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
                         picker.setEnabled(false); // On desactive la modif sur le picker
                         double prix = nomenclature.getPrixTotal(new DataBaseHandler(getContext()),nomenclature.getId());
                         nomenclature.setQuantite(quantite);
-                        ajouterSomme(prix, quantite);
+                        setValeurAjoutee(ajouterSomme(prix, quantite)); // Je garde en mémoire la valeur ajoutée
                         getPrixTotal().setText(String.valueOf(getSomme() + "€"));
                     }
                     else if(!isChecked && quantite > 0) // Sinon  supprimer du cout total
@@ -91,15 +97,28 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
                         picker.setEnabled(true); // On réactive la modif sur le picker
                         nomenclature.setQuantite(quantite);
                         double prix = nomenclature.getPrixTotal(new DataBaseHandler(getContext()),nomenclature.getId());
-                        soustraireSomme(prix,quantite);
-                        getPrixTotal().setText(String.valueOf(getSomme() + "€"));
+                        setValeurSoustraite(soustraireSomme(prix, quantite)); // Je garde en mémoire la valeur soustraite
+                        if(verifierOperation(getValeurAjoutee(),getValeurSoustraite())) // Je vérifie que ma soustraction n'est pas faussée (a cause du numberPicker)
+                        {
+                            getPrixTotal().setText(String.valueOf(getSomme() + "€"));
+                            picker.setValue(0);
+                        }
+                        else // Si la valeur soustraite est supérieure à celle ajoutée alors on affiche une erreur.
+                        {
+                            Toast.makeText(getContext(),"La valeur soustraite est supèrieur a celle précédemment ajoutée",Toast.LENGTH_SHORT).show();
+                            picker.setValue(0);
+                            setSomme(0);
+                            getPrixTotal().setText("0" + "€");
+                        }
+
                     }
-                    else if(isChecked && quantite ==0)
+                    else if(isChecked && quantite ==0) // Si le produit est coché avec un quantité à 0
                     {
-                        Toast.makeText(getContext(),"vous devez mettre une quantité positive ou ne pas cocher la nomenclature",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),"vous devez mettre une quantité positive ou ne pas cocher le produit",Toast.LENGTH_SHORT).show();
                         box.setChecked(false);
                     }
                     getPrixTotal().setVisibility(View.VISIBLE);
+
                 }
             });
             view.setTag(holder);
@@ -112,6 +131,16 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         // Mettre les données dans les composants.
         holder.Nom.setText(nomenclatures.get(i).getNom());
         return view;
+    }
+
+    public boolean verifierOperation(double ajout,double soustraite)
+    {
+        if(ajout != 0 && soustraite != 0)
+        {
+            if(ajout - soustraite < 0)
+                return false;
+        }
+        return true;
     }
 
     public ArrayList<Nomenclature> getNomenclatures()
@@ -145,14 +174,18 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         this.somme = somme;
     }
 
-    public void ajouterSomme(double prix,int quantite)
+    public double ajouterSomme(double prix,int quantite)
     {
         this.somme = somme + ( prix * quantite);
+
+        return (prix * quantite);
     }
 
-    public void soustraireSomme(double prix,int quantite)
+    public double soustraireSomme(double prix,int quantite)
     {
+
         this.somme = somme - ( prix * quantite);
+        return (prix * quantite);
     }
 
     public TextView getPrixTotal()
@@ -163,5 +196,25 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
     public void setPrixTotal(TextView tx)
     {
         this.prixTotal = tx;
+    }
+
+    public double getValeurAjoutee()
+    {
+        return this.valeurAjoutee;
+    }
+
+    public void setValeurAjoutee(double valeurAjoutee)
+    {
+        this.valeurAjoutee = valeurAjoutee;
+    }
+
+    public double getValeurSoustraite()
+    {
+        return this.valeurSoustraite;
+    }
+
+    public void setValeurSoustraite(double valeurSoustraite)
+    {
+        this.valeurSoustraite = valeurSoustraite;
     }
 }

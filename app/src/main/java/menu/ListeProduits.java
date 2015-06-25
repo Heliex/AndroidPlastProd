@@ -65,7 +65,7 @@ public class ListeProduits extends Fragment{
                         m=0;
                     }
                 }
-                trierListe(nomenclatures);
+                trierListe(nomenclatures); // Trie de liste
                 ListeProduitAdapter listeProduitAdapter = new ListeProduitAdapter(getActivity().getApplicationContext(),nomenclatures);
                 listeNomenclatures.setAdapter(listeProduitAdapter);
                 listeNomenclatures.setVisibility(View.VISIBLE);
