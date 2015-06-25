@@ -101,6 +101,8 @@ public class BonCommande extends Fragment {
                                     mDrawerList.setItemChecked(0, true);
                                     mDrawerList.setSelection(0);
                                 }
+                                TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                                tx.setText(navMenuTitles[0]);
                                 getActivity().setTitle(navMenuTitles[0]);
                                 Toast.makeText(getActivity().getApplicationContext(), "Commande crée", Toast.LENGTH_SHORT).show();
 

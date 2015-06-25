@@ -161,6 +161,7 @@ public class MainActivity extends Activity {
                     {
                         TextView tx = (TextView)mCustomView.findViewById(R.id.action_bar_title);
                         tx.setText(mDrawerTitleRight);
+                        setTitle(mDrawerTitleRight);
                     }
                 }
                 else
@@ -169,6 +170,7 @@ public class MainActivity extends Activity {
                     {
                         TextView tx = (TextView)mCustomView.findViewById(R.id.action_bar_title);
                         tx.setText(mDrawerTitle);
+                        setTitle(mDrawerTitle);
                     }
                 }
                 invalidateOptionsMenu();
@@ -401,7 +403,10 @@ public class MainActivity extends Activity {
     public void onPause()
     {
         super.onPause();
+        if(getFragmentManager().findFragmentByTag("Fragment") != null)
         nomFragment = getFragmentManager().findFragmentByTag("Fragment").getClass().getName();
+        else
+        nomFragment= null;
     }
 
     @Override
