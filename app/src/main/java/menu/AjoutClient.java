@@ -43,7 +43,7 @@ public class AjoutClient extends Fragment {
                client.setAdresse(adresse.getText().toString());
                client.setTelephone(telephone.getText().toString());
                client.setEmail(email.getText().toString());
-                Log.e("AjoutClient",client.getNom());
+                Log.i("AjoutClient",client.getNom());
                if(nom != null && nom.length() > 0) {
                    DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
                    long id = db.createClient(client);

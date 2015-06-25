@@ -43,23 +43,46 @@ public class SuiviClient extends Fragment {
         ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),listClient);
         listeClients.setAdapter(adapter);
 
+        double totalCA = 0;
+
+        // Récupération du CA total
+        for(int i = 0; i < listClient.size(); i++)
+        {
+            Client c = listClient.get(i);
+            List<Commande> listeCommandes = db.getAllCommandeByClient(c.getId());
+            for(int j = 0 ; j < listeCommandes.size(); j++)
+            {
+                totalCA += listeCommandes.get(j).getTotal();
+            }
+        }
+
+        final TextView totalCAClients = (TextView)rootView.findViewById(R.id.CaTotal);
+        final TextView totalCAClientsAffiche = (TextView) rootView.findViewById(R.id.CaTotalAffichee);
+
+
+        StringBuilder totalCAEntier = new StringBuilder();
+        totalCAEntier.append(String.valueOf(totalCA));
+        totalCAEntier.append(" €");
+        totalCAClientsAffiche.setText(totalCAEntier);
+
         // Listener sur la liste pour pouvoir choisir le user à traiter
         listeClients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Client c = (Client)listeClients.getItemAtPosition(i);
+                Client c = (Client) listeClients.getItemAtPosition(i);
+                totalCAClients.setVisibility(View.INVISIBLE);
+                totalCAClientsAffiche.setVisibility(View.INVISIBLE);
                 List<Commande> listeCommandes = db.getAllCommandeByClient(c.getId());
                 double total = 0;
-                for(int m=0; m < listeCommandes.size(); m++)
-                {
-                     total+=listeCommandes.get(m).getTotal();
+                for (int m = 0; m < listeCommandes.size(); m++) {
+                    total += listeCommandes.get(m).getTotal();
                 }
-                String dateDerniereCommande = listeCommandes.get((listeCommandes.size()-1)).getDateCommande();
+                String dateDerniereCommande = listeCommandes.get((listeCommandes.size() - 1)).getDateCommande();
                 listeClients.setVisibility(View.INVISIBLE);
                 TextView CA = (TextView) getActivity().findViewById(R.id.CAclient);
                 TextView DateD = (TextView) getActivity().findViewById(R.id.dateDerniereCommande);
                 TextView CAAfficher = (TextView) getActivity().findViewById(R.id.CaAfficher);
-                TextView DateDAfficher = (TextView)getActivity().findViewById(R.id.dateDerniereCommandeAffichee);
+                TextView DateDAfficher = (TextView) getActivity().findViewById(R.id.dateDerniereCommandeAffichee);
 
                 CAAfficher.setText(String.valueOf(total) + " €");
                 DateDAfficher.setText(dateDerniereCommande);

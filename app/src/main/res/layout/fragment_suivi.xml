@@ -7,7 +7,7 @@
     <ListView
         android:id="@+id/ListViewSuivi"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="450dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,6 +50,25 @@
         android:layout_alignStart="@+id/dateDerniereCommande"
         android:gravity="center_horizontal"
         android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chiffre d&apos;affaire total des clients : "
+        android:id="@+id/CaTotal"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:layout_alignBottom="@+id/CaTotalAffichee"
+        android:layout_alignEnd="@+id/CAclient" />
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:id="@+id/CaTotalAffichee"
+        android:layout_below="@+id/ListViewSuivi"
+        android:layout_toEndOf="@+id/dateDerniereCommande"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical|center_horizontal" />
 
 
 </RelativeLayout>
