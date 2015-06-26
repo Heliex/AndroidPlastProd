@@ -22,6 +22,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import BDD.AffectationCommande;
+import BDD.AffectationMatiere;
+import BDD.Client;
+import BDD.DataBaseHandler;
+import BDD.Matiere;
+import BDD.Nomenclature;
+import BDD.Prospect;
 import adapter.ListeRDVAdapter;
 import barbeasts.plastprod.R;
 import model.RDV;

@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.provider.ContactsContract;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +25,15 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import BDD.AffectationCommande;
+import BDD.AffectationMatiere;
+import BDD.Client;
+import BDD.DataBaseHandler;
+import BDD.Matiere;
+import BDD.Nomenclature;
+import BDD.Prospect;
 import adapter.NavDrawerListAdapter;
 import barbeasts.plastprod.R;
 import menu.AjoutClient;
@@ -122,10 +132,10 @@ public class MainActivity extends Activity {
         navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[0],navMenuIconsRight.getResourceId(0,-1)));
         navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[1],navMenuIconsRight.getResourceId(1,-1)));
         navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[2],navMenuIconsRight.getResourceId(2,-1)));
-        navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[3],navMenuIconsRight.getResourceId(3,-1)));
-        navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[4],navMenuIconsRight.getResourceId(4,-1)));
-        navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[5],navMenuIconsRight.getResourceId(5,-1)));
-        navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[6],navMenuIconsRight.getResourceId(6,-1)));
+        navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[3], navMenuIconsRight.getResourceId(3, -1)));
+        navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[4], navMenuIconsRight.getResourceId(4, -1)));
+        navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[5], navMenuIconsRight.getResourceId(5, -1)));
+        navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[6], navMenuIconsRight.getResourceId(6, -1)));
         // Recycle Typed array
         navMenuIcons.recycle();
         navMenuIconsRight.recycle();

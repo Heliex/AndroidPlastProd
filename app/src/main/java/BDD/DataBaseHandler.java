@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.lang.annotation.AnnotationFormatError;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -344,11 +345,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         {
             do{
                 Commande commande = new Commande();
+                ArrayList<Nomenclature> listeNomenclature = this.getAllNomenclatureFromIdClient(id);
                 commande.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 commande.setClientId(id);
                 commande.setNumCommande(c.getInt(c.getColumnIndex(COMMANDE_KEY_NUMCOMMANDE)));
                 commande.setDateCommande(c.getString(c.getColumnIndex(COMMANDE_KEY_DATECOMMANDE)));
                 commande.setTotal(c.getFloat(c.getColumnIndex(COMMANDE_KEY_TOTAL)));
+                commande.setListeNomenclature(listeNomenclature);
 
                 // Adding to the client list
                 commandes.add(commande);
@@ -377,22 +380,77 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             {
                 int quantite = commande.getListeNomenclature().get(i).getQuantite();
                 long id_nomenclature = commande.getListeNomenclature().get(i).getId();
-                createAffectionMatiere(id_nomenclature,id_commande,quantite,db);
+                createAffectionCommande(id_nomenclature, id_commande, quantite, db);
             }
 
             return id_commande ;
         }
     }
 
-    /* Create AffectationMAtiere -> Appelée implicitement par la méthode createCommande */
-    public long createAffectionMatiere(long id_nomenclature,long id_commande,int quantite,SQLiteDatabase db)
+    /* Create AffectationCommande -> Appelée implicitement par la méthode createCommande */
+    public long createAffectionCommande(long id_nomenclature,long id_commande,int quantite,SQLiteDatabase db)
     {
             ContentValues values = new ContentValues();
             values.put(AFFECTATION_COMMANDE_KEY_QUANTITE,quantite);
             values.put(AFFECTATION_COMMANDE_KEY_ID_COMMANDE, id_commande);
-        values.put(AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE,id_nomenclature);
+            values.put(AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE,id_nomenclature);
 
             return db.insert(TABLE_AFFECTATION_COMMANDE, null, values);
+    }
+
+    /* Getting All AffectationCommande */
+    public List<AffectationCommande> getAllAffectationCommande()
+    {
+        List<AffectationCommande> listeAffectationCommande = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_AFFECTATION_COMMANDE + ";";
+        Log.i(LOG,selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c!= null)
+        {
+            if(c.moveToFirst())
+            {
+                do {
+                    AffectationCommande affectationCommande = new AffectationCommande();
+                    affectationCommande.setIdCommande(c.getLong(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_ID_COMMANDE)));
+                    affectationCommande.setIdNomenclature(c.getLong(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE)));
+                    affectationCommande.setQuantite(c.getInt(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_QUANTITE)));
+                    listeAffectationCommande.add(affectationCommande);
+
+                }while(c.moveToNext());
+            }
+        }
+        return listeAffectationCommande;
+    }
+
+    /* Get All Commande from Commande Table */
+    public List<Commande> getAllCommandes()
+    {
+        List<Commande> listeCommandes = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + " ;";
+        Log.i(LOG,selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c!= null)
+        {
+            if(c.moveToFirst())
+            {
+                do {
+                    Commande commande = new Commande();
+                    ArrayList<Nomenclature> listeNomenclatures = this.getAllNomenclatureFromIdClient(c.getInt(c.getColumnIndex(COMMANDE_KEY_CLIENT_ID)));
+                    commande.setClientId(c.getInt(c.getColumnIndex(COMMANDE_KEY_CLIENT_ID)));
+                    commande.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                    commande.setDateCommande(c.getString(c.getColumnIndex(COMMANDE_KEY_DATECOMMANDE)));
+                    commande.setNumCommande(c.getInt(c.getColumnIndex(COMMANDE_KEY_NUMCOMMANDE)));
+                    commande.setListeNomenclature(listeNomenclatures);
+                    commande.setTotal(c.getDouble(c.getColumnIndex(COMMANDE_KEY_TOTAL)));
+                    listeCommandes.add(commande);
+
+                }while(c.moveToNext());
+            }
+        }
+
+        return listeCommandes;
     }
 
     // ----------------------------------- Prospect table methods ------------------------------- //
@@ -652,6 +710,31 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         }
 
         return nomenclature;
+    }
+
+    /* Getting AllAffectationMAtiere */
+    public List<AffectationMatiere> getAllAffectationMatiere()
+    {
+        List<AffectationMatiere> affectationMatieres = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_AFFECTATION_MATIERE + " ;";
+        Log.i(LOG,selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c != null)
+        {
+            if(c.moveToFirst())
+            {
+                do {
+                    AffectationMatiere affectationMatiere = new AffectationMatiere();
+                    affectationMatiere.setIdNomenclature(c.getLong(c.getColumnIndex(AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE)));
+                    affectationMatiere.setIdMatiere(c.getLong(c.getColumnIndex(AFFECTATION_MATIERE_KEY_ID_MATIERE)));
+                    affectationMatiere.setQuantite(c.getInt(c.getColumnIndex(AFFECTATION_MATIERE_KEY_QUANTITE)));
+                    affectationMatieres.add(affectationMatiere);
+
+                }while(c.moveToNext());
+            }
+        }
+        return affectationMatieres;
     }
 
     // ----------------------------------- Test table methods ------------------------------- //
