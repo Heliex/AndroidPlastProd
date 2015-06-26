@@ -22,7 +22,7 @@
         android:checked="false"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/Nom_nomenclature"
-        android:gravity="center|center_vertical"
+        android:gravity="center|center_vertical|center_horizontal"
         android:layout_alignBottom="@+id/Nom_nomenclature" />
 
     <NumberPicker
@@ -31,6 +31,7 @@
         android:id="@+id/numberPicker"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:gravity="center|center_vertical" />
+        android:gravity="center|center_vertical|center_horizontal"
+        android:layout_marginRight="25dp" />
 
 </RelativeLayout>
