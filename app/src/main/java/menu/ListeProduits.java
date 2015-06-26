@@ -1,6 +1,7 @@
 package menu;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,38 +42,71 @@ public class ListeProduits extends Fragment{
         final List<Client> listClient;
         listClient = db.getAllClients();
 
-        // adapter pour pouvoir faire du traitement sur le client.
-        final ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),listClient);
-        listeClients.setAdapter(adapter);
+        if(listClient.size() > 0)
+        {
+            // adapter pour pouvoir faire du traitement sur le client.
+            final ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),listClient);
+            listeClients.setAdapter(adapter);
 
-        // Listener sur la liste pour pouvoir choisir le user à traiter
-        listeClients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // JE recupere le clients sur lequels j'ai cliquer
-                Client c = (Client)listeClients.getItemAtPosition(i);
-                TextView listeClient = (TextView)getActivity().findViewById(R.id.listeClient);
-                listeClient.setVisibility(View.INVISIBLE);
-                listeClients.setVisibility(View.INVISIBLE);
-                TextView listeProduitsCommandes = (TextView) getActivity().findViewById(R.id.listeProduitsCommandes);
-                listeProduitsCommandes.setVisibility(View.VISIBLE);
-                List<Nomenclature> nomenclatures = db.getAllNomenclatureFromIdClient(c.getId());
-                final ListView listeNomenclatures = (ListView)rootView.findViewById(R.id.listeProduits);
-                for(int m = 0; m < nomenclatures.size(); m++)
-                {
-                    if(nomenclatures.get(m).getQuantite() == 0) // On retire les produits qui ne sont pas "effectivement" commandé uniquement pour l'affichage
+            // Listener sur la liste pour pouvoir choisir le user à traiter
+            listeClients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    // JE recupere le clients sur lequels j'ai cliquer
+                    Client c = (Client)listeClients.getItemAtPosition(i);
+                    List<Nomenclature> nomenclatures = db.getAllNomenclatureFromIdClient(c.getId());
+                    if(nomenclatures.size() > 0)
                     {
-                        nomenclatures.remove(nomenclatures.get(m));
-                        m=0;
+                        TextView listeClient = (TextView)getActivity().findViewById(R.id.listeClient);
+                        listeClient.setVisibility(View.INVISIBLE);
+                        listeClients.setVisibility(View.INVISIBLE);
+                        TextView listeProduitsCommandes = (TextView) getActivity().findViewById(R.id.listeProduitsCommandes);
+                        listeProduitsCommandes.setVisibility(View.VISIBLE);
+                        final ListView listeNomenclatures = (ListView)rootView.findViewById(R.id.listeProduits);
+                        for(int m = 0; m < nomenclatures.size(); m++)
+                        {
+                            if(nomenclatures.get(m).getQuantite() == 0) // On retire les produits qui ne sont pas "effectivement" commandé uniquement pour l'affichage
+                            {
+                                nomenclatures.remove(nomenclatures.get(m));
+                                m=0;
+                            }
+                        }
+                        trierListe(nomenclatures); // Trie de liste
+                        ListeProduitAdapter listeProduitAdapter = new ListeProduitAdapter(getActivity().getApplicationContext(),nomenclatures);
+                        listeNomenclatures.setAdapter(listeProduitAdapter);
+                        listeNomenclatures.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        Toast.makeText(getActivity().getApplicationContext(),"Ce client n'a passé aucune commande",Toast.LENGTH_SHORT).show();
                     }
                 }
-                trierListe(nomenclatures); // Trie de liste
-                ListeProduitAdapter listeProduitAdapter = new ListeProduitAdapter(getActivity().getApplicationContext(),nomenclatures);
-                listeNomenclatures.setAdapter(listeProduitAdapter);
-                listeNomenclatures.setVisibility(View.VISIBLE);
-
+            });
+        }
+        else
+        {
+            Fragment fragment = new HomeFragment();
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.frame_container,fragment,"Fragment").commit();
+            ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
+            ListView mDrawerRightList = (ListView) getActivity().findViewById(R.id.list_Rightslidermenu);
+            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+            if(mDrawerList != null && mDrawerRightList != null) {
+                mDrawerList.setItemChecked(0, true);
+                mDrawerList.setSelection(0);
+                mDrawerRightList.setItemChecked(0,true);
+                mDrawerRightList.setSelection(0);
             }
-        });
+            if(getActivity().getActionBar() != null)
+            {
+                TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                tx.setText(navMenuTitles[0]);
+                getActivity().setTitle(navMenuTitles[0]);
+            }
+            Toast.makeText(getActivity().getApplicationContext(),"Aucun client existant",Toast.LENGTH_SHORT).show();
+        }
+
+
         return rootView;
     }
 

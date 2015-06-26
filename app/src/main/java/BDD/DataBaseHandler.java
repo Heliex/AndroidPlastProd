@@ -19,7 +19,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
 
     // Database version
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 11;
 
     // Database Name
     private static final String DATABASE_NAME ="PlastProd";
@@ -43,12 +43,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String CLIENT_KEY_ADRESSE = "adresse_client";
     private static final String CLIENT_KEY_TELEPHONE = "telephone_client" ;
     private static final String CLIENT_KEY_EMAIL = "email_client";
+    private static final String CLIENT_KAY_DATE_INSCRIPTION = "date_client";
 
     // Creation de la table Client
     private static final String CREATE_TABLE_CLIENT = "CREATE TABLE " + TABLE_CLIENT + "(" +
             KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + CLIENT_KEY_NOM + " TEXT, " +
             CLIENT_KEY_PRENOM + " TEXT, " + CLIENT_KEY_ADRESSE + " TEXT, " +
-            CLIENT_KEY_TELEPHONE + " TEXT, " + CLIENT_KEY_EMAIL + " TEXT);";
+            CLIENT_KEY_TELEPHONE + " TEXT, " + CLIENT_KEY_EMAIL + " TEXT, " + CLIENT_KAY_DATE_INSCRIPTION + " TEXT);";
 
 
     // Commande Tables - Column Names
@@ -181,6 +182,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             values.put(CLIENT_KEY_ADRESSE, client.getAdresse());
             values.put(CLIENT_KEY_TELEPHONE, client.getTelephone());
             values.put(CLIENT_KEY_EMAIL, client.getEmail());
+            values.put(CLIENT_KAY_DATE_INSCRIPTION,client.getDate());
 
             // Insert row
             return db.insert(TABLE_CLIENT, null, values);
@@ -234,10 +236,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 Client client = new Client();
                 client.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 client.setNom(c.getString(c.getColumnIndex(CLIENT_KEY_NOM)));
-                client.setPrenom((c.getString(c.getColumnIndex(CLIENT_KEY_PRENOM))));
-                client.setAdresse((c.getString(c.getColumnIndex(CLIENT_KEY_ADRESSE))));
-                client.setTelephone((c.getString(c.getColumnIndex(CLIENT_KEY_TELEPHONE))));
-                client.setEmail((c.getString(c.getColumnIndex(CLIENT_KEY_EMAIL))));
+                client.setPrenom(c.getString(c.getColumnIndex(CLIENT_KEY_PRENOM)));
+                client.setAdresse(c.getString(c.getColumnIndex(CLIENT_KEY_ADRESSE)));
+                client.setTelephone(c.getString(c.getColumnIndex(CLIENT_KEY_TELEPHONE)));
+                client.setEmail(c.getString(c.getColumnIndex(CLIENT_KEY_EMAIL)));
+                client.setDate(c.getString(c.getColumnIndex(CLIENT_KAY_DATE_INSCRIPTION)));
 
                 // Adding to the client list
                 clients.add(client);

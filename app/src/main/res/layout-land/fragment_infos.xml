@@ -69,5 +69,19 @@
         android:layout_alignParentStart="true"
         android:layout_gravity="center"
         android:textAlignment="center"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/infosDate"
+        android:layout_marginTop="43dp"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/infosEmail"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
 </RelativeLayout>

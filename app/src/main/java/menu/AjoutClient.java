@@ -32,19 +32,44 @@ public class AjoutClient extends Fragment {
             @Override
             public void onClick(View view) {
                Client client = new Client();
+               boolean estValide = true;
                EditText nom = (EditText)rootView.findViewById(R.id.TextNom);
                EditText prenom = (EditText) rootView.findViewById(R.id.TextPrenom);
                EditText adresse = (EditText) rootView.findViewById(R.id.TextAdresse);
                EditText telephone = (EditText) rootView.findViewById(R.id.TextTel);
                EditText email = (EditText) rootView.findViewById(R.id.TextEmail);
+               EditText date = (EditText) rootView.findViewById(R.id.TextDate);
 
-               client.setNom(nom.getText().toString());
-               client.setPrenom(prenom.getText().toString());
-               client.setAdresse(adresse.getText().toString());
-               client.setTelephone(telephone.getText().toString());
-               client.setEmail(email.getText().toString());
-                Log.i("AjoutClient",client.getNom());
-               if(nom != null && nom.length() > 0) {
+               String name = nom.getText().toString();
+               String prenomVerifier = prenom.getText().toString();
+               String adresseVerifier = adresse.getText().toString();
+               String telephoneVerifier = telephone.getText().toString();
+               String emailVerifier = email.getText().toString();
+               String dateVerifier = date.getText().toString();
+
+               String patternNom = "[a-zA-ZéèêëàâäîïôöûüùÉÈËÊÁÂÀÄÏÎÖÔÛÜÙÚ _-]{1,255}";
+               String patternAdresse = "[a-zA-ZéèêëàâäîïôöûüùÉÈËÊÁÂÀÄÏÎÖÔÛÜÙÚ0-9 _-]{1,255}";
+               String patternTelephone = "[\\d]{10}";
+               String patternEmail = "^[-+.\\w]{1,64}@[-.\\w]{1,64}\\.[-.\\w]{2,6}$";
+               String patternDate = "[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}";
+
+               /* Vérification des champs */
+               if(name.matches(patternNom) && prenomVerifier.matches(patternNom) && adresseVerifier.matches(patternAdresse) && telephoneVerifier.matches(patternTelephone) && emailVerifier.matches(patternEmail) && dateVerifier.matches(patternDate) ) // Si le nom est le prénom ne contiennent que des caractères.
+               {
+                   client.setNom(name);
+                   client.setPrenom(prenomVerifier);
+                   client.setAdresse(adresseVerifier);
+                   client.setTelephone(telephoneVerifier);
+                   client.setEmail(emailVerifier);
+                   client.setDate(dateVerifier);
+               }
+               else
+               {
+                   estValide = false;
+               }
+
+               if(estValide) {
+                   Log.i("AjoutClient", client.getNom());
                    DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
                    long id = db.createClient(client);
                    if(id != -1) {
@@ -62,6 +87,10 @@ public class AjoutClient extends Fragment {
                        getActivity().setTitle(navMenuTitles[0]);
                        Toast.makeText(getActivity().getApplicationContext(), "Client crée", Toast.LENGTH_SHORT).show();
                     }
+               }
+               else
+               {
+                   Toast.makeText(getActivity().getApplicationContext(),"Erreur de saisie",Toast.LENGTH_SHORT).show();
                }
             }
         });

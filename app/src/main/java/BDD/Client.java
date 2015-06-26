@@ -20,6 +20,8 @@ public class Client {
         private String telephone;
         // Email
         private String email;
+        // Date
+        private String date;
 
         public long getId()
         {
@@ -79,5 +81,15 @@ public class Client {
         public void setEmail(String email)
         {
             this.email = email;
+        }
+
+        public String getDate()
+        {
+            return this.date;
+        }
+
+        public void setDate(String date)
+        {
+            this.date = date;
         }
     }

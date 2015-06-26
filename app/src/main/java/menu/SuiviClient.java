@@ -1,6 +1,7 @@
 package menu;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -39,60 +41,94 @@ public class SuiviClient extends Fragment {
         final List<Client> listClient;
         listClient = db.getAllClients();
 
-        // adapter pour pouvoir faire du traitement sur le client.
-        ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),listClient);
-        listeClients.setAdapter(adapter);
-
-        double totalCA = 0;
-
-        // Récupération du CA total
-        for(int i = 0; i < listClient.size(); i++)
+        if(listClient.size() > 0)
         {
-            Client c = listClient.get(i);
-            List<Commande> listeCommandes = db.getAllCommandeByClient(c.getId());
-            for(int j = 0 ; j < listeCommandes.size(); j++)
+            // adapter pour pouvoir faire du traitement sur le client.
+            ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),listClient);
+            listeClients.setAdapter(adapter);
+
+            double totalCA = 0;
+
+            // Récupération du CA total
+            for(int i = 0; i < listClient.size(); i++)
             {
-                totalCA += listeCommandes.get(j).getTotal();
-            }
-        }
-
-        final TextView totalCAClients = (TextView)rootView.findViewById(R.id.CaTotal);
-        final TextView totalCAClientsAffiche = (TextView) rootView.findViewById(R.id.CaTotalAffichee);
-
-
-        StringBuilder totalCAEntier = new StringBuilder();
-        totalCAEntier.append(String.valueOf(totalCA));
-        totalCAEntier.append(" €");
-        totalCAClientsAffiche.setText(totalCAEntier);
-
-        // Listener sur la liste pour pouvoir choisir le user à traiter
-        listeClients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Client c = (Client) listeClients.getItemAtPosition(i);
-                totalCAClients.setVisibility(View.INVISIBLE);
-                totalCAClientsAffiche.setVisibility(View.INVISIBLE);
+                Client c = listClient.get(i);
                 List<Commande> listeCommandes = db.getAllCommandeByClient(c.getId());
-                double total = 0;
-                for (int m = 0; m < listeCommandes.size(); m++) {
-                    total += listeCommandes.get(m).getTotal();
+                for(int j = 0 ; j < listeCommandes.size(); j++)
+                {
+                    totalCA += listeCommandes.get(j).getTotal();
                 }
-                String dateDerniereCommande = listeCommandes.get((listeCommandes.size() - 1)).getDateCommande();
-                listeClients.setVisibility(View.INVISIBLE);
-                TextView CA = (TextView) getActivity().findViewById(R.id.CAclient);
-                TextView DateD = (TextView) getActivity().findViewById(R.id.dateDerniereCommande);
-                TextView CAAfficher = (TextView) getActivity().findViewById(R.id.CaAfficher);
-                TextView DateDAfficher = (TextView) getActivity().findViewById(R.id.dateDerniereCommandeAffichee);
-
-                CAAfficher.setText(String.valueOf(total) + " €");
-                DateDAfficher.setText(dateDerniereCommande);
-
-                CA.setVisibility(View.VISIBLE);
-                DateD.setVisibility(View.VISIBLE);
-                CAAfficher.setVisibility(View.VISIBLE);
-                DateDAfficher.setVisibility(View.VISIBLE);
             }
-        });
+
+            final TextView totalCAClients = (TextView)rootView.findViewById(R.id.CaTotal);
+            final TextView totalCAClientsAffiche = (TextView) rootView.findViewById(R.id.CaTotalAffichee);
+
+
+            final StringBuilder totalCAEntier = new StringBuilder();
+            totalCAEntier.append(String.valueOf(totalCA));
+            totalCAEntier.append(" €");
+            totalCAClientsAffiche.setText(totalCAEntier);
+
+            // Listener sur la liste pour pouvoir choisir le user à traiter
+            listeClients.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Client c = (Client) listeClients.getItemAtPosition(i);
+                    totalCAClients.setVisibility(View.INVISIBLE);
+                    totalCAClientsAffiche.setVisibility(View.INVISIBLE);
+                    List<Commande> listeCommandes = db.getAllCommandeByClient(c.getId());
+                    if(listeCommandes.size() > 0)
+                    {
+                        double total = 0;
+                        for (int m = 0; m < listeCommandes.size(); m++) {
+                            total += listeCommandes.get(m).getTotal();
+                        }
+                        String dateDerniereCommande = listeCommandes.get((listeCommandes.size() - 1)).getDateCommande();
+                        listeClients.setVisibility(View.INVISIBLE);
+                        TextView CA = (TextView) getActivity().findViewById(R.id.CAclient);
+                        TextView DateD = (TextView) getActivity().findViewById(R.id.dateDerniereCommande);
+                        TextView CAAfficher = (TextView) getActivity().findViewById(R.id.CaAfficher);
+                        TextView DateDAfficher = (TextView) getActivity().findViewById(R.id.dateDerniereCommandeAffichee);
+
+                        CAAfficher.setText(String.valueOf(total) + " €");
+                        DateDAfficher.setText(dateDerniereCommande);
+
+                        CA.setVisibility(View.VISIBLE);
+                        DateD.setVisibility(View.VISIBLE);
+                        CAAfficher.setVisibility(View.VISIBLE);
+                        DateDAfficher.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        Toast.makeText(getActivity().getApplicationContext(),"Ce client n'as passé aucune commande",Toast.LENGTH_SHORT).show();
+                        totalCAClients.setVisibility(View.VISIBLE);
+                        totalCAClientsAffiche.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+        }
+        else
+        {
+            Fragment fragment = new HomeFragment();
+            FragmentManager fragmentManager = getFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.frame_container,fragment,"Fragment").commit();
+            ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
+            ListView mDrawerRightList = (ListView) getActivity().findViewById(R.id.list_Rightslidermenu);
+            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+            if(mDrawerList != null && mDrawerRightList != null) {
+                mDrawerList.setItemChecked(0, true);
+                mDrawerList.setSelection(0);
+                mDrawerRightList.setItemChecked(0,true);
+                mDrawerRightList.setSelection(0);
+            }
+            if(getActivity().getActionBar() != null)
+            {
+                TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                tx.setText(navMenuTitles[0]);
+                getActivity().setTitle(navMenuTitles[0]);
+            }
+            Toast.makeText(getActivity().getApplicationContext(),"Aucun client existant",Toast.LENGTH_SHORT).show();
+        }
         return rootView;
     }
 }

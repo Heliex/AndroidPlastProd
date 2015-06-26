@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
 
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);
-        TextView mTitleTextView = (TextView)mCustomView.findViewById(R.id.action_bar_title);
+        final TextView mTitleTextView = (TextView)mCustomView.findViewById(R.id.action_bar_title);
         mTitleTextView.setText("Accueil");
         TypedArray navMenuIcons;
         TypedArray navMenuIconsRight;
@@ -148,7 +148,40 @@ public class MainActivity extends Activity {
               if(mActionBar != null)
               {
                   TextView tx = (TextView)mCustomView.findViewById(R.id.action_bar_title);
+                  Fragment fragment = getFragmentManager().findFragmentByTag("Fragment");
+                  if(fragment != null)
+                  {
+                      String nomFragment = fragment.getClass().getName().replace("menu.","");
+                      switch(nomFragment)
+                      {
+                          case "HomeFragment" :
+                              mTitle = navMenuTitles[0];
+                              break;
+                          case "AjoutClient" :
+                              mTitle = navMenuTitles[1];
+                              break;
+                          case "AjoutProspect":
+                              mTitle = navMenuTitlesRight[1];
+                              break;
+                          case "BonCommande":
+                              mTitle = navMenuTitles[5];
+                              break;
+                          case "FormulaireSatisfaction":
+                              mTitle = navMenuTitles[6];
+                              break;
+                          case "InfosClient":
+                              mTitle = navMenuTitles[4];
+                              break;
+                          case "ListeProduits":
+                              mTitle = navMenuTitles[2];
+                              break;
+                          case "SuiviClient":
+                              mTitle = navMenuTitles[3];
+                              break;
+                      }
+                  }
                   tx.setText(mTitle);
+                  setTitle(mTitle.toString());
               }
               invalidateOptionsMenu();
           }

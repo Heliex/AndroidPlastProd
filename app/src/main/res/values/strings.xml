@@ -38,7 +38,7 @@
     <!-- Nav Right Drawer Item !-->
     <string-array name="nav_drawer_Right_items">
         <item>Accueil</item>
-        <item>Ajouter un prospect</item>
+        <item>Ajouter un Prospect</item>
         <item>Menu prospect 3</item>
         <item>Suivre un Prospect</item>
         <item>Menu prospect 5</item>
