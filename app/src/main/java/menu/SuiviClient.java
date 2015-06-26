@@ -41,7 +41,7 @@ public class SuiviClient extends Fragment {
         final List<Client> listClient;
         listClient = db.getAllClients();
 
-        if(listClient.size() > 0)
+        if(listClient.size() > 0) // SI j'ai des clients alors je peux passer a la suite
         {
             // adapter pour pouvoir faire du traitement sur le client.
             ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),listClient);
@@ -107,7 +107,7 @@ public class SuiviClient extends Fragment {
                 }
             });
         }
-        else
+        else // Sinon pas de client je redirige vers l'accueil et notifie à l'écran.
         {
             Fragment fragment = new HomeFragment();
             FragmentManager fragmentManager = getFragmentManager();
