@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import BDD.Client;
 import BDD.DataBaseHandler;
@@ -26,6 +27,8 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
     private double somme;
     private LayoutInflater layoutInflater;
     private ArrayList<Nomenclature> nomenclatures;
+    private HashMap<String,Integer> listeQuantiteStockee;
+    private HashMap<String,Nomenclature> listeNomenclatureStockee;
     private Context context;
     private TextView prixTotal;
     ViewHolder holder;
@@ -41,6 +44,8 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         this.prixTotal = somme;
         this.valeurAjoutee = 0;
         this.valeurSoustraite = 0;
+        this.listeQuantiteStockee = new HashMap<>();
+        this.listeNomenclatureStockee = new HashMap<>();
     }
 
     @Override
@@ -91,6 +96,8 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
                         nomenclature.setQuantite(quantite);
                         setValeurAjoutee(ajouterSomme(prix, quantite)); // Je garde en mémoire la valeur ajoutée
                         getPrixTotal().setText(String.valueOf(getSomme() + "€"));
+                        listeQuantiteStockee.put(nomenclature.getNom(), quantite);
+                        listeNomenclatureStockee.put(nomenclature.getNom(),nomenclature);
                     }
                     else if(!isChecked && quantite > 0) // Sinon  supprimer du cout total
                     {
@@ -110,6 +117,8 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
                             setSomme(0);
                             getPrixTotal().setText("0" + "€");
                         }
+                        listeQuantiteStockee.remove(nomenclature.getNom());
+                        listeNomenclatureStockee.remove(nomenclature.getNom());
 
                     }
                     else if(isChecked && quantite ==0) // Si le produit est coché avec un quantité à 0
@@ -216,5 +225,15 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
     public void setValeurSoustraite(double valeurSoustraite)
     {
         this.valeurSoustraite = valeurSoustraite;
+    }
+
+    public HashMap<String,Integer> getListeStockee()
+    {
+        return this.listeQuantiteStockee;
+    }
+
+    public HashMap<String,Nomenclature> getListeNomenclatureStockee()
+    {
+        return this.listeNomenclatureStockee;
     }
 }

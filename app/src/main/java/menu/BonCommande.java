@@ -14,7 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.mail.internet.InternetHeaders;
 
 import BDD.Client;
 import BDD.Commande;
@@ -71,27 +74,27 @@ public class BonCommande extends Fragment {
                         public void onClick(View view) {
 
                             if (!somme.getText().equals("")) { // Si la somme est != ""
-                                int[] tabValuePicker = new int[nomenclatures.size()]; // Je crée un tableau d'entier
-                                boolean estValide = true; // Un boolean
-                                double prixTotal = Double.parseDouble(somme.getText().toString().replace("€", "")); // Je récupère le total
-                                ArrayList<Nomenclature> nomenclatures = adapterNomenclature.getNomenclatures(); // Et la liste de nomenclature depuis l'adapter
-                                for (int i = 0; i < nomenclatures.size(); i++) { // Pour chaque nomenclatures
-                                    View childView = listeNomenclature.getChildAt(i); // Je récupère sa vue correspondante
-                                    if (childView != null) { // Si la vue est pas null
-                                        CheckBox box = (CheckBox) childView.findViewById(R.id.checkBox); // JE récupère la checkbox
-                                        NumberPicker picker = (NumberPicker) childView.findViewById(R.id.numberPicker); // Et le picker
-                                        if (!box.isChecked() && picker.getValue() > 0) { // Si la checbkox est pas coché et la quantité > 0 alors la commande est pas valide
-                                            estValide = false;
-                                        }
-                                        tabValuePicker[i] = picker.getValue(); // On stocke la valeur du picker dans un tableau
+                                HashMap<String,Integer> listeQuantite = adapterNomenclature.getListeStockee();
+                                HashMap<String,Nomenclature> listeNomencature = adapterNomenclature.getListeNomenclatureStockee();
+                                int[] quantitePicker = new int[nomenclatures.size()];
+
+                                for(int i =0 ; i < nomenclatures.size() ; i++)
+                                {
+                                    int quantite = 0 ;
+                                    Nomenclature n = listeNomencature.get(nomenclatures.get(i).getNom());
+                                    if(n != null) // Si ma nomenclature n'est pas nulle c'est qu'elle à une quantité sinon quantite a 0
+                                    {
+                                        quantite = listeQuantite.get(n.getNom());
                                     }
+                                    quantitePicker[i] = quantite;
+                                    nomenclatures.get(i).setQuantite(quantite);
+                                    System.out.println(" QUANTITE DE LA NOMENCLATURE : " + nomenclatures.get(i).getQuantite() + " DE NOM : " + nomenclatures.get(i).getNom());
                                 }
 
-                                if (allQuantiteA0(tabValuePicker)) { // Test pour savoir si toutes les quantités sont à 0
-                                    estValide = false;
-                                }
+                                if(verifierQuantite(quantitePicker)) // Si toutes les quantitées ne sont pas à zéro
+                                {
+                                    double prixTotal = Double.parseDouble(somme.getText().toString().replace("€", "")); // Je récupère le total
 
-                                if (estValide) { // Si la commande est Valide je la crée et je redirige vers l'accueil
                                     Commande commande = new Commande(c.getId(), prixTotal, (int) System.currentTimeMillis(), nomenclatures);
                                     db.createCommande(commande);
                                     Fragment fragment = new HomeFragment();
@@ -110,13 +113,12 @@ public class BonCommande extends Fragment {
                                         getActivity().setTitle(navMenuTitles[0]);
                                         Toast.makeText(getActivity().getApplicationContext(), "Commande crée", Toast.LENGTH_SHORT).show();
                                     }
-                                } else { // Sinon commande pas valide
-                                    if (allQuantiteA0(tabValuePicker)) { // Si toutes les quantitées a 0
-                                        Toast.makeText(getActivity().getApplicationContext(), "Toutes les quantitées sont à 0", Toast.LENGTH_SHORT).show();
-                                    } else { // Sinon oubli de cocher un produit avec une quantité positive
-                                        Toast.makeText(getActivity().getApplicationContext(), "Vous avez oubliez de coché le(s) produit(s) qui à une quantité positive", Toast.LENGTH_SHORT).show();
-                                    }
                                 }
+                                else // Sinon message d'erreur
+                                {
+                                    Toast.makeText(getActivity().getApplicationContext(),"Toutes les quantités sont à 0 ou vous avez oublié de coché le(s) produit(s) qui à/ont une quantitée positive",Toast.LENGTH_LONG).show();
+                                }
+
                             } else { // Sinon somme non initialisé donc erreur dans la commande (commande non crée).
                                 Toast.makeText(getActivity().getApplicationContext(), "Erreur dans la commande", Toast.LENGTH_SHORT).show();
                             }
@@ -152,15 +154,19 @@ public class BonCommande extends Fragment {
         return rootView;
     }
 
-    public boolean allQuantiteA0(int[] valeur)
-    {
-        for(int i = 0 ; i < valeur.length ; i++)
-        {
-            if(valeur[i] != 0)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+   public boolean verifierQuantite(int[] quantite)
+   {
+       int compteur = 0;
+       for(int i =0 ; i < quantite.length ; i++)
+       {
+           if(quantite[i] == 0)
+               compteur++;
+       }
+
+       if(compteur == quantite.length)
+       {
+           return false;
+       }
+       return true;
+   }
 }
