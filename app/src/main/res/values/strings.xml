@@ -39,11 +39,10 @@
     <string-array name="nav_drawer_Right_items">
         <item>Accueil</item>
         <item>Ajouter un Prospect</item>
-        <item>Menu prospect 3</item>
+        <item>Informations sur le prospect</item>
         <item>Suivre un Prospect</item>
-        <item>Menu prospect 5</item>
-        <item>Menu prospect 6</item>
-        <item>Menu prospect 6</item>
+        <item>Faire un devis</item>
+        <item>Formulaire de satisfaction</item>
     </string-array>
 
     <!-- Nav  Right Drawer List Item Icons !-->
@@ -51,10 +50,9 @@
     <array name="nav_drawer_Right_icons">
         <item>@drawable/home3</item>
         <item>@drawable/userplus</item>
-        <item>@drawable/abc_btn_radio_material</item>
-        <item>@drawable/coindollar</item>
         <item>@drawable/profile</item>
-        <item>@drawable/abc_btn_radio_material</item>
+        <item>@drawable/coindollar</item>
+        <item>@drawable/plus</item>
         <item>@drawable/mail</item>
     </array>
 

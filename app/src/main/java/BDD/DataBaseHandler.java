@@ -20,7 +20,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
 
     // Database version
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 13;
 
     // Database Name
     private static final String DATABASE_NAME ="PlastProd";
@@ -68,12 +68,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String PROSPECT_KEY_ADRESSE = "adresse_prospect";
     private static final String PROSPECT_KEY_TELEPHONE = "telephone_prospect";
     private static final String PROSPECT_KEY_EMAIL = "email_prospect";
+    private static final String PROSPECT_KEY_DATE = "date_prospect";
 
     // Creation de la table Prospect
     private static final String CREATE_TABLE_PROSPECT = "CREATE TABLE " + TABLE_PROSPECT + "(" +
             KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + PROSPECT_KEY_NOM + " TEXT, " +
             PROSPECT_KEY_PRENOM + " TEXT, " + PROSPECT_KEY_ADRESSE + " TEXT, " +
-            PROSPECT_KEY_TELEPHONE + " TEXT, " + PROSPECT_KEY_EMAIL + " TEXT);";
+            PROSPECT_KEY_TELEPHONE + " TEXT, " + PROSPECT_KEY_EMAIL + " TEXT, " + PROSPECT_KEY_DATE + " TEXT);";
 
     // User Tables - Column Names
     private static final String USER_KEY_EMAIL ="email_user";
@@ -467,6 +468,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             values.put(PROSPECT_KEY_ADRESSE, prospect.getAdresse());
             values.put(PROSPECT_KEY_TELEPHONE, prospect.getTelephone());
             values.put(PROSPECT_KEY_EMAIL, prospect.getEmail());
+            values.put(PROSPECT_KEY_DATE, prospect.getDate());
 
             // Insert row
             return db.insert(TABLE_PROSPECT, null, values);
@@ -523,6 +525,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 prospect.setAdresse((c.getString(c.getColumnIndex(PROSPECT_KEY_ADRESSE))));
                 prospect.setTelephone((c.getString(c.getColumnIndex(PROSPECT_KEY_TELEPHONE))));
                 prospect.setEmail((c.getString(c.getColumnIndex(PROSPECT_KEY_EMAIL))));
+                prospect.setDate((c.getString(c.getColumnIndex(PROSPECT_KEY_DATE))));
 
                 // Adding to the prospect list
                 prospects.add(prospect);

@@ -1,6 +1,7 @@
 package menu;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import BDD.DataBaseHandler;
 import BDD.Prospect;
@@ -29,27 +32,66 @@ public class AjoutProspect extends Fragment
             @Override
             public void onClick(View view) {
                 Prospect prospect = new Prospect();
+                boolean estValide = true;
                 EditText nom = (EditText)rootView.findViewById(R.id.TextNom);
                 EditText prenom = (EditText) rootView.findViewById(R.id.TextPrenom);
                 EditText adresse = (EditText) rootView.findViewById(R.id.TextAdresse);
                 EditText telephone = (EditText) rootView.findViewById(R.id.TextTel);
                 EditText email = (EditText) rootView.findViewById(R.id.TextEmail);
+                EditText date = (EditText) rootView.findViewById(R.id.TextDate);
 
-                prospect.setNom(nom.getText().toString());
-                prospect.setPrenom(prenom.getText().toString());
-                prospect.setAdresse(adresse.getText().toString());
-                prospect.setTelephone(telephone.getText().toString());
-                prospect.setEmail(email.getText().toString());
-                Log.e("AjoutProspect", prospect.getNom());
-                if(nom != null && nom.length() > 0) {
+                String name = nom.getText().toString();
+                String prenomVerifier = prenom.getText().toString();
+                String adresseVerifier = adresse.getText().toString();
+                String telephoneVerifier = telephone.getText().toString();
+                String emailVerifier = email.getText().toString();
+                String dateVerifier = date.getText().toString();
+
+                String patternNom = "[a-zA-ZéèêëàâäîïôöûüùÉÈËÊÁÂÀÄÏÎÖÔÛÜÙÚ _-]{1,255}";
+                String patternAdresse = "[a-zA-ZéèêëàâäîïôöûüùÉÈËÊÁÂÀÄÏÎÖÔÛÜÙÚ0-9 _-]{1,255}";
+                String patternTelephone = "[\\d]{10}";
+                String patternEmail = "^[-+.\\w]{1,64}@[-.\\w]{1,64}\\.[-.\\w]{2,6}$";
+                String patternDate = "[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}";
+
+                 /* Vérification des champs */
+                if(name.matches(patternNom) && prenomVerifier.matches(patternNom) && adresseVerifier.matches(patternAdresse) && telephoneVerifier.matches(patternTelephone) && emailVerifier.matches(patternEmail) && dateVerifier.matches(patternDate) ) // Si le nom est le prénom ne contiennent que des caractères.
+                {
+                    prospect.setNom(name);
+                    prospect.setPrenom(prenomVerifier);
+                    prospect.setAdresse(adresseVerifier);
+                    prospect.setTelephone(telephoneVerifier);
+                    prospect.setEmail(emailVerifier);
+                    prospect.setDate(dateVerifier);
+                }
+                else
+                {
+                    estValide = false;
+                }
+
+
+                if(estValide) {
+                    Log.i("AjoutProspect", prospect.getNom());
                     DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
                     long id = db.createProspect(prospect);
                     if(id != -1) {
-
-                        // Afficher la notif
-                        TextView tx = (TextView) rootView.findViewById(R.id.Notif);
-                        tx.setText("Prospect cree.");
+                        Fragment fragment = new HomeFragment();
+                        FragmentManager fragmentManager = getFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
+                        ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
+                        String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+                        if(mDrawerList != null) {
+                            mDrawerList.setItemChecked(0, true);
+                            mDrawerList.setSelection(0);
+                        }
+                        TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                        tx.setText(navMenuTitles[0]);
+                        getActivity().setTitle(navMenuTitles[0]);
+                        Toast.makeText(getActivity().getApplicationContext(), "Prospect crée", Toast.LENGTH_SHORT).show();
                     }
+                }
+                else
+                {
+                    Toast.makeText(getActivity().getApplicationContext(),"Erreur de saisie",Toast.LENGTH_SHORT).show();
                 }
             }
         });

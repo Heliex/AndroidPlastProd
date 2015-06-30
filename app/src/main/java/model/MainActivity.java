@@ -42,6 +42,7 @@ import menu.BonCommande;
 import menu.FormulaireSatisfaction;
 import menu.HomeFragment;
 import menu.InfosClient;
+import menu.InfosProspect;
 import menu.ListeProduits;
 import menu.SuiviClient;
 import menu.SuiviProspect;
@@ -135,7 +136,6 @@ public class MainActivity extends Activity {
         navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[3], navMenuIconsRight.getResourceId(3, -1)));
         navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[4], navMenuIconsRight.getResourceId(4, -1)));
         navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[5], navMenuIconsRight.getResourceId(5, -1)));
-        navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[6], navMenuIconsRight.getResourceId(6, -1)));
         // Recycle Typed array
         navMenuIcons.recycle();
         navMenuIconsRight.recycle();
@@ -334,7 +334,7 @@ public class MainActivity extends Activity {
                 break;
 
             case 2:
-              //  fragment = new ListeProduits();
+                fragment = new InfosProspect();
                 break;
 
             case 3:
