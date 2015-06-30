@@ -126,6 +126,7 @@ public class MainActivity extends Activity {
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[4],navMenuIcons.getResourceId(4,-1)));
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[5],navMenuIcons.getResourceId(5,-1)));
         navDrawerItems.add(new NavDrawerItem(navMenuTitles[6],navMenuIcons.getResourceId(6,-1)));
+        new NavDrawerItem(navMenuTitles[7],navMenuIcons.getResourceId(7,-1));
 
         // Slider de droite
         navDrawerRightItems = new ArrayList<>();
@@ -187,6 +188,10 @@ public class MainActivity extends Activity {
                               break;
                           case "SuiviClient":
                               mTitle = navMenuTitles[3];
+                              break;
+
+                          case "ModifierClient":
+                              mTitle = navMenuTitles[7];
                               break;
                       }
                   }

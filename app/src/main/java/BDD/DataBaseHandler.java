@@ -309,6 +309,21 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         return listeNomenclatures;
     }
+
+    /* Updating Client */
+    public int updateClient(Client c)
+    {
+        long id = c.getId();
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(CLIENT_KEY_NOM,c.getNom());
+        values.put(CLIENT_KEY_PRENOM,c.getPrenom());
+        values.put(CLIENT_KEY_ADRESSE,c.getAdresse());
+        values.put(CLIENT_KEY_EMAIL,c.getEmail());
+        values.put(CLIENT_KEY_TELEPHONE,c.getTelephone());
+        values.put(CLIENT_KAY_DATE_INSCRIPTION,c.getDate());
+        return db.update(TABLE_CLIENT,values,KEY_ID + " = " + id,null);
+    }
     // ----------------------------------- Commande table methods ------------------------------- //
 
     // GetCommande from Id
