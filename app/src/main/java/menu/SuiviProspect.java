@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class SuiviProspect extends Fragment
         View rootView = inflater.inflate(R.layout.fragment_suivi,container,false);
         // Je recupere la vue de la liste depuis son id.
         final ListView listeProduits = (ListView) rootView.findViewById(R.id.ListViewSuivi);
+        TextView textview = (TextView) rootView.findViewById(R.id.CaTotal);
+        textview.setVisibility(View.INVISIBLE);
         // Je cree la connexion a la base
         DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
 

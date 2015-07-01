@@ -577,6 +577,21 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
 
+    /* Updating Prospect */
+    public int updateProspect(Prospect p)
+    {
+        long id = p.getId();
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PROSPECT_KEY_NOM, p.getNom());
+        values.put(PROSPECT_KEY_PRENOM, p.getPrenom());
+        values.put(PROSPECT_KEY_ADRESSE, p.getAdresse());
+        values.put(PROSPECT_KEY_EMAIL, p.getEmail());
+        values.put(PROSPECT_KEY_TELEPHONE, p.getTelephone());
+        values.put(PROSPECT_KEY_DATE, p.getDate());
+        return db.update(TABLE_PROSPECT,values,KEY_ID + " = " + id,null);
+    }
+
     // ----------------------------------- User table methods ------------------------------- //
     /* Create user */
     public void  createUser(SQLiteDatabase db)
