@@ -137,6 +137,7 @@ public class MainActivity extends Activity {
         navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[3], navMenuIconsRight.getResourceId(3, -1)));
         navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[4], navMenuIconsRight.getResourceId(4, -1)));
         navDrawerRightItems.add(new NavDrawerItem(navMenuTitlesRight[5], navMenuIconsRight.getResourceId(5, -1)));
+        new NavDrawerItem(navMenuTitlesRight[6], navMenuIconsRight.getResourceId(6, -1));
         // Recycle Typed array
         navMenuIcons.recycle();
         navMenuIconsRight.recycle();
@@ -351,11 +352,7 @@ public class MainActivity extends Activity {
                 break;
 
             case 5:
-                //fragment = new BonCommande();
-                break;
-
-            case 6:
-               // fragment = new FormulaireSatisfaction();
+                fragment = new FormulaireSatisfaction();
                 break;
 
             default:

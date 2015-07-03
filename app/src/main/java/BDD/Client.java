@@ -9,7 +9,6 @@ public class Client {
 
         // Id
         private long id;
-
         // Nom
         private String nom;
         // Prenom

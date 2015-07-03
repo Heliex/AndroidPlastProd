@@ -162,10 +162,10 @@ public class InfosProspect extends Fragment
                         fragment.setArguments(bundle);
                         if(getActivity().getActionBar() != null)
                         {
-                            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+                            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_Right_items);
                             TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
-                            tx.setText(navMenuTitles[7]);
-                            getActivity().setTitle(navMenuTitles[7]);
+                            tx.setText(navMenuTitles[6]);
+                            getActivity().setTitle(navMenuTitles[6]);
                         }
 
                         FragmentManager fragmentManager = getFragmentManager();
