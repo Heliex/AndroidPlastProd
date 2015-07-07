@@ -6,7 +6,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.provider.ContactsContract;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,24 +20,13 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
-
-import BDD.AffectationCommande;
-import BDD.AffectationMatiere;
-import BDD.Client;
-import BDD.DataBaseHandler;
-import BDD.Matiere;
-import BDD.Nomenclature;
-import BDD.Prospect;
 import adapter.NavDrawerListAdapter;
 import barbeasts.plastprod.R;
 import menu.AjoutClient;
 import menu.AjoutProspect;
 import menu.BonCommande;
+import menu.CreerDevis;
 import menu.FormulaireSatisfaction;
 import menu.HomeFragment;
 import menu.InfosClient;
@@ -48,7 +36,6 @@ import menu.SuiviClient;
 import menu.SuiviProspect;
 
 public class MainActivity extends Activity {
-
 
     // Déclaration des variables
     private DrawerLayout mDrawerLayout;
@@ -194,6 +181,18 @@ public class MainActivity extends Activity {
                           case "ModifierClient":
                               mTitle = navMenuTitles[7];
                               break;
+                          case "InfosProspect":
+                              mTitle = navMenuTitlesRight[2];
+                              break;
+                          case "SuiviProspect":
+                              mTitle = navMenuTitlesRight[3];
+                              break;
+                          case "CreerDevis":
+                              mTitle = navMenuTitlesRight[4];
+                              break;
+                          case "ModiferProspect":
+                              mTitle = navMenuTitlesRight[6];
+                              break;
                       }
                   }
                   tx.setText(mTitle);
@@ -233,6 +232,7 @@ public class MainActivity extends Activity {
             displayView(0);
         }
     }
+
 
     private class SlideMenuClickListener implements ListView.OnItemClickListener
     {
@@ -348,7 +348,7 @@ public class MainActivity extends Activity {
                 break;
 
             case 4:
-               // fragment = new InfosClient();
+                fragment = new CreerDevis();
                 break;
 
             case 5:
@@ -421,7 +421,7 @@ public class MainActivity extends Activity {
     {
         mTitle = title;
         if(getActionBar() != null)
-        getActionBar().setTitle(mTitle);
+            getActionBar().setTitle(mTitle);
     }
 
     @Override
@@ -474,3 +474,5 @@ public class MainActivity extends Activity {
         }
     }
 }
+
+

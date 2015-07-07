@@ -6,10 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.EditText;
+
+import junit.framework.Test;
 
 import java.lang.annotation.AnnotationFormatError;
 import java.util.ArrayList;
 import java.util.List;
+
+import barbeasts.plastprod.R;
+import other.GmailSender;
 
 /**
  * Created by christophe on 03/04/2015. For PlastProd Project
@@ -20,7 +26,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
 
     // Database version
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 15;
 
     // Database Name
     private static final String DATABASE_NAME ="PlastProd";
@@ -34,6 +40,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_NOMENCLATURE = "NOMENCLATURE";
     private static final String TABLE_AFFECTATION_MATIERE = "AFFECTATION_MATIERE";
     private static final String TABLE_AFFECTATION_COMMANDE = "AFFECTATION_COMMANDE";
+    private static final String TABLE_DEVIS = "DEVIS";
+    private static final String TABLE_AFFECTATION_DEVIS = "AFFECTATION_DEVIS";
 
     // Common Columns names
     private static final String KEY_ID = "id";
@@ -51,7 +59,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + CLIENT_KEY_NOM + " TEXT, " +
             CLIENT_KEY_PRENOM + " TEXT, " + CLIENT_KEY_ADRESSE + " TEXT, " +
             CLIENT_KEY_TELEPHONE + " TEXT, " + CLIENT_KEY_EMAIL + " TEXT, " + CLIENT_KAY_DATE_INSCRIPTION + " TEXT);";
-
 
     // Commande Tables - Column Names
     private static final String COMMANDE_KEY_NUMCOMMANDE = "numCommande";
@@ -125,6 +132,25 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             "FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + ") REFERENCES " + TABLE_NOMENCLATURE +
             "(" + KEY_ID + "), FOREIGN KEY ( " + AFFECTATION_COMMANDE_KEY_ID_COMMANDE + ") REFERENCES " + TABLE_COMMANDE + "(" + KEY_ID + "));";
 
+    private static final String DEVIS_KEY_ID_PROSPECT = "id_prospect";
+    private static final String DEVIS_KEY_TOTAL = "total";
+    private static final String DEVIS_KEY_NUMDEVIS = "numDevis";
+    private static final String DEVIS_KEY_DATE = "dateDevis";
+
+    private static final String CREATE_TABLE_DEVIS = "CREATE TABLE " + TABLE_DEVIS + " ( " +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + DEVIS_KEY_ID_PROSPECT + " INTEGER, "+
+            DEVIS_KEY_NUMDEVIS + " INTEGER, " + DEVIS_KEY_DATE + " TEXT, " + DEVIS_KEY_TOTAL + " REAL, FOREIGN KEY ( " + DEVIS_KEY_ID_PROSPECT +
+            " ) REFERENCES " + TABLE_PROSPECT + " (" + KEY_ID + "));";
+
+    private static final String AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE = "id_nomenclature";
+    private static final String AFFECTATION_DEVIS_KEY_ID_DEVIS = "id_devis";
+    private static final String AFFECTATION_DEVIS_QUANTITE = "quantite";
+
+    private static final String CREATE_TABLE_AFFECTATION_DEVIS = " CREATE TABLE " + TABLE_AFFECTATION_DEVIS + " ( " + KEY_ID +
+            " INTEGER PRIMARY KEY AUTOINCREMENT, " + AFFECTATION_DEVIS_KEY_ID_DEVIS + " INTEGER, " + AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE +
+            " INTEGER, " + AFFECTATION_DEVIS_QUANTITE + " INTEGER, FOREIGN KEY ( " + AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE + " ) REFERENCES " + TABLE_NOMENCLATURE + " (" + KEY_ID + " ), FOREIGN KEY (" +
+            AFFECTATION_DEVIS_KEY_ID_DEVIS + " ) REFERENCES " + TABLE_DEVIS + " ( " + KEY_ID + " )); "  ;
+
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -140,6 +166,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         Log.i(LOG, CREATE_TABLE_MATIERE);
         Log.i(LOG,CREATE_TABLE_AFFECTATION_MATIERE);
         Log.i(LOG,CREATE_TABLE_AFFECTATION_COMMANDE);
+        Log.i(LOG,CREATE_TABLE_DEVIS);
         db.execSQL(CREATE_TABLE_CLIENT);
         db.execSQL(CREATE_TABLE_COMMANDE);
         db.execSQL(CREATE_TABLE_PROSPECT);
@@ -148,6 +175,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_NOMENCLATURE);
         db.execSQL(CREATE_TABLE_AFFECTATION_MATIERE);
         db.execSQL(CREATE_TABLE_AFFECTATION_COMMANDE);
+        db.execSQL(CREATE_TABLE_DEVIS);
+        db.execSQL(CREATE_TABLE_AFFECTATION_DEVIS);
         this.createUser(db);
         this.createFakeAffectationMatiere(db);
         this.createFakeNomenclature(db);
@@ -166,6 +195,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOMENCLATURE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_AFFECTATION_MATIERE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_AFFECTATION_COMMANDE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DEVIS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_AFFECTATION_DEVIS);
         // Create news
         onCreate(db);
     }
@@ -317,11 +348,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(CLIENT_KEY_NOM,c.getNom());
-        values.put(CLIENT_KEY_PRENOM,c.getPrenom());
-        values.put(CLIENT_KEY_ADRESSE,c.getAdresse());
-        values.put(CLIENT_KEY_EMAIL,c.getEmail());
-        values.put(CLIENT_KEY_TELEPHONE,c.getTelephone());
-        values.put(CLIENT_KAY_DATE_INSCRIPTION,c.getDate());
+        values.put(CLIENT_KEY_PRENOM, c.getPrenom());
+        values.put(CLIENT_KEY_ADRESSE, c.getAdresse());
+        values.put(CLIENT_KEY_EMAIL, c.getEmail());
+        values.put(CLIENT_KEY_TELEPHONE, c.getTelephone());
+        values.put(CLIENT_KAY_DATE_INSCRIPTION, c.getDate());
         return db.update(TABLE_CLIENT,values,KEY_ID + " = " + id,null);
     }
     // ----------------------------------- Commande table methods ------------------------------- //
@@ -414,61 +445,104 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             return db.insert(TABLE_AFFECTATION_COMMANDE, null, values);
     }
 
-    /* Getting All AffectationCommande */
-    public List<AffectationCommande> getAllAffectationCommande()
+    /* Create Devis */
+    public long createDevis(Devis devis)
     {
-        List<AffectationCommande> listeAffectationCommande = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_AFFECTATION_COMMANDE + ";";
-        Log.i(LOG,selectQuery);
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery(selectQuery,null);
-        if(c!= null)
+        try(SQLiteDatabase db = this.getWritableDatabase())
         {
-            if(c.moveToFirst())
-            {
-                do {
-                    AffectationCommande affectationCommande = new AffectationCommande();
-                    affectationCommande.setIdCommande(c.getLong(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_ID_COMMANDE)));
-                    affectationCommande.setIdNomenclature(c.getLong(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE)));
-                    affectationCommande.setQuantite(c.getInt(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_QUANTITE)));
-                    listeAffectationCommande.add(affectationCommande);
+            ContentValues values = new ContentValues();
+            values.put(DEVIS_KEY_ID_PROSPECT,devis.getId_prospect());
+            values.put(DEVIS_KEY_NUMDEVIS, devis.getNumDevis());
+            values.put(DEVIS_KEY_TOTAL, devis.getTotal());
+            values.put(DEVIS_KEY_DATE, devis.getDateDevis());
 
-                }while(c.moveToNext());
+            long id_devis = db.insert(TABLE_DEVIS,null,values);
+
+            // Gestion de la liste de nomenclature
+            for(int i = 0 ; i < devis.getListeNomenclatures().size(); i++) // Pour chaque nomenclature il faut que j'ajoute l'id de devis et la quantite correspondante.
+            {
+                int quantite = devis.getListeNomenclatures().get(i).getQuantite();
+                long id_nomenclature = devis.getListeNomenclatures().get(i).getId();
+                createAffectationDevis(id_nomenclature, id_devis, quantite, db);
             }
+
+            return id_devis ;
         }
-        return listeAffectationCommande;
+    }
+    /* Create AffectationDevis -> Appelée implicitement par la méthode createDevis */
+    public long createAffectationDevis(long id_nomenclature, long id_devis,int quantite, SQLiteDatabase db)
+    {
+        ContentValues values  = new ContentValues();
+        values.put(AFFECTATION_DEVIS_QUANTITE, quantite);
+        values.put(AFFECTATION_DEVIS_KEY_ID_DEVIS,id_devis);
+        values.put(AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE,id_nomenclature);
+
+        return db.insert(TABLE_AFFECTATION_DEVIS,null,values);
     }
 
-    /* Get All Commande from Commande Table */
-    public List<Commande> getAllCommandes()
+    public void getDetailsDevisFromIdDevis(long id,double prixTotal,long idProspect) // Méthode qui envoi le mail avec le details du devis.
     {
-        List<Commande> listeCommandes = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + " ;";
+        final StringBuilder details = new StringBuilder();
+        String selectQuery = " SELECT " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " as NomNomenclature, " + TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_QUANTITE + " as QuantiteNomenclature FROM " +
+        TABLE_AFFECTATION_DEVIS + ", " + TABLE_NOMENCLATURE + " WHERE " + TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE + " = " + TABLE_NOMENCLATURE + "." + KEY_ID +
+        " AND " + TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_KEY_ID_DEVIS + " = " + id;
         Log.i(LOG,selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery(selectQuery,null);
+        Cursor c = db.rawQuery(selectQuery, null);
         if(c!= null)
         {
-            if(c.moveToFirst())
+            if(c.moveToFirst()) // La je parcours chaque nomenclature
             {
                 do {
-                    Commande commande = new Commande();
-                    ArrayList<Nomenclature> listeNomenclatures = this.getAllNomenclatureFromIdClient(c.getInt(c.getColumnIndex(COMMANDE_KEY_CLIENT_ID)));
-                    commande.setClientId(c.getInt(c.getColumnIndex(COMMANDE_KEY_CLIENT_ID)));
-                    commande.setId(c.getInt(c.getColumnIndex(KEY_ID)));
-                    commande.setDateCommande(c.getString(c.getColumnIndex(COMMANDE_KEY_DATECOMMANDE)));
-                    commande.setNumCommande(c.getInt(c.getColumnIndex(COMMANDE_KEY_NUMCOMMANDE)));
-                    commande.setListeNomenclature(listeNomenclatures);
-                    commande.setTotal(c.getDouble(c.getColumnIndex(COMMANDE_KEY_TOTAL)));
-                    listeCommandes.add(commande);
+                    String nomNomenclature = c.getString(c.getColumnIndex("NomNomenclature"));
+                    int quantite = c.getInt(c.getColumnIndex("QuantiteNomenclature"));
 
+                    if(quantite > 0 )
+                    {
+                       details.append("==  Nomenclature de nom : " + nomNomenclature + " En quantitée : " + quantite + "  == \n\n");
+                        selectQuery = " SELECT " + TABLE_MATIERE + "." + MATIERE_KEY_NOM + " as NomMatiere, " + TABLE_MATIERE + "." + MATIERE_KEY_PRIX + " as PrixMatiere, " + TABLE_AFFECTATION_MATIERE + "." +
+                                AFFECTATION_MATIERE_KEY_QUANTITE + " as QuantiteMatiere FROM " + TABLE_AFFECTATION_MATIERE + ", " + TABLE_MATIERE + ", " + TABLE_NOMENCLATURE +  " WHERE " + TABLE_MATIERE + "." + KEY_ID + " = " +
+                                TABLE_AFFECTATION_MATIERE + "." + AFFECTATION_MATIERE_KEY_ID_MATIERE + " AND " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " = " + "\"" + nomNomenclature + "\"" + ";";
+                        Log.i(LOG,selectQuery);
+                        Cursor deuxieme = db.rawQuery(selectQuery,null);
+                        if(deuxieme != null)
+                        {
+                            if(deuxieme.moveToFirst())
+                            {
+                                do {
+                                    String nomMatiere = deuxieme.getString(deuxieme.getColumnIndex("NomMatiere"));
+                                    double prixMatiere = deuxieme.getDouble(deuxieme.getColumnIndex("PrixMatiere"));
+                                    int quantiteMatiere = deuxieme.getInt(deuxieme.getColumnIndex("QuantiteMatiere"));
+
+                                    details.append("\t**  MATIERE ASSOCIEE : " + nomMatiere + " DE PRIX : " + prixMatiere + " €, EN QUANTITE : " + quantiteMatiere + "  **\n");
+                                }while(deuxieme.moveToNext());
+                                details.append("\n\n");
+                            }
+                        }
+                    }
                 }while(c.moveToNext());
             }
+            details.append("Prix total du devis : " + prixTotal + " €");
+            Prospect p = getProspect(idProspect);
+            final String email = p.getEmail();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try
+                    {
+                        String mail = details.toString();
+                        GmailSender sender = new GmailSender("commercialPlastprod@gmail.com","Commercialplastprod88");
+                        sender.sendMail("Devis","ci joint votre devis :\n\n" + mail + " \n\n n'oubliez pas de nous répondre pour faire suite ou non a votre devis : https://docs.google.com/forms/d/1HWmH8AmI_8yKuxtNAq3YKsuOtg_Ba37uK80Em15TyN8/viewform?usp=send_form","commercialplastprod@gmail.com",email);
+                    }
+                    catch(Exception e)
+                    {
+                        Log.e("MailSender",e.getMessage());
+                    }
+                }
+            }).start();
+            p.setPourcentage(Devis.getDevisEmis());
         }
-
-        return listeCommandes;
     }
-
     // ----------------------------------- Prospect table methods ------------------------------- //
 
     /* Create Prospect */

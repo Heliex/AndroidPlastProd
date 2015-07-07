@@ -44,6 +44,7 @@
         <item>Suivre un Prospect</item>
         <item>Faire un devis</item>
         <item>Formulaire de satisfaction</item>
+        <item>Modifier un Prospect</item>
     </string-array>
 
     <!-- Nav  Right Drawer List Item Icons !-->
@@ -55,6 +56,7 @@
         <item>@drawable/coindollar</item>
         <item>@drawable/plus</item>
         <item>@drawable/mail</item>
+        <item>@drawable/profile</item>
     </array>
 
     <!-- Content Description !-->

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background">
+
+    <ListView
+        android:id="@+id/ListViewSuivi"
+        android:layout_width="wrap_content"
+        android:layout_height="450dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chiffre d&apos;Affaire de ce Client"
+        android:id="@+id/CAclient"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="47dp"
+        android:gravity="center_horizontal"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/CaAfficher"
+        android:layout_below="@+id/CAclient"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="63dp"
+        android:gravity="center_horizontal"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date de la dernière commande : "
+        android:id="@+id/dateDerniereCommande"
+        android:layout_below="@+id/CaAfficher"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="121dp"
+        android:gravity="center_horizontal"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dateDerniereCommandeAffichee"
+        android:layout_marginTop="59dp"
+        android:layout_below="@+id/dateDerniereCommande"
+        android:layout_alignStart="@+id/dateDerniereCommande"
+        android:gravity="center_horizontal"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chiffre d&apos;affaire total des clients : "
+        android:id="@+id/CaTotal"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:layout_alignBottom="@+id/CaTotalAffichee"
+        android:layout_alignEnd="@+id/CAclient" />
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:id="@+id/CaTotalAffichee"
+        android:layout_below="@+id/ListViewSuivi"
+        android:layout_toEndOf="@+id/dateDerniereCommande"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical|center_horizontal" />
+
+
+</RelativeLayout>

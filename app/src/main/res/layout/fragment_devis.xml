@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:id="@+id/layoutbdc">
+    android:layout_height="match_parent">
 
     <ListView
-        android:id="@+id/ListViewInfos"
+        android:id="@+id/ListViewProspectDevis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -16,25 +15,25 @@
         android:layout_marginBottom="100dp" />
 
     <ListView
-        android:id="@+id/ListeNomenclature"
+        android:id="@+id/ListeNomenclatureDevis"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="100dp"></ListView>
+        android:layout_marginBottom="100dp"/>
 
     <TextView
         android:layout_width="120dp"
         android:layout_height="50dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/montant"
+        android:id="@+id/montantDevis"
         android:textAlignment="center"
         android:gravity="center_vertical|center_horizontal"
         android:hint="Total"
         android:visibility="invisible"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/ListViewInfos"
+        android:layout_alignStart="@+id/ListViewProspectDevis"
         android:layout_marginBottom="20dp"
         android:text="Prix total :" />
 
@@ -46,19 +45,18 @@
         android:textAlignment="center"
         android:gravity="center_vertical|center_horizontal"
         android:visibility="invisible"
-        android:layout_alignTop="@+id/montant"
+        android:layout_alignTop="@+id/montantDevis"
         android:layout_centerHorizontal="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Valider la commande"
-        android:id="@+id/validerCommande"
+        android:text="Valider le Devis"
+        android:id="@+id/validerDevis"
         android:layout_alignTop="@+id/sommeDevis"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="10dp"
         android:layout_toEndOf="@+id/sommeDevis"
         android:visibility="invisible" />
-
 </RelativeLayout>

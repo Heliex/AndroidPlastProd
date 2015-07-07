@@ -1,9 +1,7 @@
 package menu;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,59 +11,69 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveFile;
+import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.DriveResource;
+import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.drive.events.ChangeListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
-import BDD.Client;
-import BDD.Commande;
 import BDD.DataBaseHandler;
+import BDD.Devis;
 import BDD.Nomenclature;
-import adapter.ListeClientAdapter;
+import BDD.Prospect;
 import adapter.ListeNomenclatureAdapter;
+import adapter.ListeProspectAdapter;
 import barbeasts.plastprod.R;
 
 /**
- * Created by christophe on 01/04/2015. For PlastProd Project on purpose
+ * Created by Christophe on 06/07/2015. For PlastProd Project on purpose
  */
-public class BonCommande extends Fragment {
-
-    public BonCommande() {
-    }
+public class CreerDevis extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        final View rootView = inflater.inflate(R.layout.fragment_bdc,container,false);
+        final View rootView = inflater.inflate(R.layout.fragment_devis, container, false);
 
         // Je recupere ma liste (la vue)
-        final ListView listeView = (ListView) rootView.findViewById(R.id.ListViewInfos);
+        final ListView listeView = (ListView) rootView.findViewById(R.id.ListViewProspectDevis);
         // Connexion a la base
         DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
 
-        List<Client> clients;
-        clients = db.getAllClients();
-        if(clients.size() > 0)
+        List<Prospect> prospects;
+        prospects = db.getAllProspects();
+        if(prospects.size() > 0)
         {
-            final ListeClientAdapter adapter = new ListeClientAdapter(getActivity().getApplicationContext(),clients);
+            final ListeProspectAdapter adapter = new ListeProspectAdapter(getActivity().getApplicationContext(),prospects);
             listeView.setAdapter(adapter);
 
             listeView.setOnItemClickListener(new AdapterView.OnItemClickListener() { // Quand je clique sur un client
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                    final Client c = (Client) listeView.getItemAtPosition(i); // Je récupère le client correspondant au clic
-                    TextView tx = (TextView) getActivity().findViewById(R.id.validerCommande); // Récupère la textView qui valide la commande (Agit comme un bouton du coup)
+                    final Prospect p = (Prospect) listeView.getItemAtPosition(i); // Je récupère le client correspondant au clic
+                    TextView tx = (TextView) getActivity().findViewById(R.id.validerDevis); // Récupère la textView qui valide la commande (Agit comme un bouton du coup)
                     tx.setVisibility(View.VISIBLE);
                     listeView.setVisibility(View.INVISIBLE);
-                    final ListView listeNomenclature = (ListView) getActivity().findViewById(R.id.ListeNomenclature); // Je récupère la listView de nomenclature
+                    final ListView listeNomenclature = (ListView) getActivity().findViewById(R.id.ListeNomenclatureDevis); // Je récupère la listView de nomenclature
                     listeNomenclature.setVisibility(View.VISIBLE);
                     final DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
                     final ArrayList<Nomenclature> nomenclatures = db.getAllNomenclature(); // Requête SQL qui va chercher toutes les nomenclatures.
                     final TextView somme = (TextView) getActivity().findViewById(R.id.sommeDevis);
                     final ListeNomenclatureAdapter adapterNomenclature = new ListeNomenclatureAdapter(getActivity().getApplicationContext(), nomenclatures, somme); // Adapter de nomenclature.
                     listeNomenclature.setAdapter(adapterNomenclature);
-                    final TextView total = (TextView) getActivity().findViewById(R.id.montant);
+                    final TextView total = (TextView) getActivity().findViewById(R.id.montantDevis);
                     total.setVisibility(View.VISIBLE);
                     tx.setOnClickListener(new View.OnClickListener() { // Sur le clic de Validation de commande
                         @Override
@@ -93,8 +101,12 @@ public class BonCommande extends Fragment {
                                 {
                                     double prixTotal = Double.parseDouble(somme.getText().toString().replace("€", "")); // Je récupère le total
 
-                                    Commande commande = new Commande(c.getId(), prixTotal, (int) System.currentTimeMillis(), nomenclatures);
-                                    db.createCommande(commande);
+                                    Devis devis = new Devis(p.getId(), prixTotal, (int) System.currentTimeMillis(), nomenclatures);
+                                    long id = db.createDevis(devis);
+                                    devis.setId(id);
+                                    p.setPourcentage(Devis.getDevisInteret());
+                                    db.getDetailsDevisFromIdDevis(devis.getId(), prixTotal, p.getId());
+
                                     Fragment fragment = new HomeFragment();
                                     FragmentManager fragmentManager = getFragmentManager();
                                     fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
@@ -109,7 +121,7 @@ public class BonCommande extends Fragment {
                                         TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
                                         tx.setText(navMenuTitles[0]);
                                         getActivity().setTitle(navMenuTitles[0]);
-                                        Toast.makeText(getActivity().getApplicationContext(), "Commande crée", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity().getApplicationContext(), "Devis crée", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 else // Sinon message d'erreur
@@ -146,81 +158,25 @@ public class BonCommande extends Fragment {
                 tx.setText(navMenuTitles[0]);
                 getActivity().setTitle(navMenuTitles[0]);
             }
-            Toast.makeText(getActivity().getApplicationContext(), "Aucun client existant", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getApplicationContext(), "Aucun prospect existant", Toast.LENGTH_SHORT).show();
         }
 
         return rootView;
     }
 
-   public boolean verifierQuantite(int[] quantite)
-   {
-       int compteur = 0;
-       for(int i =0 ; i < quantite.length ; i++)
-       {
-           if(quantite[i] == 0)
-               compteur++;
-       }
-
-       if(compteur == quantite.length)
-       {
-           return false;
-       }
-       return true;
-   }
-
-    @Override
-    public void onViewCreated(View view,Bundle savedInstanceState)
+    public boolean verifierQuantite(int[] quantite)
     {
-        super.onViewCreated(view,savedInstanceState);
-        ListView listeView = (ListView)view.getRootView().findViewById(R.id.ListViewInfos);
+        int compteur = 0;
+        for(int i =0 ; i < quantite.length ; i++)
+        {
+            if(quantite[i] == 0)
+                compteur++;
+        }
 
-        listeView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
-                List<Client> clients = db.getAllClients();
-                ListeClientAdapter listeClientAdapter = new ListeClientAdapter(getActivity().getApplicationContext(),clients);
-                final Client c = listeClientAdapter.getItem(i);
-                // Titre du dialog
-                alertDialogBuilder.setTitle("Client");
-
-                // Set message
-                alertDialogBuilder.setMessage("Que voulez-vous faire de ce client ?").setCancelable(true).setNegativeButton("Modifier", new DialogInterface.OnClickListener() { // Message
-                    public void onClick(DialogInterface dialogInterface, int id) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("NomClient", c.getNom());
-                        bundle.putLong("IDClient", c.getId());
-                        bundle.putString("PrenomClient", c.getPrenom());
-                        bundle.putString("AdresseClient", c.getAdresse());
-                        bundle.putString("TelephoneClient", c.getTelephone());
-                        bundle.putString("EmailClient",c.getEmail());
-                        bundle.putString("DateClient", c.getDate());
-
-                        Fragment fragment = new ModifierClient();
-                        fragment.setArguments(bundle);
-                        if(getActivity().getActionBar() != null)
-                        {
-                            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
-                            TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
-                            tx.setText(navMenuTitles[7]);
-                            getActivity().setTitle(navMenuTitles[7]);
-                        }
-
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.frame_container, fragment, "Fragment").commit();
-                        // Ces deux lignes permettent de remplacer un fragment par un autre.
-
-                    }
-                }).setPositiveButton("Annuler", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int id) {
-                        dialogInterface.cancel();
-                    }
-                }).show();
-
-                return true;
-            }
-        });
-
+        if(compteur == quantite.length)
+        {
+            return false;
+        }
+        return true;
     }
 }

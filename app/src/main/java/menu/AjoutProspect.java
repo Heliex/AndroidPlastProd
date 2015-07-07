@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import BDD.DataBaseHandler;
+import BDD.Devis;
 import BDD.Prospect;
 import barbeasts.plastprod.R;
 
@@ -70,6 +71,7 @@ public class AjoutProspect extends Fragment
 
 
                 if(estValide) {
+                    prospect.setPourcentage(Devis.getDevisDemandeClient());
                     Log.i("AjoutProspect", prospect.getNom());
                     DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
                     long id = db.createProspect(prospect);

@@ -19,6 +19,8 @@ public class Prospect {
     // Date
     private String date;
 
+    private int pourcentage ;
+
     public long getId()
     {
         return this.id;
@@ -87,6 +89,16 @@ public class Prospect {
     public void setDate(String date)
     {
         this.date = date;
+    }
+
+    public  int getPourcentage()
+    {
+        return this.pourcentage;
+    }
+
+    public void setPourcentage(int pourcent)
+    {
+        this.pourcentage = pourcent;
     }
 
 }
