@@ -480,7 +480,37 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return db.insert(TABLE_AFFECTATION_DEVIS,null,values);
     }
 
-    public void getDetailsDevisFromIdDevis(long id,double prixTotal,long idProspect) // Méthode qui envoi le mail avec le details du devis.
+    // Get All Devis From id
+    public List<Devis> getAllDevisFromIdProspect(long id)
+    {
+        List<Devis> listeDevis = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_DEVIS + " WHERE " + DEVIS_KEY_ID_PROSPECT + " = " + id + " ;" ;
+        Cursor c = db.rawQuery(selectQuery,null);
+        Log.i(LOG, selectQuery);
+        if(c != null)
+        {
+            if(c.moveToFirst())
+            {
+                do {
+                    Devis devis = new Devis();
+                    devis.setId(c.getLong(c.getColumnIndex(KEY_ID)));
+                    devis.setId_prospect(c.getLong(c.getColumnIndex(DEVIS_KEY_ID_PROSPECT)));
+                    devis.setDateDevis(c.getString(c.getColumnIndex(DEVIS_KEY_DATE)));
+                    devis.setTotal(c.getDouble(c.getColumnIndex(DEVIS_KEY_TOTAL)));
+                    devis.setNumDevis(c.getInt(c.getColumnIndex(DEVIS_KEY_NUMDEVIS)));
+
+                    listeDevis.add(devis);
+
+                }while(c.moveToNext());
+            }
+            c.close();
+        }
+
+        return listeDevis;
+
+    }
+    public String getDetailsDevisFromIdDevis(long id,double prixTotal,long idProspect,int numDevis,boolean sendEmail) // Méthode qui envoi le mail avec le details du devis.
     {
         final StringBuilder details = new StringBuilder();
         String selectQuery = " SELECT " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " as NomNomenclature, " + TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_QUANTITE + " as QuantiteNomenclature FROM " +
@@ -522,26 +552,30 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                     }
                 }while(c.moveToNext());
             }
-            details.append("Prix total du devis : " + prixTotal + " €");
+            details.append("Prix total du devis : " + prixTotal + " € , Votre numéro de devis est le : " + numDevis);
             Prospect p = getProspect(idProspect);
             final String email = p.getEmail();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try
-                    {
-                        String mail = details.toString();
-                        GmailSender sender = new GmailSender("commercialPlastprod@gmail.com","Commercialplastprod88");
-                        sender.sendMail("Devis","ci joint votre devis :\n\n" + mail + " \n\n n'oubliez pas de nous répondre pour faire suite ou non a votre devis : https://docs.google.com/forms/d/1HWmH8AmI_8yKuxtNAq3YKsuOtg_Ba37uK80Em15TyN8/viewform?usp=send_form","commercialplastprod@gmail.com",email);
+            if(sendEmail)
+            {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try
+                        {
+                            String mail = details.toString();
+                            GmailSender sender = new GmailSender("commercialPlastprod@gmail.com","Commercialplastprod88");
+                            sender.sendMail("Devis","ci joint votre devis :\n\n" + mail + " \n\n n'oubliez pas de nous répondre pour faire suite ou non a votre devis : https://docs.google.com/forms/d/1HWmH8AmI_8yKuxtNAq3YKsuOtg_Ba37uK80Em15TyN8/viewform?usp=send_form","commercialplastprod@gmail.com",email);
+                        }
+                        catch(Exception e)
+                        {
+                            Log.e("MailSender",e.getMessage());
+                        }
                     }
-                    catch(Exception e)
-                    {
-                        Log.e("MailSender",e.getMessage());
-                    }
-                }
-            }).start();
-            p.setPourcentage(Devis.getDevisEmis());
+                }).start();
+                p.setPourcentage(Devis.getDevisEmis());
+            }
         }
+        return details.toString();
     }
     // ----------------------------------- Prospect table methods ------------------------------- //
 

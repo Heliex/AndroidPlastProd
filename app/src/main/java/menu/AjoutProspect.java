@@ -76,6 +76,7 @@ public class AjoutProspect extends Fragment
                     DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
                     long id = db.createProspect(prospect);
                     if(id != -1) {
+                        prospect.setId(id);
                         Fragment fragment = new HomeFragment();
                         FragmentManager fragmentManager = getFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();

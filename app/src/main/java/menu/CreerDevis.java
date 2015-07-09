@@ -10,24 +10,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveApi;
-import com.google.android.gms.drive.DriveFile;
-import com.google.android.gms.drive.DriveId;
-import com.google.android.gms.drive.DriveResource;
-import com.google.android.gms.drive.MetadataChangeSet;
-import com.google.android.gms.drive.events.ChangeListener;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
 import BDD.DataBaseHandler;
 import BDD.Devis;
 import BDD.Nomenclature;
@@ -105,7 +90,7 @@ public class CreerDevis extends Fragment{
                                     long id = db.createDevis(devis);
                                     devis.setId(id);
                                     p.setPourcentage(Devis.getDevisInteret());
-                                    db.getDetailsDevisFromIdDevis(devis.getId(), prixTotal, p.getId());
+                                    db.getDetailsDevisFromIdDevis(devis.getId(), prixTotal, p.getId(),devis.getNumDevis(),true);
 
                                     Fragment fragment = new HomeFragment();
                                     FragmentManager fragmentManager = getFragmentManager();

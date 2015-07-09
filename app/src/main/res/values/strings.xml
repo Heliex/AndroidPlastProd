@@ -45,6 +45,7 @@
         <item>Faire un devis</item>
         <item>Formulaire de satisfaction</item>
         <item>Modifier un Prospect</item>
+        <item>Valider un devis</item>
     </string-array>
 
     <!-- Nav  Right Drawer List Item Icons !-->
@@ -57,6 +58,7 @@
         <item>@drawable/plus</item>
         <item>@drawable/mail</item>
         <item>@drawable/profile</item>
+        <item>@drawable/validerdevis</item>
     </array>
 
     <!-- Content Description !-->
