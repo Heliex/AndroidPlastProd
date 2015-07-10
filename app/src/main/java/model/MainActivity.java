@@ -60,7 +60,7 @@ import other.ApiAsyncTask;
 
 public class MainActivity extends Activity {
 
-    // Déclaration des variables
+    // Déclaration des variable
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ListView mDrawerRightList;
