@@ -1,35 +1,30 @@
 package other;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
-
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.model.*;
+import com.google.api.services.drive.model.File;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import BDD.DataBaseHandler;
 import BDD.Devis;
 import adapter.ListeDevisAdapter;
 import barbeasts.plastprod.R;
-import menu.HomeFragment;
 import model.MainActivity;
 
 /**
@@ -141,6 +136,7 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
 
         if(listeLigne.size() > 0)
         {
+            ArrayList<Devis> maListDeDevis = new ArrayList<>();
             // J'initialiser un tableau de String
             int indiceDevis = -1;
             // Ensuite je découpe chaque ligne en 3 chaines.
@@ -150,25 +146,20 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
                 String[] split = listeLigne.get(i).split(",");
                 String numDevis = split[3];
                 indiceDevis = indiceDansListeDevis(numDevis);
-            }
-
-            for(int i = 0 ; i < listeDevis.size(); i++)
-            {
-                if(i != indiceDevis)
+                if(indiceDevis != -1) // Si l'indice vaux -1
                 {
-                    listeDevis.remove(i);
+                    maListDeDevis.add(listeDevis.get(indiceDevis));
                 }
-                i = 0;
             }
 
-            if(indiceDevis != -1) // Si mon indice est pas négatif.
+            if(maListDeDevis.size() > 0) // Si mon indice est pas négatif.
             {
                 if(this.dialog.isShowing())
                 {
                     this.dialog.dismiss();
                 }
 
-                final ListeDevisAdapter adapter = new ListeDevisAdapter(mActivity.getInstance(),listeDevis);
+                final ListeDevisAdapter adapter = new ListeDevisAdapter(mActivity.getInstance(),maListDeDevis);
                 if(mActivity != null)
                 {
                     if(mActivity.getInstance().getFragmentManager().findFragmentByTag("Fragment") != null)
