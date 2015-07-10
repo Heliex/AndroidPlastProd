@@ -22,6 +22,21 @@ public class Client {
         // Date
         private String date;
 
+        public Client()
+        {
+
+        }
+        public Client(String nom, String prenom, String adresse, String telephone, String email, String date)
+        {
+            this.id = id;
+            this.nom = nom;
+            this.prenom = prenom;
+            this.adresse = adresse;
+            this.telephone = telephone;
+            this.email = email;
+            this.date = date;
+        }
+
         public long getId()
         {
             return this.id;

@@ -72,6 +72,7 @@ public class AjoutClient extends Fragment {
                    Log.i("AjoutClient", client.getNom());
                    DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
                    long id = db.createClient(client);
+                   client.setId(id);
                    if(id != -1) {
                        Fragment fragment = new HomeFragment();
                        FragmentManager fragmentManager = getFragmentManager();
@@ -82,9 +83,12 @@ public class AjoutClient extends Fragment {
                            mDrawerList.setItemChecked(0, true);
                            mDrawerList.setSelection(0);
                        }
-                       TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
-                       tx.setText(navMenuTitles[0]);
-                       getActivity().setTitle(navMenuTitles[0]);
+                       if(getActivity().getActionBar() != null)
+                       {
+                           TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                           tx.setText(navMenuTitles[0]);
+                           getActivity().setTitle(navMenuTitles[0]);
+                       }
                        Toast.makeText(getActivity().getApplicationContext(), "Client crée", Toast.LENGTH_SHORT).show();
                     }
                }

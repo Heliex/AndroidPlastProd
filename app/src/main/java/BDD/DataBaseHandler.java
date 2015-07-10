@@ -341,6 +341,38 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return listeNomenclatures;
     }
 
+    public ArrayList<Nomenclature> getAllNomenclatureFromIdProspect(long id)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        ArrayList<Nomenclature> listeNomenclatures = new ArrayList<>();
+        String selectQuery = "SELECT " + TABLE_NOMENCLATURE + "." + KEY_ID + " as idNomenclature, " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " as nomNomenclature, " +
+                TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_QUANTITE + " as quantiteNomenclature FROM " + TABLE_NOMENCLATURE + ", " + TABLE_DEVIS +
+                ", " + TABLE_AFFECTATION_DEVIS + ", " + TABLE_PROSPECT + " WHERE " + TABLE_PROSPECT + "." + KEY_ID + " = " + id + " AND " + TABLE_NOMENCLATURE + "." + KEY_ID + " = " +
+                TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE + " AND " + TABLE_DEVIS + "." + KEY_ID + " = " + TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_KEY_ID_DEVIS + " AND " + TABLE_PROSPECT + "." + KEY_ID + " = " + TABLE_DEVIS + "." + DEVIS_KEY_ID_PROSPECT + ";" ;
+
+        Log.i(LOG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c!= null)
+        {
+            if(c.moveToFirst())
+            {
+                do {
+
+                    Nomenclature nomenclature = new Nomenclature();
+                    nomenclature.setId(c.getLong(c.getColumnIndex("idNomenclature")));
+                    nomenclature.setNom(c.getString(c.getColumnIndex("nomNomenclature")));
+                    nomenclature.setQuantite(c.getInt(c.getColumnIndex("quantiteNomenclature")));
+                    nomenclature.setListeMatiere(this.getAllMatiereForOneNomenclatureById(nomenclature.getId()));
+                    listeNomenclatures.add(nomenclature);
+
+                }while(c.moveToNext());
+            }
+            c.close();
+        }
+
+        return listeNomenclatures;
+    }
+
     /* Updating Client */
     public int updateClient(Client c)
     {
@@ -698,6 +730,24 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(PROSPECT_KEY_TELEPHONE, p.getTelephone());
         values.put(PROSPECT_KEY_DATE, p.getDate());
         return db.update(TABLE_PROSPECT,values,KEY_ID + " = " + id,null);
+    }
+
+    /* Removing Prospect */
+    public boolean removeProspect(long id) // Retirer le prospect
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_PROSPECT,KEY_ID + " = " + id,null) > 0;
+    }
+
+    /* Removing Devis */
+    public boolean removeDevis(long idDevis,long idProspect) // Retirer le devis et toutes les affectation qui vont avec.
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        if(db.delete(TABLE_DEVIS,KEY_ID + " = " + idDevis + " AND " + DEVIS_KEY_ID_PROSPECT + " = " + idProspect,null) > 0 && db.delete(TABLE_AFFECTATION_DEVIS,AFFECTATION_DEVIS_KEY_ID_DEVIS + " = " + idDevis,null) > 0)
+        {
+            return true;
+        }
+        return false;
     }
 
     // ----------------------------------- User table methods ------------------------------- //

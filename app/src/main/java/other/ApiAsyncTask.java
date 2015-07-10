@@ -1,6 +1,13 @@
 package other;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
+import android.support.v4.widget.DrawerLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
@@ -15,22 +22,43 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
+import BDD.DataBaseHandler;
+import BDD.Devis;
+import adapter.ListeDevisAdapter;
+import barbeasts.plastprod.R;
+import menu.HomeFragment;
 import model.MainActivity;
 
 /**
  * An asynchronous task that handles the Drive API call.
  * Placing the API calls in their own task ensures the UI stays responsive.
  */
-public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
+public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<String>> {
     private MainActivity mActivity;
-
+    private List<Devis> listeDevis;
+    private ProgressDialog dialog ;
     /**
      * Constructor.
      * @param activity MainActivity that spawned this task.
      */
     public ApiAsyncTask(MainActivity activity) {
         this.mActivity = activity;
+        this.dialog = new ProgressDialog(activity.getInstance());
+    }
+
+    @Override
+    public void onPreExecute()
+    {
+        if(mActivity.getCredential().getSelectedAccountName() == null)
+        {
+            mActivity.chooseAccount();
+        }
+        this.dialog.setMessage("Récupération des données depuis le serveur");
+        this.dialog.setCancelable(false);
+        this.dialog.show();
     }
 
     /**
@@ -38,7 +66,10 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
      * @param params no parameters needed for this task.
      */
     @Override
-    protected Void doInBackground(Void... params) {
+    protected ArrayList<String> doInBackground(List<Devis>... params) {
+
+        ArrayList<String> listeLigne = new ArrayList<>();
+        listeDevis = params[0];
         try {
             File file = mActivity.getService().files().get("1euyHlY_MKSznGcPh7itNCayl_-Z_8ouhWFtInxWqoXc").setFields("exportLinks").execute();
             InputStream is = downloadFile(mActivity.getService(), file);
@@ -50,7 +81,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
                 {
                     while((line = reader.readLine()) != null)
                     {
-                        System.out.println(line);
+                        listeLigne.add(line);
                     }
                 }catch(IOException io)
                 {
@@ -70,7 +101,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
 
             System.out.println(e.getMessage());
         }
-        return null;
+        return listeLigne;
     }
 
     /**
@@ -97,5 +128,92 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
             // The file doesn't have any content stored on Drive.
             return null;
         }
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList<String> listeLigne)
+    {
+        if(listeLigne.size() > 0)
+        {
+            // D'abord je retire la premiere ligne de ma liste de ligne car elle ne sert a rien
+            listeLigne.remove(0);
+        }
+
+        if(listeLigne.size() > 0)
+        {
+            // J'initialiser un tableau de String
+            int indiceDevis = -1;
+            // Ensuite je découpe chaque ligne en 3 chaines.
+
+            for(int i = 0 ; i < listeLigne.size() ; i++)
+            {
+                String[] split = listeLigne.get(i).split(",");
+                String numDevis = split[3];
+                indiceDevis = indiceDansListeDevis(numDevis);
+            }
+
+            for(int i = 0 ; i < listeDevis.size(); i++)
+            {
+                if(i != indiceDevis)
+                {
+                    listeDevis.remove(i);
+                }
+                i = 0;
+            }
+
+            if(indiceDevis != -1) // Si mon indice est pas négatif.
+            {
+                if(this.dialog.isShowing())
+                {
+                    this.dialog.dismiss();
+                }
+
+                final ListeDevisAdapter adapter = new ListeDevisAdapter(mActivity.getInstance(),listeDevis);
+                if(mActivity != null)
+                {
+                    if(mActivity.getInstance().getFragmentManager().findFragmentByTag("Fragment") != null)
+                    {
+                        Fragment f = mActivity.getInstance().getFragmentManager().findFragmentByTag("Fragment");
+                        if(f.getView() != null)
+                        {
+                            final ListView lv = (ListView) f.getView().findViewById(R.id.ListeDevis);
+                            lv.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    lv.setAdapter(adapter);
+                                }
+                            });
+                        }
+                    }
+                }
+            }else {
+                if(this.dialog.isShowing())
+                {
+                    this.dialog.dismiss();
+                }
+                mActivity.displayView(0);
+                String[] navMenuTitles = mActivity.getResources().getStringArray(R.array.nav_drawer_items);
+                if(mActivity.getActionBar() != null)
+                {
+                    TextView tx = (TextView)mActivity.getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                    tx.setText(navMenuTitles[0]);
+                }
+                Toast.makeText(mActivity.getApplicationContext(),"Aucun devis à valider",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    int indiceDansListeDevis(String num)
+    {
+        int numDevis = Integer.parseInt(num);
+        for(int i = 0 ; i < listeDevis.size(); i++)
+        {
+            if(listeDevis.get(i).getNumDevis() == numDevis)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }

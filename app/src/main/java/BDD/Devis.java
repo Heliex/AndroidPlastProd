@@ -15,10 +15,9 @@ public class Devis {
     private int numDevis;
     private String dateDevis;
     private ArrayList<Nomenclature> listeNomenclatures;
-    private final static int DEVIS_DEMANDE_CLIENT = 20;
-    private final static int DEVIS_INTERET = 50;
+    private final static int DEVIS_DEMANDE_CLIENT = 35;
+    private final static int DEVIS_INTERET = 70;
     private final static int DEVIS_EMIS = 80;
-    private final static int COMMANDE_PASSEE = 100;
 
     public Devis()
     {
@@ -115,10 +114,5 @@ public class Devis {
     public static  int getDevisEmis()
     {
         return DEVIS_EMIS;
-    }
-
-    public static int getCommandePassee()
-    {
-        return COMMANDE_PASSEE;
     }
 }

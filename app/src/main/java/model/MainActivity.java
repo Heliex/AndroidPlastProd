@@ -40,8 +40,10 @@ import com.google.api.services.drive.DriveScopes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import BDD.Devis;
 import adapter.NavDrawerListAdapter;
 import barbeasts.plastprod.R;
 import menu.AjoutClient;
@@ -60,7 +62,7 @@ import other.ApiAsyncTask;
 
 public class MainActivity extends Activity {
 
-    // Déclaration des variable
+    // Déclaration des variables
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ListView mDrawerRightList;
@@ -236,7 +238,6 @@ public class MainActivity extends Activity {
                           case "SuiviClient":
                               mTitle = navMenuTitles[3];
                               break;
-
                           case "ModifierClient":
                               mTitle = navMenuTitles[7];
                               break;
@@ -252,7 +253,6 @@ public class MainActivity extends Activity {
                           case "ModiferProspect":
                               mTitle = navMenuTitlesRight[6];
                               break;
-
                           case "ValiderDevis":
                               mTitle = navMenuTitlesRight[7];
                               break;
@@ -266,6 +266,7 @@ public class MainActivity extends Activity {
 
             public void onDrawerOpened(View drawerView)
             {
+
                 if(drawerView.findViewById(R.id.list_Rightslidermenu) != null)
                 {
                     if(mActionBar != null)
@@ -317,7 +318,7 @@ public class MainActivity extends Activity {
     }
 
     //Menu client
-    private void displayView(int position)
+    public void displayView(int position)
     {
         // Update the main content by replacing fragment
         Fragment fragment = null;
@@ -387,7 +388,7 @@ public class MainActivity extends Activity {
     }
 
     // Menu prospect
-    private void displayRightView(int position)
+    public void displayRightView(int position)
     {
         // Update the main content by replacing fragment
         Fragment fragment = null;
@@ -597,9 +598,12 @@ public class MainActivity extends Activity {
         return this;
     }
 
-    public void callApiAsyncTask()
+    public void callApiAsyncTask(List<Devis> listeDevis)
     {
-        new ApiAsyncTask(this).execute();
+        if(listeDevis != null && listeDevis.size() > 0)
+        {
+                new ApiAsyncTask(this).execute(listeDevis);
+        }
     }
 
     @Override

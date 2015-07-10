@@ -94,7 +94,8 @@ public class BonCommande extends Fragment {
                                     double prixTotal = Double.parseDouble(somme.getText().toString().replace("€", "")); // Je récupère le total
 
                                     Commande commande = new Commande(c.getId(), prixTotal, (int) System.currentTimeMillis(), nomenclatures);
-                                    db.createCommande(commande);
+                                    long id = db.createCommande(commande);
+                                    commande.setId(id);
                                     Fragment fragment = new HomeFragment();
                                     FragmentManager fragmentManager = getFragmentManager();
                                     fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
