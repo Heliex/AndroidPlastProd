@@ -85,8 +85,10 @@ public class CreerDevis extends Fragment{
                                 if(verifierQuantite(quantitePicker)) // Si toutes les quantitées ne sont pas à zéro
                                 {
                                     double prixTotal = Double.parseDouble(somme.getText().toString().replace("€", "")); // Je récupère le total
-
-                                    Devis devis = new Devis(p.getId(), prixTotal, (int) System.currentTimeMillis(), nomenclatures);
+                                    int numDevis = (int)System.currentTimeMillis();
+                                    if(numDevis < 0)
+                                        numDevis = numDevis * (-1);
+                                    Devis devis = new Devis(p.getId(), prixTotal, numDevis, nomenclatures);
                                     long id = db.createDevis(devis);
                                     devis.setId(id);
                                     p.setPourcentage(Devis.getDevisInteret());

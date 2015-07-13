@@ -47,10 +47,6 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
     @Override
     public void onPreExecute()
     {
-        if(mActivity.getCredential().getSelectedAccountName() == null)
-        {
-            mActivity.chooseAccount();
-        }
         this.dialog.setMessage("Récupération des données depuis le serveur");
         this.dialog.setCancelable(false);
         this.dialog.show();

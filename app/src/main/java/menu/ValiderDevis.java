@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.MissingFormatArgumentException;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import BDD.Client;
@@ -44,9 +45,12 @@ public class ValiderDevis extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_validerdevis, container, false);
         final DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
         final ListView listeProspects = (ListView)rootView.findViewById(R.id.ListViewProspectDevisValider);
+        if(((MainActivity)getActivity()).getCredential().getSelectedAccountName() == null)
+        {
+            ((MainActivity)getActivity()).chooseAccount();
+        }
         List<Prospect> prospects;
         prospects = db.getAllProspects();
-
         if(prospects.size() > 0)
         {
             final ListeProspectAdapter adapter = new ListeProspectAdapter(getActivity().getApplicationContext(),prospects);
@@ -57,6 +61,7 @@ public class ValiderDevis extends Fragment {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {// Quand on clique sur un prospect
                     listeProspects.setVisibility(View.INVISIBLE);
                     final Prospect prospect = (Prospect)listeProspects.getItemAtPosition(position); // Récupère le prospect.
+
                     final List<Devis> listeDevis = db.getAllDevisFromIdProspect(prospect.getId()); // Récupère la liste de devis lié à ce prospect.
                     if(listeDevis.size() > 0)
                     {
@@ -164,7 +169,7 @@ public class ValiderDevis extends Fragment {
                 TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
                 tx.setText(navMenuTitles[0]);
             }
-            Toast.makeText(getActivity().getApplicationContext(),"Aucun prospect crée",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getApplicationContext(),"Aucun prospect existant",Toast.LENGTH_SHORT).show();
         }
 
         return rootView;
