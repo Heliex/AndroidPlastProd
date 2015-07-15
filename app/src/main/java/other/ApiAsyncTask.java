@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import BDD.DataBaseHandler;
 import BDD.Devis;
 import adapter.ListeDevisAdapter;
 import barbeasts.plastprod.R;
@@ -124,6 +125,8 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
     @Override
     protected void onPostExecute(ArrayList<String> listeLigne)
     {
+        String estAccepte = "";
+        final DataBaseHandler db = new DataBaseHandler(mActivity.getInstance());
         if(listeLigne.size() > 0)
         {
             // D'abord je retire la premiere ligne de ma liste de ligne car elle ne sert a rien
@@ -134,17 +137,25 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
         {
             ArrayList<Devis> maListDeDevis = new ArrayList<>();
             // J'initialiser un tableau de String
-            int indiceDevis = -1;
+            int indiceDevis;
             // Ensuite je découpe chaque ligne en 3 chaines.
 
             for(int i = 0 ; i < listeLigne.size() ; i++)
             {
                 String[] split = listeLigne.get(i).split(",");
                 String numDevis = split[3];
+                estAccepte = split[1];
                 indiceDevis = indiceDansListeDevis(numDevis);
-                if(indiceDevis != -1) // Si l'indice vaux -1
+                if(indiceDevis != -1 && estAccepte.equals("Oui")) // Si l'indice vaux -1
                 {
                     maListDeDevis.add(listeDevis.get(indiceDevis));
+                }
+                else if (indiceDevis != -1 && estAccepte.equals("Non"))
+                {
+                    System.out.println(estAccepte);
+                    // Faire le traitement de la suppression de devis et la notifications.
+                    Devis d = listeDevis.get(indiceDevis);
+                    db.removeDevis(d.getId(),d.getId_prospect());
                 }
             }
 
@@ -185,7 +196,14 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
                     TextView tx = (TextView)mActivity.getActionBar().getCustomView().findViewById(R.id.action_bar_title);
                     tx.setText(navMenuTitles[0]);
                 }
-                Toast.makeText(mActivity.getApplicationContext(),"Aucun devis à valider",Toast.LENGTH_SHORT).show();
+                if(estAccepte.equals("Non"))
+                {
+                    Toast.makeText(mActivity.getApplicationContext(),"Un devis à été réfusé, il à été supprimé de la liste des devis",Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(mActivity.getApplicationContext(),"Aucun devis à valider",Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
