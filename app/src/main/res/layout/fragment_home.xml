@@ -12,7 +12,8 @@
         android:layout_above="@+id/calendar"
         android:layout_alignParentStart="true"
         android:textAlignment="center"
-        android:layout_marginBottom="40dp" />
+        android:layout_marginBottom="40dp"
+        android:layout_marginTop="120dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -22,5 +23,32 @@
         android:layout_marginBottom="48dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vos prochains RDV :"
+        android:id="@+id/rdvClient"
+        android:layout_marginTop="80dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton"
+        android:src="@drawable/update"
+        android:layout_marginRight="45dp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/rdvClient" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Synchroniser :"
+        android:id="@+id/synchro"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
 
 </RelativeLayout>
