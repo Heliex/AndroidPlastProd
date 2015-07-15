@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ import BDD.Nomenclature;
 import adapter.ListeClientAdapter;
 import adapter.ListeNomenclatureAdapter;
 import barbeasts.plastprod.R;
+import model.MainActivity;
 
 /**
  * Created by christophe on 01/04/2015. For PlastProd Project on purpose
@@ -55,7 +57,7 @@ public class BonCommande extends Fragment {
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                     final Client c = (Client) listeView.getItemAtPosition(i); // Je récupère le client correspondant au clic
-                    TextView tx = (TextView) getActivity().findViewById(R.id.validerCommande); // Récupère la textView qui valide la commande (Agit comme un bouton du coup)
+                    final TextView tx = (TextView) getActivity().findViewById(R.id.validerCommande); // Récupère la textView qui valide la commande (Agit comme un bouton du coup)
                     tx.setVisibility(View.VISIBLE);
                     listeView.setVisibility(View.INVISIBLE);
                     final ListView listeNomenclature = (ListView) getActivity().findViewById(R.id.ListeNomenclature); // Je récupère la listView de nomenclature
@@ -91,27 +93,62 @@ public class BonCommande extends Fragment {
 
                                 if(verifierQuantite(quantitePicker)) // Si toutes les quantitées ne sont pas à zéro
                                 {
+                                    // LA j'affiche le détails de la commande et un bouton valider.
+                                    listeNomenclature.setVisibility(View.INVISIBLE);
+                                    TextView annulerCommande = (TextView) rootView.findViewById(R.id.annulerCommande);
                                     double prixTotal = Double.parseDouble(somme.getText().toString().replace("€", "")); // Je récupère le total
-
-                                    Commande commande = new Commande(c.getId(), prixTotal, (int) System.currentTimeMillis(), nomenclatures);
+                                    int numCommande = (int) System.currentTimeMillis();
+                                    if(numCommande < 0)
+                                    {
+                                        numCommande = numCommande * (-1);
+                                    }
+                                    final Commande commande = new Commande(c.getId(), prixTotal, numCommande, nomenclatures);
+                                    annulerCommande.setVisibility(View.VISIBLE);
+                                    tx.setText("Valider la commande");
                                     long id = db.createCommande(commande);
                                     commande.setId(id);
-                                    Fragment fragment = new HomeFragment();
-                                    FragmentManager fragmentManager = getFragmentManager();
-                                    fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-                                    ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
-                                    String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
-                                    if (mDrawerList != null) {
-                                        mDrawerList.setItemChecked(0, true);
-                                        mDrawerList.setSelection(0);
-                                    }
-                                    if(getActivity().getActionBar() != null)
-                                    {
-                                        TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
-                                        tx.setText(navMenuTitles[0]);
-                                        getActivity().setTitle(navMenuTitles[0]);
-                                        Toast.makeText(getActivity().getApplicationContext(), "Commande crée", Toast.LENGTH_SHORT).show();
-                                    }
+                                    ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.scrollViewCommande);
+                                    scrollView.setVisibility(View.VISIBLE);
+                                    TextView textView = (TextView) rootView.findViewById(R.id.detailsCommande);
+                                    total.setVisibility(View.INVISIBLE);
+                                    somme.setVisibility(View.INVISIBLE);
+                                    String detailsCommande = db.getDetailsCommandeFromIdCommande(commande.getId(),prixTotal,commande.getNumCommande());
+                                    textView.setText(detailsCommande);
+                                    tx.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Fragment fragment = new HomeFragment();
+                                            FragmentManager fragmentManager = getFragmentManager();
+                                            fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+                                            ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
+                                            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+                                            if (mDrawerList != null) {
+                                                mDrawerList.setItemChecked(0, true);
+                                                mDrawerList.setSelection(0);
+                                            }
+                                            if (getActivity().getActionBar() != null) {
+                                                TextView tx = (TextView) getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                                                tx.setText(navMenuTitles[0]);
+                                                getActivity().setTitle(navMenuTitles[0]);
+                                                Toast.makeText(getActivity().getApplicationContext(), "Commande crée", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+
+                                    annulerCommande.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            db.removeCommande(commande.getId(),c.getId());
+                                            ((MainActivity)getActivity()).displayView(0);
+                                            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+                                            if (getActivity().getActionBar() != null) {
+                                                TextView tx = (TextView) getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                                                tx.setText(navMenuTitles[0]);
+                                            }
+                                            Toast.makeText(getActivity().getApplicationContext(), "Commande Annulée",Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
                                 }
                                 else // Sinon message d'erreur
                                 {

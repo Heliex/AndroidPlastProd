@@ -758,7 +758,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(PROSPECT_KEY_EMAIL, p.getEmail());
         values.put(PROSPECT_KEY_TELEPHONE, p.getTelephone());
         values.put(PROSPECT_KEY_DATE, p.getDate());
-        values.put(PROSPECT_KEY_POURCENTAGE,p.getPourcentage());
+        values.put(PROSPECT_KEY_POURCENTAGE, p.getPourcentage());
         return db.update(TABLE_PROSPECT,values,KEY_ID + " = " + id,null);
     }
 
@@ -767,6 +767,16 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_PROSPECT,KEY_ID + " = " + id,null) > 0;
+    }
+
+    public boolean removeCommande(long idCommande,long idClient)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        if(db.delete(TABLE_COMMANDE,KEY_ID + " = " + idCommande + " AND " + COMMANDE_KEY_CLIENT_ID + " = " + idClient,null) > 0 && db.delete(TABLE_AFFECTATION_COMMANDE,AFFECTATION_COMMANDE_KEY_ID_COMMANDE + " = " + idCommande,null) > 0)
+        {
+            return true;
+        }
+        return false;
     }
 
     /* Removing Devis */
@@ -1035,5 +1045,52 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.insert(TABLE_AFFECTATION_MATIERE,null,values);
     }
 
+  // Méthode qui retourne le détails d'une commande
 
+    public String getDetailsCommandeFromIdCommande(long id,double prixTotal,int numDevis) // Méthode qui envoi le mail avec le details du devis.
+    {
+        final StringBuilder details = new StringBuilder();
+        String selectQuery = " SELECT " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " as NomNomenclature, " + TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_QUANTITE + " as QuantiteNomenclature FROM " +
+                TABLE_AFFECTATION_COMMANDE + ", " + TABLE_NOMENCLATURE + " WHERE " + TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE + " = " + TABLE_NOMENCLATURE + "." + KEY_ID +
+                " AND " + TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_COMMANDE + " = " + id;
+        Log.i(LOG,selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+        if(c!= null)
+        {
+            if(c.moveToFirst()) // La je parcours chaque nomenclature
+            {
+                do {
+                    String nomNomenclature = c.getString(c.getColumnIndex("NomNomenclature"));
+                    int quantite = c.getInt(c.getColumnIndex("QuantiteNomenclature"));
+
+                    if(quantite > 0 )
+                    {
+                        details.append("==  Nomenclature de nom : " + nomNomenclature + " En quantitée : " + quantite + "  == \n\n");
+                        selectQuery = " SELECT " + TABLE_MATIERE + "." + MATIERE_KEY_NOM + " as NomMatiere, " + TABLE_MATIERE + "." + MATIERE_KEY_PRIX + " as PrixMatiere, " + TABLE_AFFECTATION_MATIERE + "." +
+                                AFFECTATION_MATIERE_KEY_QUANTITE + " as QuantiteMatiere FROM " + TABLE_AFFECTATION_MATIERE + ", " + TABLE_MATIERE + ", " + TABLE_NOMENCLATURE +  " WHERE " + TABLE_MATIERE + "." + KEY_ID + " = " +
+                                TABLE_AFFECTATION_MATIERE + "." + AFFECTATION_MATIERE_KEY_ID_MATIERE + " AND " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " = " + "\"" + nomNomenclature + "\"" + ";";
+                        Log.i(LOG,selectQuery);
+                        Cursor deuxieme = db.rawQuery(selectQuery,null);
+                        if(deuxieme != null)
+                        {
+                            if(deuxieme.moveToFirst())
+                            {
+                                do {
+                                    String nomMatiere = deuxieme.getString(deuxieme.getColumnIndex("NomMatiere"));
+                                    double prixMatiere = deuxieme.getDouble(deuxieme.getColumnIndex("PrixMatiere"));
+                                    int quantiteMatiere = deuxieme.getInt(deuxieme.getColumnIndex("QuantiteMatiere"));
+
+                                    details.append("\t**  MATIERE ASSOCIEE : " + nomMatiere + " DE PRIX : " + prixMatiere + " €, EN QUANTITE : " + quantiteMatiere + "  **\n");
+                                }while(deuxieme.moveToNext());
+                                details.append("\n\n");
+                            }
+                        }
+                    }
+                }while(c.moveToNext());
+            }
+            details.append("Prix total du devis : " + prixTotal + " €");
+        }
+        return details.toString();
+    }
 }

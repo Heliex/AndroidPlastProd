@@ -53,12 +53,39 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Valider la commande"
+        android:text="Créer la commande"
         android:id="@+id/validerCommande"
         android:layout_alignTop="@+id/sommeDevis"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="10dp"
         android:layout_toEndOf="@+id/sommeDevis"
         android:visibility="invisible" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollViewCommande"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        android:layout_alignBottom="@+id/ListViewInfos">
+
+        <TextView
+            android:id="@+id/detailsCommande"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </ScrollView>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Annuler la commande"
+        android:id="@+id/annulerCommande"
+        android:layout_marginRight="10dp"
+        android:visibility="invisible"
+        android:layout_alignBottom="@+id/montant"
+        android:layout_toStartOf="@+id/validerCommande" />>
 
 </RelativeLayout>
