@@ -45,7 +45,7 @@ public class InfosProspect extends Fragment
         prospects = db.getAllProspects();
         if(prospects.size() > 0)
         {
-            ListeProspectAdapter adapter = new ListeProspectAdapter(getActivity().getApplicationContext(),prospects);
+            ListeProspectAdapter adapter = new ListeProspectAdapter(getActivity().getApplicationContext(),prospects,getActivity().getFragmentManager().findFragmentByTag("Fragment"));
             listeView.setAdapter(adapter);
 
             listeView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -141,7 +141,7 @@ public class InfosProspect extends Fragment
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                 DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
                 List<Prospect> prospects = db.getAllProspects();
-                ListeProspectAdapter listeProspectAdapter = new ListeProspectAdapter(getActivity().getApplicationContext(),prospects);
+                ListeProspectAdapter listeProspectAdapter = new ListeProspectAdapter(getActivity().getApplicationContext(),prospects,getActivity().getFragmentManager().findFragmentByTag("Fragment"));
                 final Prospect p = listeProspectAdapter.getItem(i);
                 // Titre du dialog
                 alertDialogBuilder.setTitle("Prospect");

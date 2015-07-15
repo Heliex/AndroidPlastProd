@@ -40,7 +40,7 @@ public class CreerDevis extends Fragment{
         prospects = db.getAllProspects();
         if(prospects.size() > 0)
         {
-            final ListeProspectAdapter adapter = new ListeProspectAdapter(getActivity().getApplicationContext(),prospects);
+            final ListeProspectAdapter adapter = new ListeProspectAdapter(getActivity().getApplicationContext(),prospects,getActivity().getFragmentManager().findFragmentByTag("Fragment"));
             listeView.setAdapter(adapter);
 
             listeView.setOnItemClickListener(new AdapterView.OnItemClickListener() { // Quand je clique sur un client
@@ -92,6 +92,7 @@ public class CreerDevis extends Fragment{
                                     long id = db.createDevis(devis);
                                     devis.setId(id);
                                     p.setPourcentage(Devis.getDevisInteret());
+                                    db.updateProspect(p);
                                     db.getDetailsDevisFromIdDevis(devis.getId(), prixTotal, p.getId(),devis.getNumDevis(),true);
 
                                     Fragment fragment = new HomeFragment();
@@ -117,7 +118,7 @@ public class CreerDevis extends Fragment{
                                 }
 
                             } else { // Sinon somme non initialisé donc erreur dans la commande (commande non crée).
-                                Toast.makeText(getActivity().getApplicationContext(), "Erreur dans la commande", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity().getApplicationContext(), "Erreur dans le devis", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

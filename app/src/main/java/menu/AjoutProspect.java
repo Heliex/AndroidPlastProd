@@ -63,6 +63,7 @@ public class AjoutProspect extends Fragment
                     prospect.setTelephone(telephoneVerifier);
                     prospect.setEmail(emailVerifier);
                     prospect.setDate(dateVerifier);
+                    prospect.setPourcentage(Devis.getDevisDemandeClient());
                 }
                 else
                 {
@@ -71,7 +72,6 @@ public class AjoutProspect extends Fragment
 
 
                 if(estValide) {
-                    prospect.setPourcentage(Devis.getDevisDemandeClient());
                     Log.i("AjoutProspect", prospect.getNom());
                     DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
                     long id = db.createProspect(prospect);
@@ -90,6 +90,10 @@ public class AjoutProspect extends Fragment
                         tx.setText(navMenuTitles[0]);
                         getActivity().setTitle(navMenuTitles[0]);
                         Toast.makeText(getActivity().getApplicationContext(), "Prospect crée", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(getActivity().getApplicationContext(),"Erreur lors de la validation ??",Toast.LENGTH_SHORT).show();
                     }
                 }
                 else

@@ -102,7 +102,7 @@ public class SuiviClient extends Fragment {
                     }
                     else
                     {
-                        Toast.makeText(getActivity().getApplicationContext(),"Ce client n'as passé aucune commande",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity().getApplicationContext(),"Ce client n'a passé aucune commande",Toast.LENGTH_SHORT).show();
                         totalCAClients.setVisibility(View.VISIBLE);
                         totalCAClientsAffiche.setVisibility(View.VISIBLE);
                     }

@@ -7,14 +7,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
 import BDD.DataBaseHandler;
+import BDD.Devis;
 import BDD.Prospect;
 import adapter.ListeProspectAdapter;
 import barbeasts.plastprod.R;
+import model.MainActivity;
 
 /**
  * Created by Kirill on 12/06/2015.
@@ -26,29 +32,95 @@ public class SuiviProspect extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_suivi,container,false);
+        final View rootView = inflater.inflate(R.layout.fragment_suiviprospect,container,false);
         // Je recupere la vue de la liste depuis son id.
-        final ListView listeProduits = (ListView) rootView.findViewById(R.id.ListViewSuivi);
-        TextView textview = (TextView) rootView.findViewById(R.id.CaTotal);
-        textview.setVisibility(View.INVISIBLE);
+        final ListView listeProspectSuivi = (ListView) rootView.findViewById(R.id.ListViewSuiviProspect);
         // Je cree la connexion a la base
-        DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
+        final DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
 
-        // Je recupere ma liste de client.
+        // Je recupere ma liste de prospects.
         List<Prospect> listProspects;
         listProspects = db.getAllProspects();
 
-        // adapter pour pouvoir faire du traitement sur le client.
-        ListeProspectAdapter adapter = new ListeProspectAdapter(getActivity().getApplicationContext(),listProspects);
-        listeProduits.setAdapter(adapter);
+        if(listProspects.size() > 0)
+        {
+            // adapter pour pouvoir faire du traitement sur le prospect.
+            ListeProspectAdapter adapter = new ListeProspectAdapter(getActivity().getApplicationContext(),listProspects,getActivity().getFragmentManager().findFragmentByTag("Fragment"));
+            listeProspectSuivi.setAdapter(adapter);
 
-        // Listener sur la liste pour pouvoir choisir le user a traiter
-        listeProduits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Prospect c = (Prospect)listeProduits.getItemAtPosition(i);
+            double totalCAProspect = 0;
+            for(int i = 0 ; i < listProspects.size() ; i++)
+            {
+                Prospect p = listProspects.get(i);
+                List<Devis> listeDevis = db.getAllDevisByProspect(p.getId());
+                for(int j = 0 ; j < listeDevis.size(); j++)
+                {
+                    totalCAProspect += listeDevis.get(j).getTotal();
+                }
             }
-        });
+
+            // Récupération des TextView
+            final TextView totalCAProspects = (TextView)rootView.findViewById(R.id.CaTotalProspect);
+            final TextView totalCAProspectsAffiche = (TextView) rootView.findViewById(R.id.CaTotalAfficheeProspect);
+
+            final StringBuilder totalCAEntier = new StringBuilder();
+            totalCAEntier.append(String.valueOf(totalCAProspect));
+            totalCAEntier.append(" €");
+            totalCAProspectsAffiche.setText(totalCAEntier);
+            // Listener sur la liste pour pouvoir choisir le user a traiter
+            listeProspectSuivi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Prospect p = (Prospect)listeProspectSuivi.getItemAtPosition(i);
+                    totalCAProspects.setVisibility(View.INVISIBLE);
+                    totalCAProspectsAffiche.setVisibility(View.INVISIBLE);
+                    List<Devis> listeDevis = db.getAllDevisByProspect(p.getId());
+
+                    if(listeDevis.size() > 0)
+                    {
+                        double total = 0;
+                        for(int k = 0 ; k < listeDevis.size(); k++)
+                        {
+                            total+= listeDevis.get(k).getTotal();
+                        }
+
+                        String dateDernierDevis = listeDevis.get(listeDevis.size() - 1).getDateDevis();
+                        listeProspectSuivi.setVisibility(View.INVISIBLE);
+                        TextView CA = (TextView)rootView.findViewById(R.id.CAProspect);
+                        TextView DateDernierDevis = (TextView) rootView.findViewById(R.id.dateDerniereCommandeProspect);
+                        TextView CAAfficher = (TextView) rootView.findViewById(R.id.CaAfficherProspect);
+                        TextView DateDernierDevisAfficher = (TextView) rootView.findViewById(R.id.dateDerniereCommandeAfficheeProspect);
+
+                        CAAfficher.setText(String.valueOf(total) + " €");
+                        DateDernierDevisAfficher.setText(dateDernierDevis);
+
+                        CA.setVisibility(View.VISIBLE);
+                        DateDernierDevis.setVisibility(View.VISIBLE);
+                        CAAfficher.setVisibility(View.VISIBLE);
+                        DateDernierDevisAfficher.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        Toast.makeText(getActivity().getApplicationContext(),"Ce prospect n'a fait aucun devis",Toast.LENGTH_SHORT).show();
+                        totalCAProspects.setVisibility(View.VISIBLE);
+                        totalCAProspectsAffiche.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+        }
+        else
+        {
+            ((MainActivity)getActivity()).displayView(0);
+            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+            if(getActivity().getActionBar() != null)
+            {
+                TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                tx.setText(navMenuTitles[0]);
+            }
+            Toast.makeText(getActivity().getApplicationContext(),"Aucun prospect trouvé",Toast.LENGTH_SHORT).show();
+        }
+
+
         return rootView;
     }
 }

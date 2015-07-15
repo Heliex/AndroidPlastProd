@@ -26,7 +26,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
 
     // Database version
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 16;
 
     // Database Name
     private static final String DATABASE_NAME ="PlastProd";
@@ -76,12 +76,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final String PROSPECT_KEY_TELEPHONE = "telephone_prospect";
     private static final String PROSPECT_KEY_EMAIL = "email_prospect";
     private static final String PROSPECT_KEY_DATE = "date_prospect";
+    private static final String PROSPECT_KEY_POURCENTAGE = "pourcentage_prospect";
 
     // Creation de la table Prospect
     private static final String CREATE_TABLE_PROSPECT = "CREATE TABLE " + TABLE_PROSPECT + "(" +
             KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + PROSPECT_KEY_NOM + " TEXT, " +
             PROSPECT_KEY_PRENOM + " TEXT, " + PROSPECT_KEY_ADRESSE + " TEXT, " +
-            PROSPECT_KEY_TELEPHONE + " TEXT, " + PROSPECT_KEY_EMAIL + " TEXT, " + PROSPECT_KEY_DATE + " TEXT);";
+            PROSPECT_KEY_TELEPHONE + " TEXT, " + PROSPECT_KEY_EMAIL + " TEXT, " + PROSPECT_KEY_DATE + " TEXT, " +  PROSPECT_KEY_POURCENTAGE + " INTEGER);";
 
     // User Tables - Column Names
     private static final String USER_KEY_EMAIL ="email_user";
@@ -441,6 +442,34 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return commandes;
     }
 
+    public List<Devis> getAllDevisByProspect(long id)
+    {
+        List<Devis> listeDevis = new ArrayList<>();
+        String selectQuery = " SELECT * FROM " + TABLE_DEVIS + " WHERE " + DEVIS_KEY_ID_PROSPECT + " = " + id  + " ;";
+        Log.i(LOG,selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c != null)
+        {
+            if(c.moveToFirst())
+            {
+                do {
+                    Devis devis = new Devis();
+                    ArrayList<Nomenclature> listeNomenclature = this.getAllNomenclatureFromIdProspect(id);
+                    devis.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                    devis.setId_prospect(id);
+                    devis.setNumDevis(c.getInt(c.getColumnIndex(DEVIS_KEY_NUMDEVIS)));
+                    devis.setListeNomenclatures(listeNomenclature);
+                    devis.setTotal(c.getDouble(c.getColumnIndex(DEVIS_KEY_TOTAL)));
+                    devis.setDateDevis(c.getString(c.getColumnIndex(DEVIS_KEY_DATE)));
+                    listeDevis.add(devis);
+                }while(c.moveToNext());
+            }
+            c.close();
+        }
+        return listeDevis;
+    }
+
     /* Create Commande   */
     public long createCommande(Commande commande)
     {
@@ -624,11 +653,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             values.put(PROSPECT_KEY_TELEPHONE, prospect.getTelephone());
             values.put(PROSPECT_KEY_EMAIL, prospect.getEmail());
             values.put(PROSPECT_KEY_DATE, prospect.getDate());
-
+            values.put(PROSPECT_KEY_POURCENTAGE,prospect.getPourcentage());
             // Insert row
             return db.insert(TABLE_PROSPECT, null, values);
         }
-
     }
 
     /* Get Prospect */
@@ -681,6 +709,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 prospect.setTelephone((c.getString(c.getColumnIndex(PROSPECT_KEY_TELEPHONE))));
                 prospect.setEmail((c.getString(c.getColumnIndex(PROSPECT_KEY_EMAIL))));
                 prospect.setDate((c.getString(c.getColumnIndex(PROSPECT_KEY_DATE))));
+                prospect.setPourcentage((c.getInt(c.getColumnIndex(PROSPECT_KEY_POURCENTAGE))));
 
                 // Adding to the prospect list
                 prospects.add(prospect);
@@ -729,6 +758,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(PROSPECT_KEY_EMAIL, p.getEmail());
         values.put(PROSPECT_KEY_TELEPHONE, p.getTelephone());
         values.put(PROSPECT_KEY_DATE, p.getDate());
+        values.put(PROSPECT_KEY_POURCENTAGE,p.getPourcentage());
         return db.update(TABLE_PROSPECT,values,KEY_ID + " = " + id,null);
     }
 

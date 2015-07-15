@@ -53,7 +53,7 @@ public class ValiderDevis extends Fragment {
         prospects = db.getAllProspects();
         if(prospects.size() > 0)
         {
-            final ListeProspectAdapter adapter = new ListeProspectAdapter(getActivity().getApplicationContext(),prospects);
+            final ListeProspectAdapter adapter = new ListeProspectAdapter(getActivity().getApplicationContext(),prospects,getActivity().getFragmentManager().findFragmentByTag("Fragment"));
             listeProspects.setAdapter(adapter);
 
             listeProspects.setOnItemClickListener(new AdapterView.OnItemClickListener() {
