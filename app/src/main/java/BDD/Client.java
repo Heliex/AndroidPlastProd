@@ -28,7 +28,7 @@ public class Client {
         }
         public Client(String nom, String prenom, String adresse, String telephone, String email, String date)
         {
-            this.id = id;
+            this.id = 0;
             this.nom = nom;
             this.prenom = prenom;
             this.adresse = adresse;
