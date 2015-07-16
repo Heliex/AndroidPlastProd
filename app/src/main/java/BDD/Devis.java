@@ -21,6 +21,11 @@ public class Devis {
 
     public Devis()
     {
+        this.id = 0;
+        this.id_prospect = 0;
+        this.total = 0;
+        this.numDevis = 0;
+        this.dateDevis = null;
         this.listeNomenclatures = new ArrayList<>();
     }
 
