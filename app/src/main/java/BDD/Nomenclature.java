@@ -14,6 +14,10 @@ public class Nomenclature {
 
     public Nomenclature()
     {
+        this.nom = null;
+        this.id = 0;
+        this.listeMatiere = null;
+        this.quantite = 0;
     }
 
     public long getId()
