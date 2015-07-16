@@ -24,7 +24,13 @@ public class Client {
 
         public Client()
         {
-
+            this.id = 0;
+            this.nom = null;
+            this.prenom = null;
+            this.adresse = null;
+            this.email = null;
+            this.telephone = null;
+            this.date = null;
         }
         public Client(String nom, String prenom, String adresse, String telephone, String email, String date)
         {
