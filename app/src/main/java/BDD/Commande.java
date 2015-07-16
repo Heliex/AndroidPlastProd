@@ -23,6 +23,7 @@ public class Commande {
     public Commande()
     {
         listeNomenclature = new ArrayList<>();
+        this.id = 0;
     }
 
     public Commande(long client_id, int numCommande,double total,String dateCommande,ArrayList<Nomenclature> listeNomenclature)
