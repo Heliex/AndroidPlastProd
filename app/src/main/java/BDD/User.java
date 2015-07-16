@@ -17,7 +17,9 @@ public class User {
 
     public User()
     {
-
+        this.id = 0;
+        this.email_user = null;
+        this.mdp_user = null;
     }
 
     public String getEmail_user()
