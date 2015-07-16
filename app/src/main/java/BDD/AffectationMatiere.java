@@ -9,6 +9,13 @@ public class AffectationMatiere {
     private long idNomenclature;
     private int quantite;
 
+    public AffectationMatiere()
+    {
+        this.idMatiere = 0;
+        this.idNomenclature = 0;
+        this.quantite = 0;
+    }
+
     public long getIdMatiere()
     {
         return this.idMatiere;
