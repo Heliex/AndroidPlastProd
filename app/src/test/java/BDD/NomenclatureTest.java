@@ -25,6 +25,7 @@ import android.os.Looper;
 import android.os.UserHandle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.test.InstrumentationTestCase;
 import android.view.Display;
 
 import junit.framework.TestCase;
@@ -42,7 +43,7 @@ import model.MainActivity;
 /**
  * Created by Christophe on 16/07/2015. For PlastProd Project on purpose
  */
-public class NomenclatureTest extends TestCase {
+public class NomenclatureTest extends InstrumentationTestCase {
 
     public void testGetId() throws Exception {
         Nomenclature n = new Nomenclature();
@@ -84,9 +85,10 @@ public class NomenclatureTest extends TestCase {
 
     }
 
-    public void testGetPrixTotal(DataBaseHandler db) throws Exception {
+    public void testGetPrixTotal() throws Exception {
         Nomenclature n = new Nomenclature();
-        assertEquals(0.0,n.getPrixTotal(db, n.getId()));
+        DataBaseHandler db = new DataBaseHandler(getInstrumentation().getContext());
+        assertEquals(0.0, n.getPrixTotal(db, n.getId()));
     }
 
     public void testGetQuantite() throws Exception {
