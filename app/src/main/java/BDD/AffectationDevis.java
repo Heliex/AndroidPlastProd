@@ -9,6 +9,13 @@ public class AffectationDevis {
     private long idNomenclature;
     private int quantite;
 
+    public AffectationDevis()
+    {
+        this.idDevis = 0;
+        this.idNomenclature = 0;
+        this.quantite = 0;
+    }
+
     public long getIdCommande()
     {
         return  this.idDevis;
