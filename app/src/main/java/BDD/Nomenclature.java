@@ -53,14 +53,16 @@ public class Nomenclature {
     public double getPrixTotal(DataBaseHandler db,long id_nomenclature)
     {
         double somme = 0;
-        for(int i = 0 ; i < listeMatiere.size(); i++)
+        if(listeMatiere != null)
         {
-            long id = listeMatiere.get(i).getId();
-            int qte = db.getQuantiteMatiere(id_nomenclature,id);
-            double prix = listeMatiere.get(i).getPrix();
-            somme += (prix * qte);
+            for(int i = 0 ; i < listeMatiere.size(); i++)
+            {
+                long id = listeMatiere.get(i).getId();
+                int qte = db.getQuantiteMatiere(id_nomenclature,id);
+                double prix = listeMatiere.get(i).getPrix();
+                somme += (prix * qte);
+            }
         }
-
         return somme;
     }
 
