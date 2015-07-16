@@ -11,7 +11,9 @@ public class Matiere {
 
     public Matiere()
     {
-
+        this.id = 0;
+        this.nom = null;
+        this.prix = 0;
     }
 
     public Matiere(long id,String nom, float prix)
