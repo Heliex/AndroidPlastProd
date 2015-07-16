@@ -25,6 +25,9 @@ public class Commande {
         listeNomenclature = new ArrayList<>();
         this.id = 0;
         this.client_id = 0;
+        this.numCommande = 0;
+        this.total = 0;
+        this.dateCommande = null;
     }
 
     public Commande(long client_id, int numCommande,double total,String dateCommande,ArrayList<Nomenclature> listeNomenclature)
