@@ -21,6 +21,18 @@ public class Prospect {
 
     private int pourcentage ;
 
+    public Prospect()
+    {
+        this.id = 0;
+        this.nom = null;
+        this.prenom = null;
+        this.adresse = null;
+        this.telephone = null;
+        this.email = null;
+        this.date = null;
+        this.pourcentage = 0;
+    }
+
     public long getId()
     {
         return this.id;
