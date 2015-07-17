@@ -196,7 +196,7 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
                     TextView tx = (TextView)mActivity.getActionBar().getCustomView().findViewById(R.id.action_bar_title);
                     tx.setText(navMenuTitles[0]);
                 }
-                if(estAccepte.equals("Non"))
+                if(estAccepte.equals("Non") && maListDeDevis.size() > 0)
                 {
                     Toast.makeText(mActivity.getApplicationContext(),"Un devis à été réfusé, il à été supprimé de la liste des devis",Toast.LENGTH_SHORT).show();
                 }
