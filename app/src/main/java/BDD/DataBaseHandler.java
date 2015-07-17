@@ -29,30 +29,30 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 16;
 
     // Database Name
-    private static final String DATABASE_NAME ="PlastProd";
+    public static final String DATABASE_NAME ="PlastProd";
 
     // Tables names
-    private static final String TABLE_CLIENT = "CLIENT";
-    private static final String TABLE_COMMANDE = "COMMANDE";
-    private static final String TABLE_PROSPECT = "PROSPECT";
-    private static final String TABLE_USER = "USER";
-    private static final String TABLE_MATIERE = "MATIERE";
-    private static final String TABLE_NOMENCLATURE = "NOMENCLATURE";
-    private static final String TABLE_AFFECTATION_MATIERE = "AFFECTATION_MATIERE";
-    private static final String TABLE_AFFECTATION_COMMANDE = "AFFECTATION_COMMANDE";
-    private static final String TABLE_DEVIS = "DEVIS";
-    private static final String TABLE_AFFECTATION_DEVIS = "AFFECTATION_DEVIS";
+    public static final String TABLE_CLIENT = "CLIENT";
+    public static final String TABLE_COMMANDE = "COMMANDE";
+    public static final String TABLE_PROSPECT = "PROSPECT";
+    public static final String TABLE_USER = "USER";
+    public static final String TABLE_MATIERE = "MATIERE";
+    public static final String TABLE_NOMENCLATURE = "NOMENCLATURE";
+    public static final String TABLE_AFFECTATION_MATIERE = "AFFECTATION_MATIERE";
+    public static final String TABLE_AFFECTATION_COMMANDE = "AFFECTATION_COMMANDE";
+    public static final String TABLE_DEVIS = "DEVIS";
+    public static final String TABLE_AFFECTATION_DEVIS = "AFFECTATION_DEVIS";
 
     // Common Columns names
-    private static final String KEY_ID = "id";
+    public static final String KEY_ID = "id";
 
     // Client Tables - Column Names
-    private static final String CLIENT_KEY_NOM = "nom_client";
-    private static final String CLIENT_KEY_PRENOM = "prenom_client";
-    private static final String CLIENT_KEY_ADRESSE = "adresse_client";
-    private static final String CLIENT_KEY_TELEPHONE = "telephone_client" ;
-    private static final String CLIENT_KEY_EMAIL = "email_client";
-    private static final String CLIENT_KAY_DATE_INSCRIPTION = "date_client";
+    public static final String CLIENT_KEY_NOM = "nom_client";
+    public static final String CLIENT_KEY_PRENOM = "prenom_client";
+    public static final String CLIENT_KEY_ADRESSE = "adresse_client";
+    public static final String CLIENT_KEY_TELEPHONE = "telephone_client" ;
+    public static final String CLIENT_KEY_EMAIL = "email_client";
+    public static final String CLIENT_KAY_DATE_INSCRIPTION = "date_client";
 
     // Creation de la table Client
     private static final String CREATE_TABLE_CLIENT = "CREATE TABLE " + TABLE_CLIENT + "(" +
@@ -61,22 +61,22 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             CLIENT_KEY_TELEPHONE + " TEXT, " + CLIENT_KEY_EMAIL + " TEXT, " + CLIENT_KAY_DATE_INSCRIPTION + " TEXT);";
 
     // Commande Tables - Column Names
-    private static final String COMMANDE_KEY_NUMCOMMANDE = "numCommande";
-    private static final String COMMANDE_KEY_DATECOMMANDE= "dateCommande";
-    private static final String COMMANDE_KEY_TOTAL = "total";
-    private static final String COMMANDE_KEY_CLIENT_ID = "client_id";
+    public static final String COMMANDE_KEY_NUMCOMMANDE = "numCommande";
+    public static final String COMMANDE_KEY_DATECOMMANDE= "dateCommande";
+    public static final String COMMANDE_KEY_TOTAL = "total";
+    public static final String COMMANDE_KEY_CLIENT_ID = "client_id";
 
     // Creation de la table Commande
-    private static final String CREATE_TABLE_COMMANDE=" CREATE TABLE " + TABLE_COMMANDE + "(" + KEY_ID + " INTEGER PRIMARY KEY, " + COMMANDE_KEY_NUMCOMMANDE + " INTEGER, " + " client_id INTEGER, " + COMMANDE_KEY_DATECOMMANDE + " TEXT, " + COMMANDE_KEY_TOTAL + " FLOAT, FOREIGN KEY (" + COMMANDE_KEY_CLIENT_ID +  ")  REFERENCES "+ TABLE_CLIENT + "(" + KEY_ID + "));";
+    public static final String CREATE_TABLE_COMMANDE=" CREATE TABLE " + TABLE_COMMANDE + "(" + KEY_ID + " INTEGER PRIMARY KEY, " + COMMANDE_KEY_NUMCOMMANDE + " INTEGER, " + " client_id INTEGER, " + COMMANDE_KEY_DATECOMMANDE + " TEXT, " + COMMANDE_KEY_TOTAL + " FLOAT, FOREIGN KEY (" + COMMANDE_KEY_CLIENT_ID +  ")  REFERENCES "+ TABLE_CLIENT + "(" + KEY_ID + "));";
 
     // Prospect Tables - Column Names
-    private static final String PROSPECT_KEY_NOM = "nom_prospect";
-    private static final String PROSPECT_KEY_PRENOM = "prenom_prospect";
-    private static final String PROSPECT_KEY_ADRESSE = "adresse_prospect";
-    private static final String PROSPECT_KEY_TELEPHONE = "telephone_prospect";
-    private static final String PROSPECT_KEY_EMAIL = "email_prospect";
-    private static final String PROSPECT_KEY_DATE = "date_prospect";
-    private static final String PROSPECT_KEY_POURCENTAGE = "pourcentage_prospect";
+    public static final String PROSPECT_KEY_NOM = "nom_prospect";
+    public static final String PROSPECT_KEY_PRENOM = "prenom_prospect";
+    public static final String PROSPECT_KEY_ADRESSE = "adresse_prospect";
+    public static final String PROSPECT_KEY_TELEPHONE = "telephone_prospect";
+    public static final String PROSPECT_KEY_EMAIL = "email_prospect";
+    public static final String PROSPECT_KEY_DATE = "date_prospect";
+    public static final String PROSPECT_KEY_POURCENTAGE = "pourcentage_prospect";
 
     // Creation de la table Prospect
     private static final String CREATE_TABLE_PROSPECT = "CREATE TABLE " + TABLE_PROSPECT + "(" +
@@ -85,8 +85,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             PROSPECT_KEY_TELEPHONE + " TEXT, " + PROSPECT_KEY_EMAIL + " TEXT, " + PROSPECT_KEY_DATE + " TEXT, " +  PROSPECT_KEY_POURCENTAGE + " INTEGER);";
 
     // User Tables - Column Names
-    private static final String USER_KEY_EMAIL ="email_user";
-    private static final String USER_KEY_MDP = "mdp_user";
+    public static final String USER_KEY_EMAIL ="email_user";
+    public static final String USER_KEY_MDP = "mdp_user";
 
    // Creation de la table User
     private static final String CREATE_TABLE_USER = "CREATE TABLE " + TABLE_USER + "(" +
@@ -94,8 +94,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
            USER_KEY_MDP + " TEXT);";
 
     // Matiere Tables - Column Names
-    private static final String MATIERE_KEY_NOM = "nom_matiere";
-    private static final String MATIERE_KEY_PRIX = "prix_matiere";
+    public static final String MATIERE_KEY_NOM = "nom_matiere";
+    public static final String MATIERE_KEY_PRIX = "prix_matiere";
 
     // Creation de la table Matiere
     private static final String CREATE_TABLE_MATIERE = "CREATE TABLE " + TABLE_MATIERE + "(" +
@@ -103,16 +103,16 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             MATIERE_KEY_PRIX + " REAL);";
 
     // Nomenclature Tables - Column Names
-    private static final String NOMENCLATURE_KEY_NOM = "nom_nomenclature";
+    public static final String NOMENCLATURE_KEY_NOM = "nom_nomenclature";
 
     // Creation de la table Nomenclature
     private static final String CREATE_TABLE_NOMENCLATURE = "CREATE TABLE " + TABLE_NOMENCLATURE + "(" +
             KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + NOMENCLATURE_KEY_NOM + " TEXT);";
 
     // Affectation Matiere Tables - Column Names
-    private static final String AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE="id_nomenclature";
-    private static final String AFFECTATION_MATIERE_KEY_ID_MATIERE = "id_matiere";
-    private static final String AFFECTATION_MATIERE_KEY_QUANTITE = "quantite";
+    public static final String AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE="id_nomenclature";
+    public static final String AFFECTATION_MATIERE_KEY_ID_MATIERE = "id_matiere";
+    public static final String AFFECTATION_MATIERE_KEY_QUANTITE = "quantite";
 
     // Creation de la table AffectationMatiere
 
@@ -121,9 +121,9 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             AFFECTATION_MATIERE_KEY_ID_MATIERE + " INTEGER, " + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + " INTEGER ,FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE +  ")  REFERENCES " + TABLE_NOMENCLATURE + "(" + KEY_ID + "), FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_MATIERE + ") REFERENCES " + TABLE_MATIERE + "(" + KEY_ID + "));";
 
     // AffectationCommande Tables - Column Names
-    private static final String AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE="id_nomenclature";
-    private static final String AFFECTATION_COMMANDE_KEY_ID_COMMANDE = "id_commande";
-    private static final String AFFECTATION_COMMANDE_KEY_QUANTITE ="quantite";
+    public static final String AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE="id_nomenclature";
+    public static final String AFFECTATION_COMMANDE_KEY_ID_COMMANDE = "id_commande";
+    public static final String AFFECTATION_COMMANDE_KEY_QUANTITE ="quantite";
 
     // Creation de la table AffectationCommande
 
@@ -133,19 +133,19 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             "FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + ") REFERENCES " + TABLE_NOMENCLATURE +
             "(" + KEY_ID + "), FOREIGN KEY ( " + AFFECTATION_COMMANDE_KEY_ID_COMMANDE + ") REFERENCES " + TABLE_COMMANDE + "(" + KEY_ID + "));";
 
-    private static final String DEVIS_KEY_ID_PROSPECT = "id_prospect";
-    private static final String DEVIS_KEY_TOTAL = "total";
-    private static final String DEVIS_KEY_NUMDEVIS = "numDevis";
-    private static final String DEVIS_KEY_DATE = "dateDevis";
+    public static final String DEVIS_KEY_ID_PROSPECT = "id_prospect";
+    public static final String DEVIS_KEY_TOTAL = "total";
+    public static final String DEVIS_KEY_NUMDEVIS = "numDevis";
+    public static final String DEVIS_KEY_DATE = "dateDevis";
 
     private static final String CREATE_TABLE_DEVIS = "CREATE TABLE " + TABLE_DEVIS + " ( " +
             KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + DEVIS_KEY_ID_PROSPECT + " INTEGER, "+
             DEVIS_KEY_NUMDEVIS + " INTEGER, " + DEVIS_KEY_DATE + " TEXT, " + DEVIS_KEY_TOTAL + " REAL, FOREIGN KEY ( " + DEVIS_KEY_ID_PROSPECT +
             " ) REFERENCES " + TABLE_PROSPECT + " (" + KEY_ID + "));";
 
-    private static final String AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE = "id_nomenclature";
-    private static final String AFFECTATION_DEVIS_KEY_ID_DEVIS = "id_devis";
-    private static final String AFFECTATION_DEVIS_QUANTITE = "quantite";
+    public static final String AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE = "id_nomenclature";
+    public static final String AFFECTATION_DEVIS_KEY_ID_DEVIS = "id_devis";
+    public static final String AFFECTATION_DEVIS_QUANTITE = "quantite";
 
     private static final String CREATE_TABLE_AFFECTATION_DEVIS = " CREATE TABLE " + TABLE_AFFECTATION_DEVIS + " ( " + KEY_ID +
             " INTEGER PRIMARY KEY AUTOINCREMENT, " + AFFECTATION_DEVIS_KEY_ID_DEVIS + " INTEGER, " + AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE +
