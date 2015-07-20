@@ -181,10 +181,11 @@ public class ValiderDevis extends Fragment {
         // Conversion du Prospect en Client
         Client client = new Client(prospect.getNom(),prospect.getPrenom(),prospect.getAdresse(),prospect.getEmail(),prospect.getTelephone(),prospect.getDate());
         long idClient = db.createClient(client);
+        System.out.println("ID DU CLIENT : " + idClient);
         client.setId(idClient);
         // Conversion du Devis en Commande.
 
-        Commande commande = new Commande(devis.getId_prospect(),devis.getNumDevis(),devis.getTotal(),devis.getDateDevis(),devis.getListeNomenclatures());
+        Commande commande = new Commande(client.getId(),devis.getNumDevis(),devis.getTotal(),devis.getDateDevis(),devis.getListeNomenclatures());
         long id = db.createCommande(commande);
         commande.setId(id);
         // Maintenant que j'ai toute les données qu'il faut je peux supprimer de la base le prospect et le devis.
