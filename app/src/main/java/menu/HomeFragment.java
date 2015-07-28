@@ -12,15 +12,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.List;
 
 import adapter.ListeRDVAdapter;
 import barbeasts.plastprod.R;
+import model.MainActivity;
 import model.RDV;
 import model.Utility;
+import other.SynchroBase;
+import other.SynchroCommande;
+import other.SynchroProspect;
+
 
 /**
  * Created by christophe on 01/04/2015.
@@ -33,10 +38,10 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_home,container,false);
-        Utility utility = new Utility();
-        List<RDV> listeRDV = utility.readCalendarEvent(getActivity().getApplicationContext());
+        List<RDV> listeRDV = Utility.readCalendarEvent(getActivity().getApplicationContext());
         ListView lv = (ListView) rootView.findViewById(R.id.listView2);
         ListeRDVAdapter adapter = new ListeRDVAdapter(getActivity().getApplicationContext(),listeRDV);
+        ImageButton imageButton = (ImageButton) rootView.findViewById(R.id.imageButton);
         lv.setAdapter(adapter);
         Button button = (Button) rootView.findViewById(R.id.calendar);
         if(button != null)
@@ -54,7 +59,17 @@ public class HomeFragment extends Fragment {
                 }
             });
         }
-
+        if(imageButton != null)
+        {
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new SynchroBase((MainActivity)getActivity()).execute();
+                    new SynchroProspect((MainActivity)getActivity()).execute();
+                    new SynchroCommande((MainActivity)getActivity()).execute();
+                }
+            });
+        }
         return rootView;
     }
 }

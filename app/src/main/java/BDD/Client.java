@@ -1,11 +1,12 @@
 package BDD;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by christophe on 03/04/2015.
  */
-public class Client {
+public class Client implements Serializable{
 
         // Id
         private long id;

@@ -121,7 +121,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             AFFECTATION_MATIERE_KEY_ID_MATIERE + " INTEGER, " + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + " INTEGER ,FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE +  ")  REFERENCES " + TABLE_NOMENCLATURE + "(" + KEY_ID + "), FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_MATIERE + ") REFERENCES " + TABLE_MATIERE + "(" + KEY_ID + "));";
 
     // AffectationCommande Tables - Column Names
-    public static final String AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE="id_nomenclature";
+        public static final String AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE="id_nomenclature";
     public static final String AFFECTATION_COMMANDE_KEY_ID_COMMANDE = "id_commande";
     public static final String AFFECTATION_COMMANDE_KEY_QUANTITE ="quantite";
 
@@ -380,7 +380,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         long id = c.getId();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(CLIENT_KEY_NOM,c.getNom());
+        values.put(CLIENT_KEY_NOM, c.getNom());
         values.put(CLIENT_KEY_PRENOM, c.getPrenom());
         values.put(CLIENT_KEY_ADRESSE, c.getAdresse());
         values.put(CLIENT_KEY_EMAIL, c.getEmail());
@@ -396,19 +396,21 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + " WHERE " + KEY_ID + " = " + id;
         Log.i(LOG,selectQuery);
-        Cursor c = db.rawQuery(selectQuery,null);
+        Cursor c = db.rawQuery(selectQuery, null);
         if(c!=null)
+        {
             c.moveToFirst();
 
-        Commande commande = new Commande();
-        assert commande!= null;
-        commande.setId(c.getInt(c.getColumnIndex(KEY_ID)));
-        commande.setClientId(c.getInt(c.getColumnIndex(COMMANDE_KEY_CLIENT_ID)));
-        commande.setTotal(c.getFloat(c.getColumnIndex(COMMANDE_KEY_TOTAL)));
-        commande.setDateCommande(c.getString(c.getColumnIndex(COMMANDE_KEY_DATECOMMANDE)));
-        commande.setNumCommande(c.getInt(c.getColumnIndex(COMMANDE_KEY_NUMCOMMANDE)));
-
-        return commande;
+            Commande commande = new Commande();
+            commande.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+            commande.setClientId(c.getInt(c.getColumnIndex(COMMANDE_KEY_CLIENT_ID)));
+            commande.setTotal(c.getFloat(c.getColumnIndex(COMMANDE_KEY_TOTAL)));
+            commande.setDateCommande(c.getString(c.getColumnIndex(COMMANDE_KEY_DATECOMMANDE)));
+            commande.setNumCommande(c.getInt(c.getColumnIndex(COMMANDE_KEY_NUMCOMMANDE)));
+            c.close();
+            return commande;
+        }
+        return null;
     }
 
     public List<Commande> getAllCommandeByClient(long id)
@@ -442,6 +444,36 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return commandes;
     }
 
+    public List<Commande> getAllCommande()
+    {
+        List<Commande> listeCommande = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + ";";
+        Log.i(LOG, selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c != null)
+        {
+            if(c.moveToFirst())
+            {
+                do {
+
+                    Commande commande = new Commande();
+                    long idClient = c.getInt(c.getColumnIndex(COMMANDE_KEY_CLIENT_ID));
+                    ArrayList<Nomenclature>listeNomenclature = this.getAllNomenclatureFromIdClient(idClient);
+                    commande.setListeNomenclature(listeNomenclature);
+                    commande.setDateCommande(c.getString(c.getColumnIndex(COMMANDE_KEY_DATECOMMANDE)));
+                    commande.setClientId(idClient);
+                    commande.setNumCommande(c.getInt(c.getColumnIndex(COMMANDE_KEY_NUMCOMMANDE)));
+                    commande.setTotal(c.getDouble(c.getColumnIndex(COMMANDE_KEY_TOTAL)));
+                    listeCommande.add(commande);
+
+
+                }while(c.moveToNext());
+            }
+            c.close();
+        }
+        return listeCommande;
+    }
     public List<Devis> getAllDevisByProspect(long id)
     {
         List<Devis> listeDevis = new ArrayList<>();
@@ -488,6 +520,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             {
                 int quantite = commande.getListeNomenclature().get(i).getQuantite();
                 long id_nomenclature = commande.getListeNomenclature().get(i).getId();
+                if(quantite > 0 )
                 createAffectionCommande(id_nomenclature, id_commande, quantite, db);
             }
 
@@ -524,6 +557,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             {
                 int quantite = devis.getListeNomenclatures().get(i).getQuantite();
                 long id_nomenclature = devis.getListeNomenclatures().get(i).getId();
+                if(quantite > 0)
                 createAffectationDevis(id_nomenclature, id_devis, quantite, db);
             }
 
@@ -609,9 +643,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                                 }while(deuxieme.moveToNext());
                                 details.append("\n\n");
                             }
+                            deuxieme.close();
                         }
                     }
                 }while(c.moveToNext());
+                c.close();
             }
             details.append("Prix total du devis : " + prixTotal + " € , Votre numéro de devis est le : " + numDevis);
             Prospect p = getProspect(idProspect);
@@ -729,7 +765,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         Log.i(LOG, selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.rawQuery(selectQuery,null);
+        Cursor c = db.rawQuery(selectQuery, null);
         if(c!= null)
             c.moveToFirst();
 
@@ -797,7 +833,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put(USER_KEY_EMAIL, "commercialplastprod@gmail.com");
             values.put(USER_KEY_MDP, "Commercialplastprod88");
-
             db.insert(TABLE_USER, null, values);
             Log.i(LOG, "USER CREE");
             System.out.println("UTILISATEUR BIEN CREE DANS LA BDD LOCALE DU TELEPHONE MDR");
@@ -814,13 +849,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             c.moveToFirst();
 
         User user = new User();
+        assert(c != null);
         user.setId(c.getInt(c.getColumnIndex(KEY_ID)));
         user.setEmail_user(c.getString(c.getColumnIndex(USER_KEY_EMAIL)));
         user.setMdp_user(c.getString(c.getColumnIndex(USER_KEY_MDP)));
-
+        c.close();
         return user;
     }
-
     // ----------------------------------- Matiere table methods ------------------------------- //
     // Get Quantite Matiere
     public int getQuantiteMatiere(long id_nomenclature,long id_matiere)
@@ -828,12 +863,16 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_AFFECTATION_MATIERE + " WHERE " + AFFECTATION_MATIERE_KEY_ID_MATIERE + " = " +  id_matiere + " AND " + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + " = " + id_nomenclature + " ;";
         Log.i(LOG, selectQuery);
-        Cursor c = db.rawQuery(selectQuery,null);
+        Cursor c = db.rawQuery(selectQuery, null);
         if(c!=null)
+        {
             c.moveToFirst();
+            int quantite = c.getInt(c.getColumnIndex(AFFECTATION_MATIERE_KEY_QUANTITE));
+            c.close();
+            return quantite;
+        }
 
-        int quantite = c.getInt(c.getColumnIndex(AFFECTATION_MATIERE_KEY_QUANTITE));
-        return quantite;
+        return -1;
     }
 
     public Matiere getMatiere(long id)
@@ -843,13 +882,17 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         Log.i(LOG, selectQuery);
         Cursor c = db.rawQuery(selectQuery,null);
         if(c!=null)
+        {
             c.moveToFirst();
-        Matiere matiere = new Matiere();
-        matiere.setId(c.getInt(c.getColumnIndex(KEY_ID)));
-        matiere.setNom(c.getString(c.getColumnIndex(MATIERE_KEY_NOM)));
-        matiere.setPrix(c.getFloat(c.getColumnIndex(MATIERE_KEY_PRIX)));
+            Matiere matiere = new Matiere();
+            matiere.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+            matiere.setNom(c.getString(c.getColumnIndex(MATIERE_KEY_NOM)));
+            matiere.setPrix(c.getFloat(c.getColumnIndex(MATIERE_KEY_PRIX)));
 
-        return matiere;
+            return matiere;
+        }
+
+        return null;
     }
 
     public ArrayList<Matiere> getAllMatieres()
@@ -872,6 +915,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 listeMatieres.add(matiere);
 
             }while(c.moveToNext());
+            c.close();
         }
 
         return listeMatieres;
@@ -895,6 +939,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                     listeMatiere.add(matiere);
 
                 }while(c.moveToNext());
+                c.close();
             }
         return listeMatiere;
     }
@@ -920,6 +965,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 nomenclatures.add(nomenclature);
 
             }while(c.moveToNext());
+            c.close();
         }
 
         return nomenclatures;
@@ -938,9 +984,35 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             nomenclature.setNom(c.getString(c.getColumnIndex(NOMENCLATURE_KEY_NOM)));
             ArrayList<Matiere> matieres = this.getAllMatiereForOneNomenclatureById(id);
             nomenclature.setListeMatiere(matieres);
+            c.close();
         }
 
         return nomenclature;
+    }
+
+    /* Getting All Affectation Commande */
+    public List<AffectationCommande> getAllAffectationCommande()
+    {
+        List<AffectationCommande> listeAffectation = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_AFFECTATION_COMMANDE + ";" ;
+        Log.i(LOG,selectQuery);
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c != null)
+        {
+            if(c.moveToFirst())
+            {
+                do {
+                    AffectationCommande affectationCommande = new AffectationCommande();
+                    affectationCommande.setIdNomenclature(c.getLong(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE)));
+                    affectationCommande.setIdCommande(c.getLong(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_ID_COMMANDE)));
+                    affectationCommande.setQuantite(c.getInt(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_QUANTITE)));
+                    listeAffectation.add(affectationCommande);
+                }while(c.moveToNext());
+                c.close();
+            }
+        }
+        return listeAffectation;
     }
 
     /* Getting AllAffectationMAtiere */
@@ -963,6 +1035,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                     affectationMatieres.add(affectationMatiere);
 
                 }while(c.moveToNext());
+                c.close();
             }
         }
         return affectationMatieres;
@@ -1084,12 +1157,14 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                                     details.append("\t**  MATIERE ASSOCIEE : " + nomMatiere + " DE PRIX : " + prixMatiere + " €, EN QUANTITE : " + quantiteMatiere + "  **\n");
                                 }while(deuxieme.moveToNext());
                                 details.append("\n\n");
+                                deuxieme.close();
                             }
                         }
                     }
                 }while(c.moveToNext());
             }
             details.append("Prix total du devis : " + prixTotal + " €");
+            c.close();
         }
         return details.toString();
     }

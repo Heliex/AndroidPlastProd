@@ -1,9 +1,11 @@
 package BDD;
 
+import java.io.Serializable;
+
 /**
  * Created by Kirill on 11/06/2015.
  */
-public class Prospect {
+public class Prospect implements Serializable{
     // Id
     private long id;
     // Nom
