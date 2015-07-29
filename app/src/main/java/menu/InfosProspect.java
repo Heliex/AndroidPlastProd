@@ -157,6 +157,7 @@ public class InfosProspect extends Fragment
                         bundle.putString("TelephoneProspect", p.getTelephone());
                         bundle.putString("EmailProspect",p.getEmail());
                         bundle.putString("DateProspect", p.getDate());
+                        bundle.putInt("Pourcentage",p.getPourcentage());
 
                         Fragment fragment = new ModifierProspect();
                         fragment.setArguments(bundle);

@@ -1,6 +1,7 @@
 package menu;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.net.Uri;
@@ -22,8 +23,13 @@ import barbeasts.plastprod.R;
 import model.MainActivity;
 import model.RDV;
 import model.Utility;
+import other.SynchroAffectationCommande;
+import other.SynchroAffectationDevis;
+import other.SynchroAffectationMatiere;
 import other.SynchroBase;
 import other.SynchroCommande;
+import other.SynchroMatiere;
+import other.SynchroNomenclature;
 import other.SynchroProspect;
 
 
@@ -61,12 +67,23 @@ public class HomeFragment extends Fragment {
         }
         if(imageButton != null)
         {
+            MainActivity activity = (MainActivity) getActivity();
+            final ProgressDialog mDialog = new ProgressDialog(activity.getInstance());
+
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mDialog.setCancelable(false);
+                    mDialog.setMessage("Mise à jour de la base de données");
+                    mDialog.show();
                     new SynchroBase((MainActivity)getActivity()).execute();
                     new SynchroProspect((MainActivity)getActivity()).execute();
                     new SynchroCommande((MainActivity)getActivity()).execute();
+                    new SynchroAffectationCommande((MainActivity)getActivity()).execute();
+                    new SynchroAffectationDevis((MainActivity)getActivity()).execute();
+                    new SynchroMatiere((MainActivity)getActivity()).execute();
+                    new SynchroNomenclature((MainActivity)getActivity()).execute();
+                    new SynchroAffectationMatiere((MainActivity)getActivity(),mDialog).execute();
                 }
             });
         }

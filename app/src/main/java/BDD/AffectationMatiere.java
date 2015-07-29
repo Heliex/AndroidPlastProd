@@ -8,9 +8,11 @@ public class AffectationMatiere {
     private long idMatiere;
     private long idNomenclature;
     private int quantite;
+    private long id;
 
     public AffectationMatiere()
     {
+        this.id = 0;
         this.idMatiere = 0;
         this.idNomenclature = 0;
         this.quantite = 0;
@@ -44,5 +46,15 @@ public class AffectationMatiere {
     public void setQuantite(int quantite)
     {
         this.quantite = quantite;
+    }
+
+    public void setId(long id)
+    {
+        this.id = id;
+    }
+
+    public long getId()
+    {
+        return this.id;
     }
 }

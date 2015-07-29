@@ -15,19 +15,22 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import BDD.AffectationCommande;
 import BDD.DataBaseHandler;
-import BDD.Prospect;
 import model.MainActivity;
 
 /**
  * Created by Christophe on 19/07/2015. For PlastProd Project on purpose
  */
-public class SynchroProspect extends AsyncTask<Void,Void,Void> {
+public class SynchroAffectationCommande extends AsyncTask<Void,Void,Void> {
 
     MainActivity mActivity;
-    public SynchroProspect(MainActivity activity) {
+
+    public SynchroAffectationCommande(MainActivity activity) {
         this.mActivity = activity;
     }
+
+
 
     @Override
     protected Void doInBackground(Void... params) {
@@ -40,10 +43,10 @@ public class SynchroProspect extends AsyncTask<Void,Void,Void> {
         try
         {
             DataBaseHandler db = new DataBaseHandler(mActivity.getApplicationContext());
-            List<Prospect> listeProspect = db.getAllProspects();
+            List<AffectationCommande> listeAffectation = db.getAllAffectationCommande();
             Gson gson = new GsonBuilder().create();
-            String arrayListToJson=gson.toJson(listeProspect);
-            URL link = new URL("http://christophe.gerard88.free.fr/SynchroBase/SynchroProspect.php");
+            String arrayListToJson=gson.toJson(listeAffectation);
+            URL link = new URL("http://christophe.gerard88.free.fr/SynchroBase/SynchroAffectationCommande.php?idCommercial=1");
             HttpURLConnection connection = (HttpURLConnection)link.openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(15000);

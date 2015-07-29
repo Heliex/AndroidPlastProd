@@ -1,6 +1,8 @@
 package other;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 
 import com.google.gson.Gson;
@@ -15,19 +17,24 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import BDD.AffectationMatiere;
 import BDD.DataBaseHandler;
-import BDD.Prospect;
 import model.MainActivity;
 
 /**
  * Created by Christophe on 19/07/2015. For PlastProd Project on purpose
  */
-public class SynchroProspect extends AsyncTask<Void,Void,Void> {
+public class SynchroAffectationMatiere extends AsyncTask<Void,Void,Void> {
 
     MainActivity mActivity;
-    public SynchroProspect(MainActivity activity) {
+    ProgressDialog dialog;
+
+    public SynchroAffectationMatiere(MainActivity activity,ProgressDialog mDialog) {
         this.mActivity = activity;
+        this.dialog = mDialog;
     }
+
+
 
     @Override
     protected Void doInBackground(Void... params) {
@@ -40,10 +47,10 @@ public class SynchroProspect extends AsyncTask<Void,Void,Void> {
         try
         {
             DataBaseHandler db = new DataBaseHandler(mActivity.getApplicationContext());
-            List<Prospect> listeProspect = db.getAllProspects();
+            List<AffectationMatiere> listeAffectation = db.getAllAffectationMatiere();
             Gson gson = new GsonBuilder().create();
-            String arrayListToJson=gson.toJson(listeProspect);
-            URL link = new URL("http://christophe.gerard88.free.fr/SynchroBase/SynchroProspect.php");
+            String arrayListToJson=gson.toJson(listeAffectation);
+            URL link = new URL("http://christophe.gerard88.free.fr/SynchroBase/SynchroAffectationMatiere.php");
             HttpURLConnection connection = (HttpURLConnection)link.openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(15000);
@@ -73,5 +80,15 @@ public class SynchroProspect extends AsyncTask<Void,Void,Void> {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        if(this.dialog.isShowing())
+        {
+            this.dialog.dismiss();
+        }
+        Toast.makeText(mActivity.getApplicationContext(),"Mise à jour éffectuée avec succès",Toast.LENGTH_SHORT).show();
     }
 }

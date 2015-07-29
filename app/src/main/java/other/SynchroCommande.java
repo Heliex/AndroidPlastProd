@@ -1,6 +1,5 @@
 package other;
 
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
 
@@ -26,21 +25,10 @@ import model.MainActivity;
 public class SynchroCommande extends AsyncTask<Void,Void,Void> {
 
     MainActivity mActivity;
-    ProgressDialog dialog;
 
     public SynchroCommande(MainActivity activity) {
         this.mActivity = activity;
-        this.dialog = new ProgressDialog(activity.getInstance());
     }
-
-    @Override
-    public void onPreExecute()
-    {
-        this.dialog.setMessage("Mise à jour de la base de données"  );
-        this.dialog.setCancelable(false);
-        this.dialog.show();
-    }
-
 
     @Override
     protected Void doInBackground(Void... params) {
@@ -57,8 +45,6 @@ public class SynchroCommande extends AsyncTask<Void,Void,Void> {
             Gson gson = new GsonBuilder().create();
             String arrayListToJson=gson.toJson(listeCommande);
             URL link = new URL("http://christophe.gerard88.free.fr/SynchroBase/SynchroCommande.php");
-            assert(link != null);
-            System.out.println(arrayListToJson);
             HttpURLConnection connection = (HttpURLConnection)link.openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(15000);
@@ -81,26 +67,12 @@ public class SynchroCommande extends AsyncTask<Void,Void,Void> {
                 chaine.append(line).append("\n");
             }
             System.out.println(chaine);
-            int responseCode = connection.getResponseCode();
-            System.out.println("Code réponse : " + responseCode);
-            System.out.println("Header : " + connection.getHeaderFields().toString());
-            System.out.println("Message de réponse : " + connection.getResponseMessage());
-            if(responseCode == 200)
-            {
-                if(dialog.isShowing())
-                    dialog.dismiss();
-            }
-
             connection.disconnect();
         }
         catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-            if(dialog.isShowing())
-            {
-                dialog.dismiss();
-            }
         }
     }
 }

@@ -6,11 +6,13 @@ package BDD;
 public class AffectationCommande {
 
     private long idCommande;
+    private long id;
     private long idNomenclature;
     private int quantite;
 
     public AffectationCommande()
     {
+        this.id = 0;
         this.idCommande = 0;
         this.idNomenclature = 0;
         this.quantite = 0;
@@ -44,5 +46,15 @@ public class AffectationCommande {
     public void setQuantite(int quantite)
     {
         this.quantite = quantite;
+    }
+
+    public void setId(long id)
+    {
+        this.id = id;
+    }
+
+    public long getId()
+    {
+        return this.id;
     }
 }

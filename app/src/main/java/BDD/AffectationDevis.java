@@ -8,12 +8,14 @@ public class AffectationDevis {
     private long idDevis;
     private long idNomenclature;
     private int quantite;
+    private long id;
 
     public AffectationDevis()
     {
         this.idDevis = 0;
         this.idNomenclature = 0;
         this.quantite = 0;
+        this.id = 0;
     }
 
     public long getIdCommande()
@@ -44,5 +46,15 @@ public class AffectationDevis {
     public void setQuantite(int quantite)
     {
         this.quantite = quantite;
+    }
+
+    public void setId(long id)
+    {
+        this.id = id;
+    }
+
+    public long getId()
+    {
+        return this.id;
     }
 }

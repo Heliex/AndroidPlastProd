@@ -44,6 +44,7 @@ public class ModifierProspect extends Fragment
         String telephone = getArguments().getString("TelephoneProspect");
         String email = getArguments().getString("EmailProspect");
         String date = getArguments().getString("DateProspect");
+        final int pourcentage = getArguments().getInt("Pourcentage");
 
         editTextNom.setText(nom);
         editTextPrenom.setText(prenom);
@@ -71,7 +72,7 @@ public class ModifierProspect extends Fragment
                 p.setTelephone(telephone);
                 p.setEmail(email);
                 p.setDate(date);
-
+                p.setPourcentage(pourcentage);
                 if (db.updateProspect(p) > 0) {
                     Fragment fragment = new HomeFragment();
                     FragmentManager fragmentManager = getFragmentManager();

@@ -159,15 +159,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        Log.i(LOG, CREATE_TABLE_CLIENT);
-        Log.i(LOG,CREATE_TABLE_COMMANDE);
-        Log.i(LOG, CREATE_TABLE_PROSPECT);
-        Log.i(LOG,CREATE_TABLE_USER);
-        Log.i(LOG,CREATE_TABLE_NOMENCLATURE);
-        Log.i(LOG, CREATE_TABLE_MATIERE);
-        Log.i(LOG,CREATE_TABLE_AFFECTATION_MATIERE);
-        Log.i(LOG,CREATE_TABLE_AFFECTATION_COMMANDE);
-        Log.i(LOG,CREATE_TABLE_DEVIS);
         db.execSQL(CREATE_TABLE_CLIENT);
         db.execSQL(CREATE_TABLE_COMMANDE);
         db.execSQL(CREATE_TABLE_PROSPECT);
@@ -258,8 +249,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         List<Client> clients = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_CLIENT ;
 
-        Log.i(LOG, selectQuery);
-
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
 
@@ -290,8 +279,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
 
         String selectQuery = "SELECT * FROM " + TABLE_CLIENT + " WHERE " + CLIENT_KEY_EMAIL + " = " + "\"" + email + "\"";
-
-        Log.i(LOG, selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = db.rawQuery(selectQuery,null);
@@ -319,7 +306,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 ", " + TABLE_AFFECTATION_COMMANDE + ", " + TABLE_CLIENT + " WHERE " + TABLE_CLIENT + "." + KEY_ID + " = " + id + " AND " + TABLE_NOMENCLATURE + "." + KEY_ID + " = " +
                     TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE + " AND " + TABLE_COMMANDE + "." + KEY_ID + " = " + TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_COMMANDE + " AND " + TABLE_CLIENT + "." + KEY_ID + " = " + TABLE_COMMANDE + "." + COMMANDE_KEY_CLIENT_ID + ";" ;
 
-        Log.i(LOG, selectQuery);
         Cursor c = db.rawQuery(selectQuery,null);
         if(c!= null)
         {
@@ -351,7 +337,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 ", " + TABLE_AFFECTATION_DEVIS + ", " + TABLE_PROSPECT + " WHERE " + TABLE_PROSPECT + "." + KEY_ID + " = " + id + " AND " + TABLE_NOMENCLATURE + "." + KEY_ID + " = " +
                 TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE + " AND " + TABLE_DEVIS + "." + KEY_ID + " = " + TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_KEY_ID_DEVIS + " AND " + TABLE_PROSPECT + "." + KEY_ID + " = " + TABLE_DEVIS + "." + DEVIS_KEY_ID_PROSPECT + ";" ;
 
-        Log.i(LOG, selectQuery);
         Cursor c = db.rawQuery(selectQuery,null);
         if(c!= null)
         {
@@ -395,7 +380,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + " WHERE " + KEY_ID + " = " + id;
-        Log.i(LOG,selectQuery);
         Cursor c = db.rawQuery(selectQuery, null);
         if(c!=null)
         {
@@ -417,7 +401,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         List<Commande> commandes = new ArrayList<Commande>();
         String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + " WHERE " + COMMANDE_KEY_CLIENT_ID + " = " + id + " ORDER BY " + COMMANDE_KEY_DATECOMMANDE + " ASC ;"  ;
-        Log.i(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
@@ -448,7 +431,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         List<Commande> listeCommande = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + ";";
-        Log.i(LOG, selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
         if(c != null)
@@ -478,7 +460,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         List<Devis> listeDevis = new ArrayList<>();
         String selectQuery = " SELECT * FROM " + TABLE_DEVIS + " WHERE " + DEVIS_KEY_ID_PROSPECT + " = " + id  + " ;";
-        Log.i(LOG,selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
         if(c != null)
@@ -582,7 +563,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_DEVIS + " WHERE " + DEVIS_KEY_ID_PROSPECT + " = " + id + " ;" ;
         Cursor c = db.rawQuery(selectQuery,null);
-        Log.i(LOG, selectQuery);
         if(c != null)
         {
             if(c.moveToFirst())
@@ -611,7 +591,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         String selectQuery = " SELECT " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " as NomNomenclature, " + TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_QUANTITE + " as QuantiteNomenclature FROM " +
         TABLE_AFFECTATION_DEVIS + ", " + TABLE_NOMENCLATURE + " WHERE " + TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE + " = " + TABLE_NOMENCLATURE + "." + KEY_ID +
         " AND " + TABLE_AFFECTATION_DEVIS + "." + AFFECTATION_DEVIS_KEY_ID_DEVIS + " = " + id;
-        Log.i(LOG,selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
         if(c!= null)
@@ -628,7 +607,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                         selectQuery = " SELECT " + TABLE_MATIERE + "." + MATIERE_KEY_NOM + " as NomMatiere, " + TABLE_MATIERE + "." + MATIERE_KEY_PRIX + " as PrixMatiere, " + TABLE_AFFECTATION_MATIERE + "." +
                                 AFFECTATION_MATIERE_KEY_QUANTITE + " as QuantiteMatiere FROM " + TABLE_AFFECTATION_MATIERE + ", " + TABLE_MATIERE + ", " + TABLE_NOMENCLATURE +  " WHERE " + TABLE_MATIERE + "." + KEY_ID + " = " +
                                 TABLE_AFFECTATION_MATIERE + "." + AFFECTATION_MATIERE_KEY_ID_MATIERE + " AND " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " = " + "\"" + nomNomenclature + "\"" + ";";
-                        Log.i(LOG,selectQuery);
                         Cursor deuxieme = db.rawQuery(selectQuery,null);
                         if(deuxieme != null)
                         {
@@ -700,7 +678,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_PROSPECT + " WHERE " + KEY_ID + " = " + id;
-        Log.i(LOG,selectQuery);
         Cursor c = db.rawQuery(selectQuery, null);
         if(c!=null)
             c.moveToFirst();
@@ -727,8 +704,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         List<Prospect> prospects = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_PROSPECT ;
-
-        Log.i(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
@@ -761,8 +736,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
 
         String selectQuery = "SELECT * FROM " + TABLE_PROSPECT + " WHERE " + PROSPECT_KEY_EMAIL + " = " + "\"" + email + "\"";
-
-        Log.i(LOG, selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor c = db.rawQuery(selectQuery, null);
@@ -834,7 +807,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             values.put(USER_KEY_EMAIL, "commercialplastprod@gmail.com");
             values.put(USER_KEY_MDP, "Commercialplastprod88");
             db.insert(TABLE_USER, null, values);
-            Log.i(LOG, "USER CREE");
             System.out.println("UTILISATEUR BIEN CREE DANS LA BDD LOCALE DU TELEPHONE MDR");
     }
 
@@ -842,7 +814,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     public User getUser()
     {
         String selectQuery = "SELECT * FROM " + TABLE_USER ;
-        Log.i(LOG, selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
         if(c!= null)
@@ -862,7 +833,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_AFFECTATION_MATIERE + " WHERE " + AFFECTATION_MATIERE_KEY_ID_MATIERE + " = " +  id_matiere + " AND " + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + " = " + id_nomenclature + " ;";
-        Log.i(LOG, selectQuery);
         Cursor c = db.rawQuery(selectQuery, null);
         if(c!=null)
         {
@@ -879,7 +849,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_MATIERE + " WHERE " + KEY_ID + " = " + id  + ";";
-        Log.i(LOG, selectQuery);
         Cursor c = db.rawQuery(selectQuery,null);
         if(c!=null)
         {
@@ -900,7 +869,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Matiere> listeMatieres = new ArrayList<Matiere>();
         String selectQuery = "SELECT * FROM " + TABLE_MATIERE;
-        Log.i(LOG, selectQuery);
         Cursor c = db.rawQuery(selectQuery,null);
 
         if(c.moveToFirst())
@@ -926,7 +894,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         ArrayList<Matiere> listeMatiere = new ArrayList<Matiere>();
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT " + TABLE_MATIERE + "." + KEY_ID + " as mat, " + TABLE_MATIERE + "." + MATIERE_KEY_PRIX + " as matprix, " + TABLE_MATIERE + "." + MATIERE_KEY_NOM  + " as matnom FROM " + TABLE_NOMENCLATURE + "," + TABLE_MATIERE + "," + TABLE_AFFECTATION_MATIERE + " WHERE " +TABLE_NOMENCLATURE + "." + KEY_ID + " = " + TABLE_AFFECTATION_MATIERE + "." + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + " AND " + TABLE_MATIERE + "." + KEY_ID + " = " + TABLE_AFFECTATION_MATIERE + "." + AFFECTATION_MATIERE_KEY_ID_MATIERE + " AND " + TABLE_NOMENCLATURE  + "." + KEY_ID + " = " + id_nomenclature + ";";
-        Log.i(LOG, selectQuery);
         Cursor c = db.rawQuery(selectQuery,null);
         if(c!=null)
             if(c.moveToFirst())
@@ -951,7 +918,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         ArrayList<Nomenclature> nomenclatures = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_NOMENCLATURE + ";";
-        Log.i(LOG, selectQuery);
         Cursor c = db.rawQuery(selectQuery,null);
         if(c.moveToFirst())
         {
@@ -973,7 +939,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     public Nomenclature getNomenclatureById(long id)
     {
         String selectQuery = "SELECT * FROM " + TABLE_NOMENCLATURE + " WHERE " + KEY_ID + " = " + id + ";";
-        Log.i(LOG,selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
         Nomenclature nomenclature = new Nomenclature();
@@ -995,7 +960,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     {
         List<AffectationCommande> listeAffectation = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_AFFECTATION_COMMANDE + ";" ;
-        Log.i(LOG,selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
         if(c != null)
@@ -1007,6 +971,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                     affectationCommande.setIdNomenclature(c.getLong(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE)));
                     affectationCommande.setIdCommande(c.getLong(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_ID_COMMANDE)));
                     affectationCommande.setQuantite(c.getInt(c.getColumnIndex(AFFECTATION_COMMANDE_KEY_QUANTITE)));
+                    affectationCommande.setId(c.getLong(c.getColumnIndex(KEY_ID)));
                     listeAffectation.add(affectationCommande);
                 }while(c.moveToNext());
                 c.close();
@@ -1015,12 +980,35 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return listeAffectation;
     }
 
+    /* Getting All Affectation Commande */
+    public List<AffectationDevis> getAllAffectationDevis()
+    {
+        List<AffectationDevis> listeAffectation = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_AFFECTATION_DEVIS + ";" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c != null)
+        {
+            if(c.moveToFirst())
+            {
+                do {
+                    AffectationDevis affectationDevis = new AffectationDevis();
+                    affectationDevis.setIdNomenclature(c.getLong(c.getColumnIndex(AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE)));
+                    affectationDevis.setIdCommande(c.getLong(c.getColumnIndex(AFFECTATION_DEVIS_KEY_ID_DEVIS)));
+                    affectationDevis.setQuantite(c.getInt(c.getColumnIndex(AFFECTATION_DEVIS_QUANTITE)));
+                    affectationDevis.setId(c.getLong(c.getColumnIndex(KEY_ID)));
+                    listeAffectation.add(affectationDevis);
+                }while(c.moveToNext());
+                c.close();
+            }
+        }
+        return listeAffectation;
+    }
     /* Getting AllAffectationMAtiere */
     public List<AffectationMatiere> getAllAffectationMatiere()
     {
         List<AffectationMatiere> affectationMatieres = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_AFFECTATION_MATIERE + " ;";
-        Log.i(LOG,selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery,null);
         if(c != null)
@@ -1032,6 +1020,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                     affectationMatiere.setIdNomenclature(c.getLong(c.getColumnIndex(AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE)));
                     affectationMatiere.setIdMatiere(c.getLong(c.getColumnIndex(AFFECTATION_MATIERE_KEY_ID_MATIERE)));
                     affectationMatiere.setQuantite(c.getInt(c.getColumnIndex(AFFECTATION_MATIERE_KEY_QUANTITE)));
+                    affectationMatiere.setId(c.getLong(c.getColumnIndex(KEY_ID)));
                     affectationMatieres.add(affectationMatiere);
 
                 }while(c.moveToNext());
@@ -1126,7 +1115,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         String selectQuery = " SELECT " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " as NomNomenclature, " + TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_QUANTITE + " as QuantiteNomenclature FROM " +
                 TABLE_AFFECTATION_COMMANDE + ", " + TABLE_NOMENCLATURE + " WHERE " + TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_NOMENCLATURE + " = " + TABLE_NOMENCLATURE + "." + KEY_ID +
                 " AND " + TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_ID_COMMANDE + " = " + id;
-        Log.i(LOG,selectQuery);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
         if(c!= null)
@@ -1143,7 +1131,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                         selectQuery = " SELECT " + TABLE_MATIERE + "." + MATIERE_KEY_NOM + " as NomMatiere, " + TABLE_MATIERE + "." + MATIERE_KEY_PRIX + " as PrixMatiere, " + TABLE_AFFECTATION_MATIERE + "." +
                                 AFFECTATION_MATIERE_KEY_QUANTITE + " as QuantiteMatiere FROM " + TABLE_AFFECTATION_MATIERE + ", " + TABLE_MATIERE + ", " + TABLE_NOMENCLATURE +  " WHERE " + TABLE_MATIERE + "." + KEY_ID + " = " +
                                 TABLE_AFFECTATION_MATIERE + "." + AFFECTATION_MATIERE_KEY_ID_MATIERE + " AND " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " = " + "\"" + nomNomenclature + "\"" + ";";
-                        Log.i(LOG,selectQuery);
                         Cursor deuxieme = db.rawQuery(selectQuery,null);
                         if(deuxieme != null)
                         {
