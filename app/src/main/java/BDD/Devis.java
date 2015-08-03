@@ -10,7 +10,7 @@ import java.util.Calendar;
 public class Devis {
 
     private long id;
-    private long id_prospect;
+    private long prospect_id;
     private double total;
     private int numDevis;
     private String dateDevis;
@@ -22,7 +22,7 @@ public class Devis {
     public Devis()
     {
         this.id = 0;
-        this.id_prospect = 0;
+        this.prospect_id = 0;
         this.total = 0;
         this.numDevis = 0;
         this.dateDevis = null;
@@ -31,7 +31,7 @@ public class Devis {
 
     public Devis(long id_prospect,double total,int numDevis,ArrayList<Nomenclature> listeNomenclatures)
     {
-        this.id_prospect = id_prospect;
+        this.prospect_id = id_prospect;
         this.total = total;
         this.numDevis = numDevis;
         this.listeNomenclatures = listeNomenclatures;
@@ -50,12 +50,12 @@ public class Devis {
 
     public long getId_prospect()
     {
-        return this.id_prospect;
+        return this.prospect_id;
     }
 
-    public void setId_prospect(long id_prospect)
+    public void setId_prospect(long prospect_id)
     {
-        this.id_prospect = id_prospect;
+        this.prospect_id = prospect_id;
     }
 
     public void setTotal(double total)

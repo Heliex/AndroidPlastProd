@@ -10,6 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.List;
+
+import BDD.Client;
 import BDD.DataBaseHandler;
 import BDD.User;
 import barbeasts.plastprod.R;
@@ -24,6 +30,7 @@ public class LoginActivity extends Activity {
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private static User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,33 +52,60 @@ public class LoginActivity extends Activity {
                 // Récuperer la valeur des champs.
                 String email = mEmailView.getText().toString();
                 String mdp = mPasswordView.getText().toString();
+                if(!email.isEmpty()  && !mdp.isEmpty())
+                {
+                    DataBaseHandler db = new DataBaseHandler(getApplicationContext()); // BDD
+                    long idUser = db.UserExists(email,mdp);
+                    if(idUser != -1 )
+                    {
 
-                DataBaseHandler db = new DataBaseHandler(getApplicationContext()); // BDD
-                User user = db.getUser(); // Recupere le user stocker dans la bdd locale
-                if(email.equals(user.getEmail_user())) // Si email == email dans la bdd
-                {
-                    if(mdp.equals(user.getMdp_user())) // Si mdp == mdp dans la bdd
-                    {
-                        startActivity(main); // On lance le mainActivity=> Redirige vers l'accueil
-                        Toast.makeText(getApplicationContext(),"Connecté",Toast.LENGTH_SHORT).show();
+                        user = db.getUserById(idUser);
+                        if(user != null)
+                        {
+                            if(email.equals(user.getEmail_user())) // Si email == email dans la bdd
+                            {
+                                if(mdp.equals(user.getMdp_user())) // Si mdp == mdp dans la bdd
+                                {
+                                    startActivity(main); // On lance le mainActivity=> Redirige vers l'accueil
+                                    Toast.makeText(getApplicationContext(),"Connecté",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
                     }
-                    else // Sinon erreur dans le mdp
+                    else
                     {
-                        Toast.makeText(getApplicationContext(),"Erreur dans la saisie du mot de passe",Toast.LENGTH_SHORT).show();
+                        if(email.length() > 0 && mdp.length() > 0)
+                        {
+                            if(db.isEmailProblem(email))
+                            {
+                                Toast.makeText(getApplicationContext(),"Erreur de saisie dans l'email",Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(),"Erreur de saisie dans le mdp",Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }
                 }
-                else if(!email.equals(user.getEmail_user()) && !email.isEmpty()) // Sinon si email != email dans BDD et email pas vide
+                else if(email.isEmpty() && mdp.length() > 0)
                 {
-                    Toast.makeText(getApplicationContext(),"Erreur dans la saisie de l'email",Toast.LENGTH_SHORT).show(); // erreur dans le mail
+                    Toast.makeText(getApplicationContext(),"Aucun email saisi",Toast.LENGTH_SHORT).show();
                 }
-                else // Sinon aucun champs saisie
+                else if(email.length() > 0 && mdp.isEmpty())
+                {
+                    Toast.makeText(getApplicationContext(),"Aucun mdp saisi",Toast.LENGTH_SHORT).show();
+                }
+                else
                 {
                     Toast.makeText(getApplicationContext(),"Aucun champ rempli",Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
+    }
+
+    public static User getUser()
+    {
+        return user;
     }
 }
 

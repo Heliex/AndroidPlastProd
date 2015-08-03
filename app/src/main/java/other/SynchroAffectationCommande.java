@@ -17,6 +17,7 @@ import java.util.List;
 
 import BDD.AffectationCommande;
 import BDD.DataBaseHandler;
+import model.LoginActivity;
 import model.MainActivity;
 
 /**
@@ -46,11 +47,12 @@ public class SynchroAffectationCommande extends AsyncTask<Void,Void,Void> {
             List<AffectationCommande> listeAffectation = db.getAllAffectationCommande();
             Gson gson = new GsonBuilder().create();
             String arrayListToJson=gson.toJson(listeAffectation);
-            URL link = new URL("http://christophe.gerard88.free.fr/SynchroBase/SynchroAffectationCommande.php?idCommercial=1");
+            long idCommercial = LoginActivity.getUser().getId();
+            URL link = new URL("http://heliex.alwaysdata.net//SynchroBase/SynchroAffectationCommande.php?idCommercial="+idCommercial);
             HttpURLConnection connection = (HttpURLConnection)link.openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(15000);
-            connection.setRequestProperty("Content-Type", "application/json" );
+            connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
             connection.setDoOutput(true);
             connection.setDoInput(true);
@@ -68,7 +70,6 @@ public class SynchroAffectationCommande extends AsyncTask<Void,Void,Void> {
             {
                 chaine.append(line).append("\n");
             }
-            System.out.println(chaine);
             connection.disconnect();
         }
         catch (MalformedURLException e) {

@@ -18,6 +18,7 @@ import java.util.List;
 
 import BDD.DataBaseHandler;
 import BDD.Matiere;
+import model.LoginActivity;
 import model.MainActivity;
 
 /**
@@ -47,7 +48,8 @@ public class SynchroMatiere extends AsyncTask<Void,Void,Void> {
             List<Matiere> listeMatiere = db.getAllMatieres();
             Gson gson = new GsonBuilder().create();
             String arrayListToJson=gson.toJson(listeMatiere);
-            URL link = new URL("http://christophe.gerard88.free.fr/SynchroBase/SynchroMatiere.php");
+            long idCommercial = LoginActivity.getUser().getId();
+            URL link = new URL("http://heliex.alwaysdata.net//SynchroBase/SynchroMatiere.php?idCommercial=" + idCommercial);
             HttpURLConnection connection = (HttpURLConnection)link.openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(15000);
@@ -69,7 +71,6 @@ public class SynchroMatiere extends AsyncTask<Void,Void,Void> {
             {
                 chaine.append(line).append("\n");
             }
-            System.out.println(chaine);
             connection.disconnect();
         }
         catch (MalformedURLException e) {

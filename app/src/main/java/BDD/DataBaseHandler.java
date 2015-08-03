@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import junit.framework.Test;
 
@@ -133,7 +134,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             "FOREIGN KEY (" + AFFECTATION_MATIERE_KEY_ID_NOMENCLATURE + ") REFERENCES " + TABLE_NOMENCLATURE +
             "(" + KEY_ID + "), FOREIGN KEY ( " + AFFECTATION_COMMANDE_KEY_ID_COMMANDE + ") REFERENCES " + TABLE_COMMANDE + "(" + KEY_ID + "));";
 
-    public static final String DEVIS_KEY_ID_PROSPECT = "id_prospect";
+    public static final String DEVIS_KEY_ID_PROSPECT = "prospect_id";
     public static final String DEVIS_KEY_TOTAL = "total";
     public static final String DEVIS_KEY_NUMDEVIS = "numDevis";
     public static final String DEVIS_KEY_DATE = "dateDevis";
@@ -447,6 +448,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                     commande.setClientId(idClient);
                     commande.setNumCommande(c.getInt(c.getColumnIndex(COMMANDE_KEY_NUMCOMMANDE)));
                     commande.setTotal(c.getDouble(c.getColumnIndex(COMMANDE_KEY_TOTAL)));
+                    commande.setId(c.getLong(c.getColumnIndex(KEY_ID)));
                     listeCommande.add(commande);
 
 
@@ -481,6 +483,33 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             c.close();
         }
         return listeDevis;
+    }
+
+    public List<Devis> getAllDevis()
+    {
+        List<Devis> listeDevis = new ArrayList<>();
+        String selectQuery = " SELECT * FROM " + TABLE_DEVIS + ";";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c != null)
+        {
+            if(c.moveToFirst())
+            {
+                do {
+                    Devis devis = new Devis();
+                    devis.setId(c.getLong(c.getColumnIndex(KEY_ID)));
+                    devis.setDateDevis(c.getString(c.getColumnIndex(DEVIS_KEY_DATE)));
+                    devis.setTotal(c.getDouble(c.getColumnIndex(DEVIS_KEY_TOTAL)));
+                    devis.setNumDevis(c.getInt(c.getColumnIndex(DEVIS_KEY_NUMDEVIS)));
+                    devis.setId_prospect(c.getLong(c.getColumnIndex(DEVIS_KEY_ID_PROSPECT)));
+                    devis.setListeNomenclatures(this.getAllNomenclatureFromIdProspect(devis.getId_prospect()));
+                    listeDevis.add(devis);
+
+                }while(c.moveToNext());
+                c.close();
+            }
+        }
+        return listeDevis ;
     }
 
     /* Create Commande   */
@@ -803,30 +832,33 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     /* Create user */
     public void  createUser(SQLiteDatabase db)
     {
-            ContentValues values = new ContentValues();
-            values.put(USER_KEY_EMAIL, "commercialplastprod@gmail.com");
-            values.put(USER_KEY_MDP, "Commercialplastprod88");
-            db.insert(TABLE_USER, null, values);
-            System.out.println("UTILISATEUR BIEN CREE DANS LA BDD LOCALE DU TELEPHONE MDR");
+        ContentValues values = new ContentValues();
+
+        values.put(USER_KEY_EMAIL, "commercial");
+        values.put(USER_KEY_MDP, "commercial1");
+        db.insert(TABLE_USER, null, values);
+        values = new ContentValues();
+        values.put(USER_KEY_EMAIL, "commercial2");
+        values.put(USER_KEY_MDP, "commercial22");
+        db.insert(TABLE_USER, null, values);
+        values = new ContentValues();
+        values.put(USER_KEY_EMAIL, "commercial3");
+        values.put(USER_KEY_MDP, "commercial33");
+        db.insert(TABLE_USER, null, values);
+        values = new ContentValues();
+        values.put(USER_KEY_EMAIL, "commercial4");
+        values.put(USER_KEY_MDP, "commercial44");
+        db.insert(TABLE_USER, null, values);
+        values = new ContentValues();
+        values.put(USER_KEY_EMAIL, "commercial5");
+        values.put(USER_KEY_MDP, "commercial55");
+        db.insert(TABLE_USER, null, values);
+        values = new ContentValues();
+        values.put(USER_KEY_EMAIL, "commercial6");
+        values.put(USER_KEY_MDP, "commercial66");
+        db.insert(TABLE_USER, null, values);
     }
 
-    /* Get User */
-    public User getUser()
-    {
-        String selectQuery = "SELECT * FROM " + TABLE_USER ;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery(selectQuery,null);
-        if(c!= null)
-            c.moveToFirst();
-
-        User user = new User();
-        assert(c != null);
-        user.setId(c.getInt(c.getColumnIndex(KEY_ID)));
-        user.setEmail_user(c.getString(c.getColumnIndex(USER_KEY_EMAIL)));
-        user.setMdp_user(c.getString(c.getColumnIndex(USER_KEY_MDP)));
-        c.close();
-        return user;
-    }
     // ----------------------------------- Matiere table methods ------------------------------- //
     // Get Quantite Matiere
     public int getQuantiteMatiere(long id_nomenclature,long id_matiere)
@@ -1041,7 +1073,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         values.put(NOMENCLATURE_KEY_NOM,"TUYAUX PLASTIQUE 1M");
         db.insert(TABLE_NOMENCLATURE, null, values);
         values = new ContentValues();
-        values.put(NOMENCLATURE_KEY_NOM,"VOITURE PLASTIQUE");
+        values.put(NOMENCLATURE_KEY_NOM, "VOITURE PLASTIQUE");
         db.insert(TABLE_NOMENCLATURE, null, values);
         values = new ContentValues();
         values.put(NOMENCLATURE_KEY_NOM,"BOUTON PLASTIQUE");
@@ -1065,7 +1097,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         db.insert(TABLE_MATIERE, null, values);
         values = new ContentValues();
         values.put(MATIERE_KEY_NOM, "PIECE PLASTIQUE 2CM");
-        values.put(MATIERE_KEY_PRIX,4.50);
+        values.put(MATIERE_KEY_PRIX, 4.50);
         db.insert(TABLE_MATIERE, null, values);
         values = new ContentValues();
         values.put(MATIERE_KEY_NOM,"PIECE PLASTQIUE 6CM");
@@ -1154,5 +1186,57 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             c.close();
         }
         return details.toString();
+    }
+
+    // Methode qui test si un user existe
+    public long UserExists(String email,String mdp)
+    {
+        String selectQuery = "SELECT * FROM " + TABLE_USER + " WHERE " + USER_KEY_EMAIL + " = " + "\"" + email + "\"" + " AND " + USER_KEY_MDP + " = " + "\"" + mdp + "\"" + ";";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c!= null)
+        {
+            if(c.moveToFirst())
+            {
+                long index = c.getLong(c.getColumnIndex(KEY_ID));
+                c.close();
+                return index;
+            }
+
+        }
+        return -1;
+    }
+
+    public User getUserById(long id)
+    {
+        User user=null;
+        String selectQuery = "SELECT * FROM " + TABLE_USER + " WHERE " + KEY_ID + " = " + id + ";";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if(c != null)
+        {
+            c.moveToFirst();
+            user = new User();
+            user.setId(c.getLong(c.getColumnIndex(KEY_ID)));
+            user.setEmail_user(c.getString(c.getColumnIndex(USER_KEY_EMAIL)));
+            user.setMdp_user(c.getString(c.getColumnIndex(USER_KEY_MDP)));
+        }
+        return user;
+    }
+
+    public boolean isEmailProblem(String email)
+    {
+        String selectQuery = "SELECT * FROM " + TABLE_USER + " WHERE " + USER_KEY_EMAIL + " = " + "\"" +  email + "\"" + " ;";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery,null);
+        if( c!= null)
+        {
+            if(c.moveToFirst())
+            {
+                c.close();
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -17,17 +17,18 @@ import java.util.List;
 
 import BDD.Commande;
 import BDD.DataBaseHandler;
+import BDD.Devis;
 import model.LoginActivity;
 import model.MainActivity;
 
 /**
  * Created by Christophe on 19/07/2015. For PlastProd Project on purpose
  */
-public class SynchroCommande extends AsyncTask<Void,Void,Void> {
+public class SynchroDevis extends AsyncTask<Void,Void,Void> {
 
     MainActivity mActivity;
 
-    public SynchroCommande(MainActivity activity) {
+    public SynchroDevis(MainActivity activity) {
         this.mActivity = activity;
     }
 
@@ -42,11 +43,11 @@ public class SynchroCommande extends AsyncTask<Void,Void,Void> {
         try
         {
             DataBaseHandler db = new DataBaseHandler(mActivity.getApplicationContext());
-            List<Commande> listeCommande = db.getAllCommande();
+            List<Devis> listeDevis = db.getAllDevis();
             Gson gson = new GsonBuilder().create();
-            String arrayListToJson=gson.toJson(listeCommande);
+            String arrayListToJson=gson.toJson(listeDevis);
             long idCommercial = LoginActivity.getUser().getId();
-            URL link = new URL("http://heliex.alwaysdata.net//SynchroBase/SynchroCommande.php?idCommercial="+idCommercial);
+            URL link = new URL("http://heliex.alwaysdata.net//SynchroBase/SynchroDevis.php?idCommercial="+idCommercial);
             HttpURLConnection connection = (HttpURLConnection)link.openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(15000);

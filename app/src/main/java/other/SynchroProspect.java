@@ -17,6 +17,7 @@ import java.util.List;
 
 import BDD.DataBaseHandler;
 import BDD.Prospect;
+import model.LoginActivity;
 import model.MainActivity;
 
 /**
@@ -43,7 +44,8 @@ public class SynchroProspect extends AsyncTask<Void,Void,Void> {
             List<Prospect> listeProspect = db.getAllProspects();
             Gson gson = new GsonBuilder().create();
             String arrayListToJson=gson.toJson(listeProspect);
-            URL link = new URL("http://christophe.gerard88.free.fr/SynchroBase/SynchroProspect.php");
+            long idCommercial= LoginActivity.getUser().getId();
+            URL link = new URL("http://heliex.alwaysdata.net//SynchroBase/SynchroProspect.php?idCommercial="+idCommercial);
             HttpURLConnection connection = (HttpURLConnection)link.openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(15000);

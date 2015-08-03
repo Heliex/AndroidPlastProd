@@ -16,6 +16,7 @@ import java.util.List;
 
 import BDD.Client;
 import BDD.DataBaseHandler;
+import model.LoginActivity;
 import model.MainActivity;
 
 /**
@@ -41,8 +42,9 @@ public class SynchroBase extends AsyncTask<Void,Void,Void> {
             DataBaseHandler db = new DataBaseHandler(mActivity.getApplicationContext());
             List<Client> listeClients = db.getAllClients();
             Gson gson = new GsonBuilder().create();
-            String arrayListToJson=gson.toJson(listeClients);;
-            URL link = new URL("http://christophe.gerard88.free.fr/SynchroBase/SynchroClient.php");
+            String arrayListToJson=gson.toJson(listeClients);
+            long idCommercial = LoginActivity.getUser().getId();
+            URL link = new URL("http://heliex.alwaysdata.net//SynchroBase/SynchroClient.php?idCommercial="+idCommercial);
             HttpURLConnection connection = (HttpURLConnection)link.openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(15000);
@@ -64,7 +66,6 @@ public class SynchroBase extends AsyncTask<Void,Void,Void> {
             {
                 chaine.append(line).append("\n");
             }
-            System.out.println(chaine);
             connection.disconnect();
         }
         catch (MalformedURLException e) {

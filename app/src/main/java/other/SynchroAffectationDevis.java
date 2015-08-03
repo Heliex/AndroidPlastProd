@@ -17,6 +17,7 @@ import java.util.List;
 
 import BDD.AffectationDevis;
 import BDD.DataBaseHandler;
+import model.LoginActivity;
 import model.MainActivity;
 
 /**
@@ -46,7 +47,8 @@ public class SynchroAffectationDevis extends AsyncTask<Void,Void,Void> {
             List<AffectationDevis> listeAffectation = db.getAllAffectationDevis();
             Gson gson = new GsonBuilder().create();
             String arrayListToJson=gson.toJson(listeAffectation);
-            URL link = new URL("http://christophe.gerard88.free.fr/SynchroBase/SynchroAffectationDevis.php");
+            long idCommercial = LoginActivity.getUser().getId();
+            URL link = new URL("http://heliex.alwaysdata.net//SynchroBase/SynchroAffectationDevis.php?idCommercial=" + idCommercial);
             HttpURLConnection connection = (HttpURLConnection)link.openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(15000);
@@ -68,7 +70,6 @@ public class SynchroAffectationDevis extends AsyncTask<Void,Void,Void> {
             {
                 chaine.append(line).append("\n");
             }
-            System.out.println(chaine);
             connection.disconnect();
         }
         catch (MalformedURLException e) {

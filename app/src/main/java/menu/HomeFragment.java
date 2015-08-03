@@ -28,6 +28,7 @@ import other.SynchroAffectationDevis;
 import other.SynchroAffectationMatiere;
 import other.SynchroBase;
 import other.SynchroCommande;
+import other.SynchroDevis;
 import other.SynchroMatiere;
 import other.SynchroNomenclature;
 import other.SynchroProspect;
@@ -83,6 +84,7 @@ public class HomeFragment extends Fragment {
                     new SynchroAffectationDevis((MainActivity)getActivity()).execute();
                     new SynchroMatiere((MainActivity)getActivity()).execute();
                     new SynchroNomenclature((MainActivity)getActivity()).execute();
+                    new SynchroDevis((MainActivity)getActivity()).execute();
                     new SynchroAffectationMatiere((MainActivity)getActivity(),mDialog).execute();
                 }
             });

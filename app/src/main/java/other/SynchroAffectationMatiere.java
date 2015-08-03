@@ -50,7 +50,7 @@ public class SynchroAffectationMatiere extends AsyncTask<Void,Void,Void> {
             List<AffectationMatiere> listeAffectation = db.getAllAffectationMatiere();
             Gson gson = new GsonBuilder().create();
             String arrayListToJson=gson.toJson(listeAffectation);
-            URL link = new URL("http://christophe.gerard88.free.fr/SynchroBase/SynchroAffectationMatiere.php");
+            URL link = new URL("http://heliex.alwaysdata.net//SynchroBase/SynchroAffectationMatiere.php");
             HttpURLConnection connection = (HttpURLConnection)link.openConnection();
             connection.setRequestMethod("POST");
             connection.setConnectTimeout(15000);
@@ -72,7 +72,6 @@ public class SynchroAffectationMatiere extends AsyncTask<Void,Void,Void> {
             {
                 chaine.append(line).append("\n");
             }
-            System.out.println(chaine);
             connection.disconnect();
         }
         catch (MalformedURLException e) {
