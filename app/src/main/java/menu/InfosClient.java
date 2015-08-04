@@ -39,7 +39,8 @@ public class InfosClient extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         final View rootView = inflater.inflate(R.layout.fragment_infos,container,false);
-
+        final Button button = (Button)rootView.findViewById(R.id.modifClient);
+        button.setVisibility(View.INVISIBLE);
         // Je récupère ma liste (la vue)
         final ListView listeView = (ListView) rootView.findViewById(R.id.ListViewInfos);
         // Connexion à la base
@@ -56,7 +57,7 @@ public class InfosClient extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) { // Clic court (CTB)
 
-                    Client c = (Client) listeView.getItemAtPosition(i);
+                    final Client c = (Client) listeView.getItemAtPosition(i);
                     listeView.setVisibility(View.INVISIBLE);
 
                     // Je récupère toutes les TextView
@@ -66,6 +67,8 @@ public class InfosClient extends Fragment {
                     TextView infosAdresse = (TextView) rootView.findViewById(R.id.infosAdresse);
                     TextView infosTelephone = (TextView) rootView.findViewById(R.id.infosTelephone);
                     TextView infosDate = (TextView) rootView.findViewById(R.id.infosDate);
+
+                    button.setVisibility(View.VISIBLE);
 
                     // Ensuite je leur attribue les données.
                     infosNom.setText(c.getNom());
@@ -91,6 +94,26 @@ public class InfosClient extends Fragment {
                     rl.addView(infosAdresse);
                     rl.addView(infosTelephone);
                     rl.addView(infosDate);
+                    rl.addView(button);
+
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("NomClient", c.getNom());
+                            bundle.putLong("IDClient", c.getId());
+                            bundle.putString("PrenomClient", c.getPrenom());
+                            bundle.putString("AdresseClient", c.getAdresse());
+                            bundle.putString("TelephoneClient", c.getTelephone());
+                            bundle.putString("EmailClient",c.getEmail());
+                            bundle.putString("DateClient", c.getDate());
+
+                            Fragment fragment = new ModifierClient();
+                            fragment.setArguments(bundle);
+                            FragmentManager fragmentManager = getFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+                        }
+                    });
                     b.setText("Precedent");
                     b.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -131,62 +154,5 @@ public class InfosClient extends Fragment {
             Toast.makeText(getActivity().getApplicationContext(), "Aucun client existant", Toast.LENGTH_SHORT).show();
         }
         return rootView;
-    }
-
-
-    @Override
-    public void onViewCreated(View view,Bundle savedInstanceState)
-    {
-        super.onViewCreated(view,savedInstanceState);
-        ListView listeView = (ListView)view.getRootView().findViewById(R.id.ListViewInfos);
-
-        listeView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
-                List<Client> clients = db.getAllClients();
-                ListeClientAdapter listeClientAdapter = new ListeClientAdapter(getActivity().getApplicationContext(),clients);
-                final Client c = listeClientAdapter.getItem(i);
-                // Titre du dialog
-                alertDialogBuilder.setTitle("Client");
-
-                // Set message
-                alertDialogBuilder.setMessage("Que voulez-vous faire de ce client ?").setCancelable(true).setNegativeButton("Modifier", new DialogInterface.OnClickListener() { // Message
-                    public void onClick(DialogInterface dialogInterface, int id) {
-                       Bundle bundle = new Bundle();
-                       bundle.putString("NomClient", c.getNom());
-                       bundle.putLong("IDClient", c.getId());
-                       bundle.putString("PrenomClient", c.getPrenom());
-                       bundle.putString("AdresseClient", c.getAdresse());
-                       bundle.putString("TelephoneClient", c.getTelephone());
-                       bundle.putString("EmailClient",c.getEmail());
-                       bundle.putString("DateClient", c.getDate());
-
-                       Fragment fragment = new ModifierClient();
-                       fragment.setArguments(bundle);
-                        if(getActivity().getActionBar() != null)
-                        {
-                            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
-                            TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
-                            tx.setText(navMenuTitles[7]);
-                            getActivity().setTitle(navMenuTitles[7]);
-                        }
-
-                       FragmentManager fragmentManager = getFragmentManager();
-                       fragmentManager.beginTransaction().replace(R.id.frame_container, fragment, "Fragment").commit();
-                        // Ces deux lignes permettent de remplacer un fragment par un autre.
-
-                    }
-                }).setPositiveButton("Annuler", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int id) {
-                       dialogInterface.cancel();
-                    }
-                }).show();
-
-                return true;
-            }
-        });
-
     }
 }

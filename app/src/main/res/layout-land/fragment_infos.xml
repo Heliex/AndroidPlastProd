@@ -9,8 +9,8 @@
         android:id="@+id/ListViewInfos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/infosDate" />
 
     <TextView
         android:layout_width="match_parent"
@@ -69,8 +69,7 @@
         android:layout_alignParentStart="true"
         android:layout_gravity="center"
         android:textAlignment="center"
-        android:gravity="center_horizontal"
-        android:visibility="invisible" />
+        android:gravity="center_horizontal" />
 
     <TextView
         android:layout_width="match_parent"
@@ -83,5 +82,23 @@
         android:gravity="center_horizontal"
         android:layout_below="@+id/infosEmail"
         android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Modifier ce client"
+        android:id="@+id/modifClient"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Modifier ce Prospect"
+        android:id="@+id/modifProspect"
+        android:layout_alignTop="@+id/modifClient"
+        android:layout_alignStart="@+id/modifClient"
         android:visibility="invisible" />
 </RelativeLayout>

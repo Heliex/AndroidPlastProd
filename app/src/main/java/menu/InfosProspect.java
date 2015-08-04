@@ -35,7 +35,9 @@ public class InfosProspect extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         final View rootView = inflater.inflate(R.layout.fragment_infos,container,false);
-
+        final Button button = (Button) rootView.findViewById(R.id.modifProspect);
+        final Button client = (Button) rootView.findViewById(R.id.modifClient);
+        client.setVisibility(View.INVISIBLE);
         // Je récupère ma liste (la vue)
         final ListView listeView = (ListView) rootView.findViewById(R.id.ListViewInfos);
         // Connexion à la base
@@ -52,9 +54,9 @@ public class InfosProspect extends Fragment
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                    Prospect p = (Prospect)listeView.getItemAtPosition(i);
+                    final Prospect p = (Prospect)listeView.getItemAtPosition(i);
                     listeView.setVisibility(View.INVISIBLE);
-
+                    button.setVisibility(View.VISIBLE);
                     // Je récupère toutes les TextView
                     TextView infosNom = (TextView)rootView.findViewById(R.id.infosNom);
                     TextView infosPrenom = (TextView)rootView.findViewById(R.id.infosPrenom);
@@ -87,6 +89,27 @@ public class InfosProspect extends Fragment
                     rl.addView(infosAdresse);
                     rl.addView(infosTelephone);
                     rl.addView(infosDate);
+                    rl.addView(client);
+                    rl.addView(button);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("NomProspect", p.getNom());
+                            bundle.putLong("IDProspect", p.getId());
+                            bundle.putString("PrenomProspect", p.getPrenom());
+                            bundle.putString("AdresseProspect", p.getAdresse());
+                            bundle.putString("TelephoneProspect", p.getTelephone());
+                            bundle.putString("EmailProspect",p.getEmail());
+                            bundle.putString("DateProspect", p.getDate());
+                            bundle.putInt("Pourcentage", p.getPourcentage());
+
+                            Fragment fragment = new ModifierProspect();
+                            fragment.setArguments(bundle);
+                            FragmentManager fragmentManager = getFragmentManager();
+                            fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+                        }
+                    });
                     b.setText("Precedent");
                     b.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -127,62 +150,5 @@ public class InfosProspect extends Fragment
             Toast.makeText(getActivity().getApplicationContext(), "Aucun prospect existant", Toast.LENGTH_SHORT).show();
         }
         return rootView;
-    }
-
-    @Override
-    public void onViewCreated(View view,Bundle savedInstanceState)
-    {
-        super.onViewCreated(view,savedInstanceState);
-        ListView listeView = (ListView)view.getRootView().findViewById(R.id.ListViewInfos);
-
-        listeView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-                DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
-                List<Prospect> prospects = db.getAllProspects();
-                ListeProspectAdapter listeProspectAdapter = new ListeProspectAdapter(getActivity().getApplicationContext(),prospects,getActivity().getFragmentManager().findFragmentByTag("Fragment"));
-                final Prospect p = listeProspectAdapter.getItem(i);
-                // Titre du dialog
-                alertDialogBuilder.setTitle("Prospect");
-
-                // Set message
-                alertDialogBuilder.setMessage("Que voulez-vous faire de ce prospect ?").setCancelable(true).setNegativeButton("Modifier", new DialogInterface.OnClickListener() { // Message
-                    public void onClick(DialogInterface dialogInterface, int id) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("NomProspect", p.getNom());
-                        bundle.putLong("IDProspect", p.getId());
-                        bundle.putString("PrenomProspect", p.getPrenom());
-                        bundle.putString("AdresseProspect", p.getAdresse());
-                        bundle.putString("TelephoneProspect", p.getTelephone());
-                        bundle.putString("EmailProspect",p.getEmail());
-                        bundle.putString("DateProspect", p.getDate());
-                        bundle.putInt("Pourcentage",p.getPourcentage());
-
-                        Fragment fragment = new ModifierProspect();
-                        fragment.setArguments(bundle);
-                        if(getActivity().getActionBar() != null)
-                        {
-                            String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_Right_items);
-                            TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
-                            tx.setText(navMenuTitles[6]);
-                            getActivity().setTitle(navMenuTitles[6]);
-                        }
-
-                        FragmentManager fragmentManager = getFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.frame_container, fragment, "Fragment").commit();
-                        // Ces deux lignes permettent de remplacer un fragment par un autre.
-
-                    }
-                }).setPositiveButton("Annuler", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int id) {
-                        dialogInterface.cancel();
-                    }
-                }).show();
-
-                return true;
-            }
-        });
-
     }
 }
