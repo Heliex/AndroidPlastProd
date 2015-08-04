@@ -60,7 +60,7 @@ import other.ApiAsyncTask;
 
 /**
  * Classe principale de l'application
- * C'est le centre de l'application, tout pars d'ici
+ * C'est le centre de l'application, tout part d'ici
  * @author Christophe Gerard
  * @version 1.0
  */
