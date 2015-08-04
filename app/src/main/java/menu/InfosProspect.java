@@ -105,6 +105,12 @@ public class InfosProspect extends Fragment
                             bundle.putInt("Pourcentage", p.getPourcentage());
 
                             Fragment fragment = new ModifierProspect();
+                            if(getActivity().getActionBar() != null)
+                            {
+                                TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                                tx.setText("Modifier un Prospect");
+                            }
+
                             fragment.setArguments(bundle);
                             FragmentManager fragmentManager = getFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();

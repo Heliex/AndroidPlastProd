@@ -58,6 +58,7 @@ public class ListeProspectAdapter extends BaseAdapter
             holder.Nom = (TextView)view.findViewById(R.id.NomProspect);
             holder.Prenom = (TextView) view.findViewById(R.id.PrenomProspect);
             holder.progression = (ProgressBar)view.findViewById(R.id.progressBar);
+            holder.pourcentage = (TextView)view.findViewById(R.id.pourcentageProspect);
             view.setTag(holder);
         }
         else
@@ -72,6 +73,7 @@ public class ListeProspectAdapter extends BaseAdapter
         {
             holder.progression.setVisibility(View.VISIBLE);
             holder.progression.setProgress(prospects.get(i).getPourcentage());
+            holder.pourcentage.setText(String.valueOf(prospects.get(i).getPourcentage()) + "%");
         }
         else
         {
@@ -85,6 +87,7 @@ public class ListeProspectAdapter extends BaseAdapter
         TextView Nom;
         TextView Prenom;
         ProgressBar progression;
+        TextView pourcentage;
     }
 
 }

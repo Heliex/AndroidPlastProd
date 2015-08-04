@@ -36,7 +36,7 @@ public class ModifierClient extends Fragment {
         final EditText editTextTelephone = (EditText) rootView.findViewById(R.id.TextTel);
         final EditText editTextEmail = (EditText) rootView.findViewById(R.id.TextEmail);
         final EditText editTextDate = (EditText) rootView.findViewById(R.id.TextDate);
-
+        final Button annuler = (Button) rootView.findViewById(R.id.annulerAjout);
         final long id = getArguments().getLong("IDClient");
         String nom = getArguments().getString("NomClient");
         String prenom = getArguments().getString("PrenomClient");
@@ -51,6 +51,31 @@ public class ModifierClient extends Fragment {
         editTextTelephone.setText(telephone);
         editTextEmail.setText(email);
         editTextDate.setText(date);
+
+        annuler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new HomeFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.frame_container,fragment,"Fragment").commit();
+                ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
+                ListView mDrawerRightList = (ListView) getActivity().findViewById(R.id.list_Rightslidermenu);
+                String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+                if(mDrawerList != null && mDrawerRightList != null) {
+                    mDrawerList.setItemChecked(0, true);
+                    mDrawerList.setSelection(0);
+                    mDrawerRightList.setItemChecked(0,true);
+                    mDrawerRightList.setSelection(0);
+                }
+                if(getActivity().getActionBar() != null)
+                {
+                    TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                    tx.setText(navMenuTitles[0]);
+                    getActivity().setTitle(navMenuTitles[0]);
+                }
+                Toast.makeText(getActivity().getApplicationContext(), "Modification annulée", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         modifierClient.setOnClickListener(new View.OnClickListener() {
             @Override

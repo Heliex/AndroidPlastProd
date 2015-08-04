@@ -38,7 +38,7 @@ public class SuiviClient extends Fragment {
         final ListView listeClients = (ListView) rootView.findViewById(R.id.ListViewSuivi);
         // Je crée la connexion a la base
         final DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
-
+        final Button annuler = (Button) rootView.findViewById(R.id.precedentSuiviClient);
         // Je recupère ma liste de client.
         final List<Client> listClient;
         listClient = db.getAllClients();
@@ -79,6 +79,7 @@ public class SuiviClient extends Fragment {
                     totalCAClients.setVisibility(View.INVISIBLE);
                     totalCAClientsAffiche.setVisibility(View.INVISIBLE);
                     List<Commande> listeCommandes = db.getAllCommandeByClient(c.getId());
+                    annuler.setVisibility(View.VISIBLE);
                     if(listeCommandes.size() > 0)
                     {
                         double total = 0;
@@ -106,6 +107,15 @@ public class SuiviClient extends Fragment {
                         totalCAClients.setVisibility(View.VISIBLE);
                         totalCAClientsAffiche.setVisibility(View.VISIBLE);
                     }
+                }
+            });
+
+            annuler.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Fragment fragment = new SuiviClient();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.frame_container,fragment,"Fragment").commit();
                 }
             });
         }

@@ -70,5 +70,17 @@
         android:layout_marginTop="20dp"
         android:gravity="center_vertical|center_horizontal" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Précédent"
+        android:id="@+id/precedentSuiviClient"
+        android:layout_below="@+id/CaTotal"
+        android:layout_alignStart="@+id/CaTotal"
+        android:layout_alignEnd="@+id/CAclient"
+        android:layout_marginTop="15dp"
+        android:visibility="invisible"
+        android:gravity="center_horizontal" />
+
 
 </RelativeLayout>

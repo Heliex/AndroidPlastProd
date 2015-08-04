@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.concurrent.ExecutionException;
@@ -30,7 +31,31 @@ public class FormulaireSatisfaction extends Fragment {
     {
         View rootView = inflater.inflate(R.layout.fragment_formulaire,container,false);
         final Button envoiForm = (Button) rootView.findViewById(R.id.envoiForm);
-
+        final Button annulerEnvoi = (Button) rootView.findViewById(R.id.annulerFormulaire);
+        annulerEnvoi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new HomeFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.frame_container,fragment,"Fragment").commit();
+                ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
+                ListView mDrawerRightList = (ListView) getActivity().findViewById(R.id.list_Rightslidermenu);
+                String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+                if(mDrawerList != null && mDrawerRightList != null) {
+                    mDrawerList.setItemChecked(0, true);
+                    mDrawerList.setSelection(0);
+                    mDrawerRightList.setItemChecked(0,true);
+                    mDrawerRightList.setSelection(0);
+                }
+                if(getActivity().getActionBar() != null)
+                {
+                    TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                    tx.setText(navMenuTitles[0]);
+                    getActivity().setTitle(navMenuTitles[0]);
+                }
+                Toast.makeText(getActivity().getApplicationContext(),"Envoi de formulaire annulé",Toast.LENGTH_SHORT).show();
+            }
+        });
         envoiForm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

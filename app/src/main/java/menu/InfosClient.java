@@ -109,6 +109,11 @@ public class InfosClient extends Fragment {
                             bundle.putString("DateClient", c.getDate());
 
                             Fragment fragment = new ModifierClient();
+                            if(getActivity().getActionBar() != null)
+                            {
+                                TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                                tx.setText("Modifier un Client");
+                            }
                             fragment.setArguments(bundle);
                             FragmentManager fragmentManager = getFragmentManager();
                             fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();

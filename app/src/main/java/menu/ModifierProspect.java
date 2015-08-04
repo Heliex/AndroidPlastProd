@@ -28,6 +28,7 @@ public class ModifierProspect extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_ajout, container, false);
         final Button modifierProspect = (Button)rootView.findViewById(R.id.validerAjout);
+        final Button annuler = (Button) rootView.findViewById(R.id.annulerAjout);
         modifierProspect.setText("Modifier");
 
         final EditText editTextNom = (EditText) rootView.findViewById(R.id.TextNom);
@@ -52,6 +53,30 @@ public class ModifierProspect extends Fragment
         editTextTelephone.setText(telephone);
         editTextEmail.setText(email);
         editTextDate.setText(date);
+        annuler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new HomeFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.frame_container,fragment,"Fragment").commit();
+                ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
+                ListView mDrawerRightList = (ListView) getActivity().findViewById(R.id.list_Rightslidermenu);
+                String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+                if(mDrawerList != null && mDrawerRightList != null) {
+                    mDrawerList.setItemChecked(0, true);
+                    mDrawerList.setSelection(0);
+                    mDrawerRightList.setItemChecked(0,true);
+                    mDrawerRightList.setSelection(0);
+                }
+                if(getActivity().getActionBar() != null)
+                {
+                    TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                    tx.setText(navMenuTitles[0]);
+                    getActivity().setTitle(navMenuTitles[0]);
+                }
+                Toast.makeText(getActivity().getApplicationContext(), "Modification annulée", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         modifierProspect.setOnClickListener(new View.OnClickListener() {
             @Override

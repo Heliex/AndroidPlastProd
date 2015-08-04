@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ public class ListeProduits extends Fragment{
         final ListView listeClients = (ListView) rootView.findViewById(R.id.listView);
         // Je crée la connexion a la base
         final DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
+        final Button annuler = (Button)rootView.findViewById(R.id.precedentListeProduit);
 
         // Je recupère ma liste de client.
         final List<Client> listClient;
@@ -56,6 +58,7 @@ public class ListeProduits extends Fragment{
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     // JE recupere le clients sur lequels j'ai cliquer
                     Client c = (Client)listeClients.getItemAtPosition(i);
+                    annuler.setVisibility(View.VISIBLE);
                     List<Nomenclature> nomenclatures = db.getAllNomenclatureFromIdClient(c.getId());
                     if(nomenclatures.size() > 0)
                     {
@@ -82,6 +85,15 @@ public class ListeProduits extends Fragment{
                     {
                         Toast.makeText(getActivity().getApplicationContext(),"Ce client n'a passé aucune commande",Toast.LENGTH_SHORT).show();
                     }
+                }
+            });
+
+            annuler.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Fragment fragment = new ListeProduits();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.frame_container,fragment,"Fragment").commit();
                 }
             });
         }

@@ -29,6 +29,28 @@ public class AjoutProspect extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_ajout, container, false);
         final Button validerAjout = (Button)rootView.findViewById(R.id.validerAjout);
+        final Button annulerAjout = (Button) rootView.findViewById(R.id.annulerAjout);
+        annulerAjout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new HomeFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.frame_container,fragment).commit();
+                ListView mDrawerList = (ListView) getActivity().findViewById(R.id.list_slidermenu);
+                String[] navMenuTitles = getActivity().getResources().getStringArray(R.array.nav_drawer_items);
+                if(mDrawerList != null) {
+                    mDrawerList.setItemChecked(0, true);
+                    mDrawerList.setSelection(0);
+                }
+                if(getActivity().getActionBar() != null)
+                {
+                    TextView tx = (TextView)getActivity().getActionBar().getCustomView().findViewById(R.id.action_bar_title);
+                    tx.setText(navMenuTitles[0]);
+                    getActivity().setTitle(navMenuTitles[0]);
+                }
+                Toast.makeText(getActivity().getApplicationContext(), "Création de Prospect annulée", Toast.LENGTH_SHORT).show();
+            }
+        });
         validerAjout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

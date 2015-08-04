@@ -11,12 +11,12 @@
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/editText2"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="225dp"
         android:hint="Mail"
         android:gravity="center_horizontal"
-        android:textColor="@color/textColor"
-        android:layout_below="@+id/textView9"
-        android:layout_alignEnd="@+id/envoiForm"
-        android:layout_marginTop="35dp" />
+        android:textColor="@color/textColor" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,12 +24,12 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Saissisez l&apos;adresse mail du client pour l&apos;envoi du formulaire :"
         android:id="@+id/textView9"
+        android:layout_alignBottom="@+id/editText2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
-        android:textColor="@color/textColor"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="65dp" />
+        android:textColor="@color/textColor" />
 
     <Button
         android:layout_width="220dp"
@@ -38,5 +38,14 @@
         android:id="@+id/envoiForm"
         android:layout_below="@+id/editText2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp" />
+        android:layout_marginTop="44dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:text="Annuler"
+        android:id="@+id/annulerFormulaire"
+        android:layout_alignEnd="@+id/envoiForm"
+        android:layout_alignStart="@+id/envoiForm"
+        android:layout_below="@+id/envoiForm" />
 </RelativeLayout>

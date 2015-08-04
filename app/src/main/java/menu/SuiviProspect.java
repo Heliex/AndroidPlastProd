@@ -1,11 +1,13 @@
 package menu;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -37,6 +39,7 @@ public class SuiviProspect extends Fragment
         final ListView listeProspectSuivi = (ListView) rootView.findViewById(R.id.ListViewSuiviProspect);
         // Je cree la connexion a la base
         final DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
+        final Button precendent = (Button)rootView.findViewById(R.id.precedentSuiviProspect);
 
         // Je recupere ma liste de prospects.
         List<Prospect> listProspects;
@@ -75,7 +78,7 @@ public class SuiviProspect extends Fragment
                     totalCAProspects.setVisibility(View.INVISIBLE);
                     totalCAProspectsAffiche.setVisibility(View.INVISIBLE);
                     List<Devis> listeDevis = db.getAllDevisByProspect(p.getId());
-
+                    precendent.setVisibility(View.VISIBLE);
                     if(listeDevis.size() > 0)
                     {
                         double total = 0;
@@ -105,6 +108,15 @@ public class SuiviProspect extends Fragment
                         totalCAProspects.setVisibility(View.VISIBLE);
                         totalCAProspectsAffiche.setVisibility(View.VISIBLE);
                     }
+                }
+            });
+
+            precendent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Fragment fragment = new SuiviProspect();
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction().replace(R.id.frame_container,fragment,"Fragment").commit();
                 }
             });
         }
