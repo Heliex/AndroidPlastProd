@@ -2,7 +2,7 @@ package model;
 
 /**
  * Created by christophe on 01/04/2015.
- * Classe qui représente la vue associé à une menu dans le drawer
+ * Classe qui reprÃ©sente la vue associÃ© Ã  une menu dans le drawer
  * @author Christophe Gerard
  * @version 1.0
  */
@@ -18,7 +18,7 @@ public class NavDrawerItem {
     public NavDrawerItem(){}
 
     /**
-     * Constructeur à 2 paramètres
+     * Constructeur Ã  2 paramÃ¨tres
      * @param title Titre
      * @param icon Icone
      */
@@ -29,7 +29,7 @@ public class NavDrawerItem {
     }
 
     /**
-     * Constructeur à 4 paramètres
+     * Constructeur Ã  4 paramÃ¨tres
      * @param title Titre
      * @param icon Icone
      * @param isCounterVisible Estvisible
@@ -103,8 +103,8 @@ public class NavDrawerItem {
     }
 
     /**
-     * Modifie la visibilité
-     * @param isCounterVisible Nouvelle visibilitée
+     * Modifie la visibilitÃ©
+     * @param isCounterVisible Nouvelle visibilitÃ©e
      */
     public void setCounterVisibility(boolean isCounterVisible)
     {

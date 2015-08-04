@@ -31,7 +31,7 @@ public class SynchroDevis extends AsyncTask<Void,Void,Void> {
     MainActivity mActivity;
 
     /**
-     * Constructeur à 1 paramètre
+     * Constructeur Ã  1 paramÃ¨tre
      * @param activity Instance de MainActivity
      */
     public SynchroDevis(MainActivity activity) {
@@ -40,7 +40,7 @@ public class SynchroDevis extends AsyncTask<Void,Void,Void> {
 
     /**
      * Tache de fonds
-     * @param params type = Void donc pas de paramètres
+     * @param params type = Void donc pas de paramÃ¨tres
      * @return Void(Rien du tout)
      */
     @Override
@@ -50,7 +50,7 @@ public class SynchroDevis extends AsyncTask<Void,Void,Void> {
     }
 
     /**
-     * Mets à jour les Devis sur la BDD Distante
+     * Mets Ã  jour les Devis sur la BDD Distante
      */
     public void MAJ()
     {

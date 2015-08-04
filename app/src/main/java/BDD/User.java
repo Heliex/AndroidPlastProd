@@ -2,7 +2,7 @@ package BDD;
 
 /**
  * Created by Christophe on 22/06/2015. For PlastProd Project
- * Classe qui représente l'entité User en BDD.
+ * Classe qui reprÃ©sente l'entitÃ© User en BDD.
  * @author Christophe Gerard
  * @version 1.0
  */
@@ -13,7 +13,7 @@ public class User {
     private String mdp_user;
 
     /**
-     * Constructeur à deux paramètres
+     * Constructeur Ã  deux paramÃ¨tres
      * @param email_user Email utilisateur
      * @param mdp_user Mdp utilisateur
      */

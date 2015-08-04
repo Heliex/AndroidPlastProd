@@ -2,7 +2,7 @@ package BDD;
 
 /**
  * Created by Christophe on 22/06/2015. For PlastProd Project
- * Classe qui représente l'entité Matiere en BDD.
+ * Classe qui reprÃ©sente l'entitÃ© Matiere en BDD.
  * @author Christophe Gerard
  * @version 1.0
  */
@@ -13,7 +13,7 @@ public class Matiere {
     private double prix;
 
     /**
-     * Constructeur par défaut
+     * Constructeur par dÃ©faut
      */
     public Matiere()
     {
@@ -23,10 +23,10 @@ public class Matiere {
     }
 
     /**
-     * Construit une matière
-     * @param id Id de la matière
-     * @param nom Nom de la matière
-     * @param prix Prix de la matière
+     * Construit une matiÃ¨re
+     * @param id Id de la matiÃ¨re
+     * @param nom Nom de la matiÃ¨re
+     * @param prix Prix de la matiÃ¨re
      */
     public Matiere(long id,String nom, float prix)
     {
@@ -36,7 +36,7 @@ public class Matiere {
     }
 
     /**
-     * Retourne l'id de la matière
+     * Retourne l'id de la matiÃ¨re
      * @return id
      */
     public long getId()
@@ -45,7 +45,7 @@ public class Matiere {
     }
 
     /**
-     * Retourne le nom de la matière
+     * Retourne le nom de la matiÃ¨re
      * @return nom
      */
     public String getNom()
@@ -54,7 +54,7 @@ public class Matiere {
     }
 
     /**
-     * Retourne le prix de la matière
+     * Retourne le prix de la matiÃ¨re
      * @return prix
      */
     public double getPrix()
@@ -63,7 +63,7 @@ public class Matiere {
     }
 
     /**
-     * Modifie l'id de la matière
+     * Modifie l'id de la matiÃ¨re
      * @param id Nouvelle id
      */
     public void setId(long id)
@@ -72,7 +72,7 @@ public class Matiere {
     }
 
     /**
-     * Modifie le nom de la matière
+     * Modifie le nom de la matiÃ¨re
      * @param name Nouveau nom
      */
     public void setNom(String name)
@@ -81,7 +81,7 @@ public class Matiere {
     }
 
     /**
-     * Modifie le prix de la matière
+     * Modifie le prix de la matiÃ¨re
      * @param price Nouveau prix
      */
     public void setPrix(double price)

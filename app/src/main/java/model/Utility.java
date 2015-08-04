@@ -22,7 +22,7 @@ public class Utility {
 
     /**
      * Renvoi une liste de RDV
-     * @param context Context de Création
+     * @param context Context de CrÃ©ation
      * @return une liste d'objet RDV
      */
     public static ArrayList<RDV> readCalendarEvent(Context context) {
@@ -62,7 +62,7 @@ public class Utility {
     /**
      * Renvoie une heure
      * @param milliSeconds TimeStamp
-     * @return une heure formatée("hh:mm:ss a")
+     * @return une heure formatÃ©e("hh:mm:ss a")
      */
     public static String getHeure(long milliSeconds)
     {
@@ -76,7 +76,7 @@ public class Utility {
     /**
      * Renvoie une date
      * @param milliSeconds TimeStamp
-     * @return une date formatée("dd/MM/yyyy")
+     * @return une date formatÃ©e("dd/MM/yyyy")
      */
     public static String getDate(long milliSeconds)
     {

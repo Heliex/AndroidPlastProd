@@ -16,7 +16,7 @@ import model.RDV;
 
 /**
  * Created by Christophe on 10/06/2015. For PlastProd Project
- * Classe qui permet de formater une liste de RDV à l'affichage
+ * Classe qui permet de formater une liste de RDV Ã  l'affichage
  * @author Christophe Gerard
  * @version 1.0
  */
@@ -26,8 +26,8 @@ public class ListeRDVAdapter extends BaseAdapter {
     private List<RDV> RDV;
 
     /**
-     * Constructeur à 2 paramètres
-     * @param context Contexte de création
+     * Constructeur Ã  2 paramÃ¨tres
+     * @param context Contexte de crÃ©ation
      * @param rdv Liste de Rendez-Vous
      */
     public ListeRDVAdapter(Context context,List<RDV> rdv)
@@ -46,7 +46,7 @@ public class ListeRDVAdapter extends BaseAdapter {
     }
 
     /**
-     * Retourne le RDV à la position i dans la liste
+     * Retourne le RDV Ã  la position i dans la liste
      * @param i Position dans la liste
      * @return un objet RDV
      */
@@ -56,7 +56,7 @@ public class ListeRDVAdapter extends BaseAdapter {
     }
 
     /**
-     * Retourne l'id du rdv à la position i dans la liste
+     * Retourne l'id du rdv Ã  la position i dans la liste
      * @param i Position dans la liste
      * @return l'id
      */
@@ -66,9 +66,9 @@ public class ListeRDVAdapter extends BaseAdapter {
     }
 
     /**
-     * Retourne la vue associée pour le RDV i de la liste
+     * Retourne la vue associÃ©e pour le RDV i de la liste
      * @param i Position dans la liste
-     * @param view Vue associée
+     * @param view Vue associÃ©e
      * @param viewGroup Vue container
      * @return un objet View
      */

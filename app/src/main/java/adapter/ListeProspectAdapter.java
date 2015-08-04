@@ -28,8 +28,8 @@ public class ListeProspectAdapter extends BaseAdapter
     private Fragment fragment;
 
     /**
-     * Constructeur à 3 paramètres
-     * @param context Contexte de création
+     * Constructeur Ã  3 paramÃ¨tres
+     * @param context Contexte de crÃ©ation
      * @param prospects Liste de prospect
      * @param fragment Fragment de provenance
      */
@@ -50,7 +50,7 @@ public class ListeProspectAdapter extends BaseAdapter
     }
 
     /**
-     * Retourne le prospect à la position i
+     * Retourne le prospect Ã  la position i
      * @param i Position dans la liste
      * @return un objet Prospect
      */
@@ -60,7 +60,7 @@ public class ListeProspectAdapter extends BaseAdapter
     }
 
     /**
-     * Retourne l'id du prospect à la position i
+     * Retourne l'id du prospect Ã  la position i
      * @param i Position i
      * @return L'id
      */
@@ -70,9 +70,9 @@ public class ListeProspectAdapter extends BaseAdapter
     }
 
     /**
-     * Retourne la vue associée à une ligne dans la liste de prospect
+     * Retourne la vue associÃ©e Ã  une ligne dans la liste de prospect
      * @param i Position du prospect dans la liste
-     * @param view Vue associée
+     * @param view Vue associÃ©e
      * @param viewGroup Vue container
      * @return un objet View
      */

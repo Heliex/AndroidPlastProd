@@ -27,8 +27,8 @@ public class NavDrawerListAdapter extends BaseAdapter {
     private ArrayList<NavDrawerItem> navDrawerItems;
 
     /**
-     * Constructeur à 2 paramètres
-     * @param context Contexte de création
+     * Constructeur Ã  2 paramÃ¨tres
+     * @param context Contexte de crÃ©ation
      * @param navDrawerItems Liste de NavDrawerItem
      */
     public NavDrawerListAdapter(Context context, ArrayList<NavDrawerItem> navDrawerItems)
@@ -47,7 +47,7 @@ public class NavDrawerListAdapter extends BaseAdapter {
     }
 
     /**
-     * Retourne un objet à la position i
+     * Retourne un objet Ã  la position i
      * @param i Position dans la liste
      * @return un Objet
      */
@@ -57,7 +57,7 @@ public class NavDrawerListAdapter extends BaseAdapter {
     }
 
     /**
-     * Retourne l'id de l'objet à la position i
+     * Retourne l'id de l'objet Ã  la position i
      * @param i Position dans la liste
      * @return l'id
      */
@@ -67,9 +67,9 @@ public class NavDrawerListAdapter extends BaseAdapter {
     }
 
     /**
-     * Construit la vue associée à un élément dans la liste
+     * Construit la vue associÃ©e Ã  un Ã©lÃ©ment dans la liste
      * @param i Position dans la liste
-     * @param convertView Vue associée
+     * @param convertView Vue associÃ©e
      * @param parent Vue parent
      * @return un objet View
      */

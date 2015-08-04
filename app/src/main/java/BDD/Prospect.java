@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Created by Kirill on 11/06/2015.
- * Classe qui représente l'entité prospect en base de données.
+ * Classe qui reprÃ©sente l'entitÃ© prospect en base de donnÃ©es.
  * @author Kirill Safronov
  * @version 1.0
  */
@@ -27,7 +27,7 @@ public class Prospect implements Serializable{
     private int pourcentage ;
 
     /**
-     * Constructeur par défaut
+     * Constructeur par dÃ©faut
      */
     public Prospect()
     {
@@ -78,7 +78,7 @@ public class Prospect implements Serializable{
     }
 
     /**
-     * Retourne le prénom du prospect
+     * Retourne le prÃ©nom du prospect
      * @return prenom
      */
     public String getPrenom()
@@ -87,8 +87,8 @@ public class Prospect implements Serializable{
     }
 
     /**
-     * Modifie le prénom du prospect
-     * @param prenom Nouveau prénom
+     * Modifie le prÃ©nom du prospect
+     * @param prenom Nouveau prÃ©nom
      */
     public void setPrenom(String prenom)
     {
@@ -114,7 +114,7 @@ public class Prospect implements Serializable{
     }
 
     /**
-     * Retourne le numéro de téléphone du prospect
+     * Retourne le numÃ©ro de tÃ©lÃ©phone du prospect
      * @return telephone
      */
     public String getTelephone()
@@ -123,8 +123,8 @@ public class Prospect implements Serializable{
     }
 
     /**
-     * Modifie le numéro de téléphone du prospect
-     * @param telephone Nouveau numéro de téléphone
+     * Modifie le numÃ©ro de tÃ©lÃ©phone du prospect
+     * @param telephone Nouveau numÃ©ro de tÃ©lÃ©phone
      */
     public void setTelephone(String telephone)
     {

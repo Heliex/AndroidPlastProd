@@ -35,7 +35,7 @@ public class GmailSender extends javax.mail.Authenticator {
     }
 
     /**
-     * Création d'un mail
+     * CrÃ©ation d'un mail
      * @param user Nom d'utilisateur
      * @param password Mdp
      */

@@ -2,7 +2,7 @@ package model;
 
 /**
  * Created by Christophe on 10/06/2015. For PlastProd Project
- * Classe qui représente un RDV pour google Calendar
+ * Classe qui reprÃ©sente un RDV pour google Calendar
  * @author Christophe Gerard
  * @version 1.0
  */
@@ -40,7 +40,7 @@ public class RDV {
     }
 
     /**
-     * @return L'heure de début de RDV
+     * @return L'heure de dÃ©but de RDV
      */
     public String gethDebut()
     {
@@ -74,8 +74,8 @@ public class RDV {
     }
 
     /**
-     * Modifie l'heure de début du RDV
-     * @param hdebut Nouvelle heure de début
+     * Modifie l'heure de dÃ©but du RDV
+     * @param hdebut Nouvelle heure de dÃ©but
      */
     public void setHDebut(String hdebut)
     {
@@ -98,7 +98,7 @@ public class RDV {
     }
 
     /**
-     * @return La date en chaine de caratères
+     * @return La date en chaine de caratÃ¨res
      */
     public String getDate()
     {

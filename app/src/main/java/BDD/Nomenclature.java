@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Christophe on 22/06/2015. For PlastProd Project
- * Classe qui représente l'entité Nomenclature en BDD.
+ * Classe qui reprÃ©sente l'entitÃ© Nomenclature en BDD.
  * @author Christophe Gerard
  * @version 1.0
  */
@@ -45,7 +45,7 @@ public class Nomenclature {
     }
 
     /**
-     * Retourne la liste de matière associée à cette nomenclature
+     * Retourne la liste de matiÃ¨re associÃ©e Ã  cette nomenclature
      * @return listeMatiere - Une liste d'objet Matiere
      */
     public ArrayList<Matiere> getListeMatiere()
@@ -72,8 +72,8 @@ public class Nomenclature {
     }
 
     /**
-     * Modifie la liste de matière associée
-     * @param listeMatiere Nouvelle liste de matière
+     * Modifie la liste de matiÃ¨re associÃ©e
+     * @param listeMatiere Nouvelle liste de matiÃ¨re
      */
     public void setListeMatiere(ArrayList<Matiere> listeMatiere)
     {
@@ -103,7 +103,7 @@ public class Nomenclature {
     }
 
     /**
-     * Retourne la quantité
+     * Retourne la quantitÃ©
      * @return quantite
      */
     public int getQuantite()
@@ -113,7 +113,7 @@ public class Nomenclature {
 
     /**
      * Modifie la quantite
-     * @param qte Nouvelle quantitée
+     * @param qte Nouvelle quantitÃ©e
      */
     public void setQuantite(int qte)
     {
