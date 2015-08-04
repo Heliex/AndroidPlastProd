@@ -1,40 +1,42 @@
 package menu;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.provider.Telephony;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.sql.ClientInfoStatus;
 import java.util.List;
 
 import BDD.Client;
 import BDD.DataBaseHandler;
 import adapter.ListeClientAdapter;
 import barbeasts.plastprod.R;
-import android.content.DialogInterface;
 
 /**
  * Created by christophe on 01/04/2015.
+ * Classe qui représente le menu Informations sur un Client
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class InfosClient extends Fragment {
 
     public InfosClient() {}
 
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

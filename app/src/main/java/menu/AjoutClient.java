@@ -19,11 +19,21 @@ import barbeasts.plastprod.R;
 
 /**
  * Created by christophe on 01/04/2015.
+ * Classe que représente le menu AjoutClient.
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class AjoutClient extends Fragment {
 
     public AjoutClient() {}
 
+    /**
+     * Retourne une vue crée
+     * @param inflater Zone à remplir
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle lors de la création de la vue
+     * @return Une vue crée
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_ajout, container, false);

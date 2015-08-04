@@ -2,7 +2,6 @@ package menu;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,18 +13,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.concurrent.ExecutionException;
-
 import barbeasts.plastprod.R;
 import other.GmailSender;
 
 /**
  * Created by christophe on 01/04/2015.
+ * Classe qui représente le menu Envoyer formulaire de satisfaction
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class FormulaireSatisfaction extends Fragment {
 
     public FormulaireSatisfaction() {}
 
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

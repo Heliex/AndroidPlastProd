@@ -17,6 +17,9 @@ import menu.SuiviProspect;
 
 /**
  * Created by Kirill on 12/06/2015.
+ * Classe qui permet de formater l'affichage d'une liste de Prospect
+ * @author Kirill Safronov
+ * @version 1.0
  */
 public class ListeProspectAdapter extends BaseAdapter
 {
@@ -24,7 +27,12 @@ public class ListeProspectAdapter extends BaseAdapter
     private List<Prospect> prospects;
     private Fragment fragment;
 
-
+    /**
+     * Constructeur à 3 paramètres
+     * @param context Contexte de création
+     * @param prospects Liste de prospect
+     * @param fragment Fragment de provenance
+     */
     public ListeProspectAdapter(Context context, List<Prospect> prospects,Fragment fragment)
     {
         this.prospects = prospects;
@@ -32,21 +40,42 @@ public class ListeProspectAdapter extends BaseAdapter
         this.fragment = fragment;
     }
 
+    /**
+     * Retourne la taille de la liste de prospect
+     * @return La taille de la liste de prospect
+     */
     @Override
     public int getCount() {
         return prospects.size();
     }
 
+    /**
+     * Retourne le prospect à la position i
+     * @param i Position dans la liste
+     * @return un objet Prospect
+     */
     @Override
     public Prospect getItem(int i) {
         return prospects.get(i);
     }
 
+    /**
+     * Retourne l'id du prospect à la position i
+     * @param i Position i
+     * @return L'id
+     */
     @Override
     public long getItemId(int i) {
         return i;
     }
 
+    /**
+     * Retourne la vue associée à une ligne dans la liste de prospect
+     * @param i Position du prospect dans la liste
+     * @param view Vue associée
+     * @param viewGroup Vue container
+     * @return un objet View
+     */
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 

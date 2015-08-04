@@ -31,6 +31,8 @@ import model.MainActivity;
 /**
  * An asynchronous task that handles the Drive API call.
  * Placing the API calls in their own task ensures the UI stays responsive.
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<String>> {
     private MainActivity mActivity;
@@ -122,6 +124,10 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
         }
     }
 
+    /**
+     * After task has been executed
+     * @param listeLigne liste de ligne
+     */
     @Override
     protected void onPostExecute(ArrayList<String> listeLigne)
     {
@@ -208,6 +214,11 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
         }
     }
 
+    /**
+     * Renvoie l'indice du Numéro de devis dans la liste
+     * @param num Numéro de devis
+     * @return indice du numéro de devis s'il existe sinon -1
+     */
     int indiceDansListeDevis(String num)
     {
         int numDevis = Integer.parseInt(num);

@@ -12,18 +12,27 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import BDD.Client;
 import BDD.DataBaseHandler;
 import BDD.Prospect;
 import barbeasts.plastprod.R;
 
 /**
  * Created by Kirill on 01/07/2015.
+ * Classe qui permet de modifier un prospect ( accessible depuis le menu infos client)
+ * @author Kirill Safronov
+ * @version 1.0
  */
 public class ModifierProspect extends Fragment
 {
     public ModifierProspect() {}
 
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_ajout, container, false);

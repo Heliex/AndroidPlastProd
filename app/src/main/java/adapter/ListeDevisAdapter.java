@@ -15,36 +15,64 @@ import java.util.List;
 import BDD.Client;
 import BDD.Devis;
 import barbeasts.plastprod.R;
-
 /**
  * Created by christophe on 05/05/2015.
+ * Classe qui permet de formater l'affichage d'une liste de devis.
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class ListeDevisAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
     private List<Devis> devis;
 
+    /**
+     * Constructeur à 2 paramètres
+     * @param context Contexte de création
+     * @param devis Liste de devis
+     */
     public ListeDevisAdapter(Context context,List<Devis> devis)
     {
         this.devis = devis;
         this.layoutInflater = LayoutInflater.from(context);
     }
 
+    /**
+     * Retourne la taille de la liste de devis
+     * @return taille de liste de devis
+     */
     @Override
     public int getCount() {
         return devis.size();
     }
 
+    /**
+     * Retourne le devis à la position i
+     * @param i Position
+     * @return un objet Devis
+     */
     @Override
     public Devis getItem(int i) {
         return devis.get(i);
     }
 
+    /**
+     * Retourne l'id à la position i
+     * @param i position
+     * @return l'id
+     */
     @Override
     public long getItemId(int i) {
         return i;
     }
 
+    /**
+     * Retourne la vue crée pour une ligne dans la liste
+     * @param i Position dans la liste
+     * @param view vue associée
+     * @param viewGroup Vue Container
+     * @return un objet Vue
+     */
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 

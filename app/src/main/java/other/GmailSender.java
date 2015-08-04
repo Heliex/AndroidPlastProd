@@ -18,6 +18,9 @@ import javax.mail.internet.MimeMessage;
 
 /**
  * Created by Christophe on 15/06/2015. For PlastProd Project
+ * Classe qui permet d'envoyer un email
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class GmailSender extends javax.mail.Authenticator {
 
@@ -31,6 +34,11 @@ public class GmailSender extends javax.mail.Authenticator {
         Security.addProvider(new other.JSSEProvider());
     }
 
+    /**
+     * Création d'un mail
+     * @param user Nom d'utilisateur
+     * @param password Mdp
+     */
      public GmailSender(String user, String password) {
         this.user = user;
         this.password = password;
@@ -49,10 +57,22 @@ public class GmailSender extends javax.mail.Authenticator {
         session = Session.getDefaultInstance(props, this);
     }
 
+    /**
+     * Get a password Authentication
+     * @return a PasswordAuthentication
+     */
     protected PasswordAuthentication getPasswordAuthentication() {
         return new PasswordAuthentication(user, password);
     }
 
+    /**
+     * Synchronous method for sending mail
+     * @param subject Subject of the mail
+     * @param body Body content
+     * @param sender The mail's sender
+     * @param recipients The receivers
+     * @throws Exception
+     */
     public synchronized void sendMail(String subject, String body, String sender, String recipients) throws Exception {
         try{
             MimeMessage message = new MimeMessage(session);

@@ -26,7 +26,9 @@ import java.security.Provider;
  */
 
 public class JSSEProvider extends Provider {
-
+    /**
+     * Create a security provider for sending mail.
+     */
     public JSSEProvider() {
         super("HarmonyJSSE", 1.0, "Harmony JSSE Provider");
         AccessController.doPrivileged(new java.security.PrivilegedAction<Void>() {

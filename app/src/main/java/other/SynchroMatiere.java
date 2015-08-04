@@ -23,23 +23,35 @@ import model.MainActivity;
 
 /**
  * Created by Christophe on 19/07/2015. For PlastProd Project on purpose
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class SynchroMatiere extends AsyncTask<Void,Void,Void> {
 
     MainActivity mActivity;
 
+    /**
+     * Constructeur à 1 paramètre
+     * @param activity Instance de MainActivity
+     */
     public SynchroMatiere(MainActivity activity) {
         this.mActivity = activity;
     }
 
-
-
+    /**
+     * Tache de fonds
+     * @param params type = Void donc pas de paramètres
+     * @return Void(Rien du tout)
+     */
     @Override
     protected Void doInBackground(Void... params) {
         MAJ();
         return null;
     }
 
+    /**
+     * Mets à jour les Matieres sur la BDD Distante
+     */
     public void MAJ()
     {
         try

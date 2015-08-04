@@ -1,9 +1,7 @@
 package menu;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,12 +27,22 @@ import model.MainActivity;
 
 /**
  * Created by christophe on 01/04/2015. For PlastProd Project on purpose
+ * Classe qui représente le menu BonCommande
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class BonCommande extends Fragment {
 
     public BonCommande() {
     }
 
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -112,7 +120,7 @@ public class BonCommande extends Fragment {
                                     TextView textView = (TextView) rootView.findViewById(R.id.detailsCommande);
                                     total.setVisibility(View.INVISIBLE);
                                     somme.setVisibility(View.INVISIBLE);
-                                    String detailsCommande = db.getDetailsCommandeFromIdCommande(commande.getId(),prixTotal,commande.getNumCommande());
+                                    String detailsCommande = db.getDetailsCommandeFromIdCommande(commande.getId(),prixTotal);
                                     textView.setText(detailsCommande);
                                     tx.setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -190,6 +198,11 @@ public class BonCommande extends Fragment {
         return rootView;
     }
 
+    /**
+     * Vérifie que les quantité cochée ne sont pas à 0
+     * @param quantite Tableau de quantité à vérifié
+     * @return un booléen
+     */
    public boolean verifierQuantite(int[] quantite)
    {
        int compteur = 0;

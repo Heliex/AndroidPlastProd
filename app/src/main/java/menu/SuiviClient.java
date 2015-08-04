@@ -1,9 +1,7 @@
 package menu;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +11,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -26,10 +22,21 @@ import barbeasts.plastprod.R;
 
 /**
  * Created by christophe on 01/04/2015.
+ * Classe qui représente le menu suivre un client
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class SuiviClient extends Fragment {
     public SuiviClient() {}
 
+
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

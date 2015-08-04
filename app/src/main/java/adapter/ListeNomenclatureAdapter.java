@@ -20,7 +20,10 @@ import BDD.Nomenclature;
 import barbeasts.plastprod.R;
 
 /**
- * Created by Christophe on 22/06/2015. For PlastProd Project
+ * Created by christophe on 22/06/2015.
+ * Classe qui permet de formater l'affichage d'une liste de Nomenclature.
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class ListeNomenclatureAdapter extends BaseAdapter{
 
@@ -35,6 +38,12 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
     private double valeurAjoutee;
     private double valeurSoustraite;
 
+    /**
+     * Constructeur à 3 paramètres
+     * @param context Contexte de création
+     * @param nomenclatures Liste de nomenclature associée
+     * @param somme Somme total
+     */
     public ListeNomenclatureAdapter(Context context,ArrayList<Nomenclature> nomenclatures,TextView somme)
     {
         this.context = context;
@@ -48,21 +57,42 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         this.listeNomenclatureStockee = new HashMap<>();
     }
 
+    /**
+     * Retourne la taille de la liste de nomenclature
+     * @return taille de la liste de nomenclature
+     */
     @Override
     public int getCount() {
         return nomenclatures.size();
     }
 
+    /**
+     * Retourne une nomenclature a la position i
+     * @param i Position
+     * @return un objet Nomenclature
+     */
     @Override
     public Nomenclature getItem(int i) {
         return nomenclatures.get(i);
     }
 
+    /**
+     * Retourne l'id de la position i
+     * @param i Position
+     * @return l'id
+     */
     @Override
     public long getItemId(int i) {
         return i;
     }
 
+    /**
+     * Retourne la vue associée à une ligne dans la liste de nomenclature
+     * @param i Position de la nomenclature dans la liste
+     * @param view Vue associée
+     * @param viewGroup Vue container
+     * @return un objet View
+     */
     @Override
     public View getView(int i, View view, final ViewGroup viewGroup) {
 
@@ -142,6 +172,12 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         return view;
     }
 
+    /**
+     * Vérifie que la soustraction est possible
+     * @param ajout Somme ajoutée
+     * @param soustraite Somme soustraite
+     * @return un booléen
+     */
     public boolean verifierOperation(double ajout,double soustraite)
     {
         if(ajout != 0 && soustraite != 0)
@@ -152,11 +188,19 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         return true;
     }
 
+    /**
+     * Retournes la liste de nomenclatures
+     * @return une liste d'objet Nomenclature
+     */
     public ArrayList<Nomenclature> getNomenclatures()
     {
         return this.nomenclatures;
     }
 
+    /**
+     * Retourne le contexte
+     * @return un objet Context
+     */
     public Context getContext()
     {
         return this.context;
@@ -168,21 +212,31 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         CheckBox checkbox;
         NumberPicker numberPicker;
     }
-    public ViewHolder getHolder()
-    {
-        return this.holder;
-    }
 
+    /**
+     * Retourne la somme
+     * @return somme
+     */
     public double getSomme()
     {
         return this.somme;
     }
 
+    /**
+     * Modifie la somme
+     * @param somme Nouvelle somme
+     */
     public void setSomme(double somme)
     {
         this.somme = somme;
     }
 
+    /**
+     * Ajoute à la somme les paramètres
+     * @param prix Prix à ajouter
+     * @param quantite Nombre de fois à ajouter
+     * @return le prix ajouté à la somme
+     */
     public double ajouterSomme(double prix,int quantite)
     {
         this.somme = somme + ( prix * quantite);
@@ -190,6 +244,12 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         return (prix * quantite);
     }
 
+    /**
+     * Retire de la somme le prix * quantité
+     * @param prix Prix à retirer
+     * @param quantite Nombre de fois à retirer
+     * @return le prix retirée
+     */
     public double soustraireSomme(double prix,int quantite)
     {
 
@@ -197,41 +257,64 @@ public class ListeNomenclatureAdapter extends BaseAdapter{
         return (prix * quantite);
     }
 
+    /**
+     * Renvoie la TextView du prix total
+     * @return prixTotal
+     */
     public TextView getPrixTotal()
     {
         return this.prixTotal;
     }
 
-    public void setPrixTotal(TextView tx)
-    {
-        this.prixTotal = tx;
-    }
-
+    /**
+     * Renvoie la valeurAjoutee
+     * @return valeurAjoutee
+     */
     public double getValeurAjoutee()
     {
         return this.valeurAjoutee;
     }
 
+    /**
+     * Modifie la valeur ajoutée
+     * @param valeurAjoutee Nouvelle valeur ajoutée
+     */
     public void setValeurAjoutee(double valeurAjoutee)
     {
         this.valeurAjoutee = valeurAjoutee;
     }
 
+    /**
+     * Renvoie la valeur soustraite
+     * @return valeurSoustraite
+     */
     public double getValeurSoustraite()
     {
         return this.valeurSoustraite;
     }
 
+    /**
+     * Modifie la valeur soustraite
+     * @param valeurSoustraite Nouvelle valeur soustraite
+     */
     public void setValeurSoustraite(double valeurSoustraite)
     {
         this.valeurSoustraite = valeurSoustraite;
     }
 
+    /**
+     * Renvoi la liste de quantite séléctionnée
+     * @return listeQuantiteStockee
+     */
     public HashMap<String,Integer> getListeStockee()
     {
         return this.listeQuantiteStockee;
     }
 
+    /**
+     * Renvoi la liste de nomenclatures cochée
+     * @return listeNomenclatureStockee
+     */
     public HashMap<String,Nomenclature> getListeNomenclatureStockee()
     {
         return this.listeNomenclatureStockee;

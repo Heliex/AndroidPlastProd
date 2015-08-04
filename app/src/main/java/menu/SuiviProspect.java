@@ -9,11 +9,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -26,11 +23,21 @@ import model.MainActivity;
 
 /**
  * Created by Kirill on 12/06/2015.
+ * Classe qui représente le menu Suivre un prospect
+ * @author Kirill Safronov
+ * @version 1.0
  */
 public class SuiviProspect extends Fragment
 {
     public SuiviProspect() {}
 
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

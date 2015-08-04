@@ -1,13 +1,13 @@
 package menu;
 
 import android.annotation.TargetApi;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,11 +36,21 @@ import other.SynchroProspect;
 
 /**
  * Created by christophe on 01/04/2015.
+ * Classe qui représente l'acceuil.
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class HomeFragment extends Fragment {
 
     public HomeFragment() {}
 
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

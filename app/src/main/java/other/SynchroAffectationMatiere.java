@@ -23,25 +23,39 @@ import model.MainActivity;
 
 /**
  * Created by Christophe on 19/07/2015. For PlastProd Project on purpose
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class SynchroAffectationMatiere extends AsyncTask<Void,Void,Void> {
 
     MainActivity mActivity;
     ProgressDialog dialog;
 
+    /**
+     * Constructeur à 2 paramètres
+     * @param activity Instance de MainActivity
+     * @param mDialog Affiche la progression
+     */
     public SynchroAffectationMatiere(MainActivity activity,ProgressDialog mDialog) {
         this.mActivity = activity;
         this.dialog = mDialog;
     }
 
 
-
+    /**
+     * Tache de fonds
+     * @param params type = Void donc pas de paramètres
+     * @return Void(Rien du tout)
+     */
     @Override
     protected Void doInBackground(Void... params) {
         MAJ();
         return null;
     }
 
+    /**
+     * Mets à jour les affectationMatiere sur la BDD Distante
+     */
     public void MAJ()
     {
         try
@@ -81,6 +95,10 @@ public class SynchroAffectationMatiere extends AsyncTask<Void,Void,Void> {
         }
     }
 
+    /**
+     * Une fois que la tâche de fond s'est exécutée on affiche une notification
+     * @param aVoid Void(Rien)
+     */
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);

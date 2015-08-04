@@ -20,11 +20,21 @@ import barbeasts.plastprod.R;
 
 /**
  * Created by Kirill on 11/06/2015.
+ * Classe qui représente le Menu AjoutProspect.
+ * @author Kirill Safronov
+ * @version 1.0
  */
 public class AjoutProspect extends Fragment
 {
     public AjoutProspect() {}
 
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_ajout, container, false);

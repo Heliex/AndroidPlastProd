@@ -1,9 +1,7 @@
 package menu;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,20 +15,28 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import BDD.Client;
 import BDD.DataBaseHandler;
 import BDD.Prospect;
-import adapter.ListeClientAdapter;
 import adapter.ListeProspectAdapter;
 import barbeasts.plastprod.R;
 
 /**
  * Created by Kirill on 30/06/2015.
+ * Classe qui représente le menu Informations sur le prospect
+ * @author Kirill Safronov
+ * @version 1.0
  */
 public class InfosProspect extends Fragment
 {
     public InfosProspect() {}
 
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

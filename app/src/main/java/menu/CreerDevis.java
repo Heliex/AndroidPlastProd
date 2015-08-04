@@ -10,9 +10,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import BDD.DataBaseHandler;
 import BDD.Devis;
 import BDD.Nomenclature;
@@ -23,9 +25,19 @@ import barbeasts.plastprod.R;
 
 /**
  * Created by Christophe on 06/07/2015. For PlastProd Project on purpose
+ * Classe qui représente le menu Faire un devis
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class CreerDevis extends Fragment{
 
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -152,6 +164,11 @@ public class CreerDevis extends Fragment{
         return rootView;
     }
 
+    /**
+     * Vérifie que les quantitées cochées ne sont pas à 0
+     * @param quantite Tableau de quantitée à vérifier
+     * @return un booléen
+     */
     public boolean verifierQuantite(int[] quantite)
     {
         int compteur = 0;

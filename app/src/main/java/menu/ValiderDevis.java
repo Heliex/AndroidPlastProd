@@ -1,11 +1,8 @@
 package menu;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +15,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.MissingFormatArgumentException;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import BDD.Client;
 import BDD.Commande;
@@ -31,14 +26,22 @@ import adapter.ListeDevisAdapter;
 import adapter.ListeProspectAdapter;
 import barbeasts.plastprod.R;
 import model.MainActivity;
-import other.ApiAsyncTask;
 
 /**
  * Created by Christophe on 08/07/2015. For PlastProd Project on purpose
+ * Classe qui représente le menu Valider un devis
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class ValiderDevis extends Fragment {
 
-
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -175,7 +178,12 @@ public class ValiderDevis extends Fragment {
         return rootView;
     }
 
-
+    /**
+     * Converti un Prospect en Client et un Devis en Commande
+     * @param devis Devis à convertir
+     * @param prospect Prospect à convertir
+     * @param db Lien à la base de données
+     */
     public void convertProspectToClientAndDevisToCommande(Devis devis, Prospect prospect,DataBaseHandler db)
     {
         // Conversion du Prospect en Client

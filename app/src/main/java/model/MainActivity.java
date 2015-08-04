@@ -12,8 +12,8 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,7 +26,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -41,7 +40,6 @@ import com.google.api.services.drive.DriveScopes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import BDD.Devis;
 import adapter.NavDrawerListAdapter;
@@ -60,6 +58,12 @@ import menu.SuiviProspect;
 import menu.ValiderDevis;
 import other.ApiAsyncTask;
 
+/**
+ * Classe principale de l'application
+ * C'est le centre de l'application, tout pars d'ici
+ * @author Christophe Gerard
+ * @version 1.0
+ */
 public class MainActivity extends Activity {
 
     // Déclaration des variables
@@ -98,7 +102,10 @@ public class MainActivity extends Activity {
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { DriveScopes.DRIVE_METADATA_READONLY };
 
-
+    /**
+     * Méthode qui crée l'activité
+     * @param savedInstanceState Etat de l'application sauvegardé
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -203,6 +210,10 @@ public class MainActivity extends Activity {
         Toolbar toolbar = new Toolbar(getApplicationContext());
         mDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.app_name,R.string.app_name)
         {
+            /**
+             * Méthode qui permet de changer de titre lorsque le menu de gauche ou de droite se ferme
+             * @param view Vue courante
+             */
           public void onDrawerClosed(View view)
           {
               if(mActionBar != null)
@@ -264,6 +275,10 @@ public class MainActivity extends Activity {
               invalidateOptionsMenu();
           }
 
+            /**
+             * Affiche le titre du menu qui s'affiche
+             * @param drawerView Vue courante
+             */
             public void onDrawerOpened(View drawerView)
             {
 
@@ -296,9 +311,16 @@ public class MainActivity extends Activity {
         }
     }
 
-
     private class SlideMenuClickListener implements ListView.OnItemClickListener
     {
+        /**
+         * Methode qui s'exécute sur le clique d'un element dans le menu de gauche
+         * Elle permet de changer la vue à l'affichage
+         * @param parent Adapter parent
+         * @param view Vue courante
+         * @param position Position cliquée
+         * @param id id du clic
+         */
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
@@ -309,6 +331,14 @@ public class MainActivity extends Activity {
 
     private class SlideRightMenuClickListener implements ListView.OnItemClickListener
     {
+        /**
+         * Methode qui s'exécute sur le clique d'un element dans le menu de droite
+         * Elle permet de changer la vue à l'affichage
+         * @param parent Adapter parent
+         * @param view Vue courante
+         * @param position Position du clique dans la liste
+         * @param id Id du clique
+         */
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id)
         {
@@ -317,6 +347,10 @@ public class MainActivity extends Activity {
         }
     }
 
+    /**
+     * Methode qui gére le changement d'affichage de vue
+     * @param position Position du fragment à afficher
+     */
     //Menu client
     public void displayView(int position)
     {
@@ -387,6 +421,10 @@ public class MainActivity extends Activity {
         }
     }
 
+    /**
+     * Méthode qui gére le changement d'affichage de vue
+     * @param position Position du fragment à afficher
+     */
     // Menu prospect
     public void displayRightView(int position)
     {
@@ -458,7 +496,11 @@ public class MainActivity extends Activity {
 
     }
 
-
+    /**
+     * Affiche le menu à la selection d'une action
+     * @param item MenuItem
+     * @return un booléen
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Toggle nav drawer on selecting action bar app icon/title
@@ -475,6 +517,11 @@ public class MainActivity extends Activity {
         }
     }
 
+    /**
+     * Cache les possibilité de faire des actions si le menu est ouvert
+     * @param menu Menu
+     * @return un booléen
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
@@ -483,6 +530,10 @@ public class MainActivity extends Activity {
         return super.onPrepareOptionsMenu(menu);
     }
 
+    /**
+     * Modifie le titre affiché
+     * @param title Nouveau titre
+     */
     @Override
     public void setTitle(CharSequence title)
     {
@@ -491,6 +542,10 @@ public class MainActivity extends Activity {
             getActionBar().setTitle(mTitle);
     }
 
+    /**
+     * Methode qui sauve l'état de l'activité après l'avoir crée l'activité
+     * @param savedInstanceState Etat de l'activité
+     */
     @Override
     protected void onPostCreate(Bundle savedInstanceState)
     {
@@ -511,6 +566,9 @@ public class MainActivity extends Activity {
 
     }
 
+    /**
+     * Methode qui sauve l'état lorsque le programme est mis en pause
+     */
     @Override
     public void onPause()
     {
@@ -521,6 +579,9 @@ public class MainActivity extends Activity {
         nomFragment= null;
     }
 
+    /**
+     * Méthode qui recharge toute l'activité quand on l'enlève de la pause
+     */
     @Override
     public void onResume()
     {
@@ -588,16 +649,28 @@ public class MainActivity extends Activity {
         return (networkInfo != null && networkInfo.isConnected());
     }
 
+    /**
+     * Retourne le numero de request authorization
+     * @return REQUEST_AUTHORIZATION (int)
+     */
     public int getRequestAuthorization()
     {
         return REQUEST_AUTHORIZATION;
     }
 
+    /**
+     * Retourne l'instance courante
+     * @return l'instance courante
+     */
     public MainActivity getInstance()
     {
         return this;
     }
 
+    /**
+     * Appelle l'AsyncTask pour tester si des devis sont à valider
+     * @param listeDevis Liste de devis
+     */
     public void callApiAsyncTask(List<Devis> listeDevis)
     {
         if(listeDevis != null && listeDevis.size() > 0)
@@ -643,6 +716,10 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Getting google credentials
+     * @return Google Credentials
+     */
     public GoogleAccountCredential getCredential()
     {
         return this.credential;

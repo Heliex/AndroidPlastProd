@@ -10,19 +10,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.util.List;
-
-import BDD.Client;
 import BDD.DataBaseHandler;
 import BDD.User;
 import barbeasts.plastprod.R;
 
 
 /**
- * A login screen that offers login via email/password.
+ * Classe LoginActivity
+ * Ecran de login qui permet de se connecter à l'application
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class LoginActivity extends Activity {
 
@@ -32,6 +29,10 @@ public class LoginActivity extends Activity {
     private EditText mPasswordView;
     private static User user;
 
+    /**
+     * Crée toute l'activité
+     * @param savedInstanceState Etat de l'application enregistré
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +104,10 @@ public class LoginActivity extends Activity {
         });
     }
 
+    /**
+     * Retourne un user
+     * @return Retourne l'user courant
+     */
     public static User getUser()
     {
         return user;

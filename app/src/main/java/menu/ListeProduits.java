@@ -1,9 +1,7 @@
 package menu;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,24 +12,32 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import BDD.Client;
 import BDD.DataBaseHandler;
 import BDD.Nomenclature;
 import adapter.ListeClientAdapter;
-import adapter.ListeNomenclatureAdapter;
 import adapter.ListeProduitAdapter;
 import barbeasts.plastprod.R;
 
 /**
  * Created by christophe on 01/04/2015.
+ * Classe qui représente le menu lister les produits
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class ListeProduits extends Fragment{
 
     public ListeProduits(){}
 
+    /**
+     * Création de la vue pour ce menu
+     * @param inflater Zone à crée
+     * @param container Vue parent
+     * @param savedInstanceState Etat du bundle à la création de la vue
+     * @return un objet View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -124,6 +130,10 @@ public class ListeProduits extends Fragment{
         return rootView;
     }
 
+    /**
+     * Trie les doublons en gérant les quantitées associée (Méthode récursive)
+     * @param nomenclatures Liste de nomenclatures à triée
+     */
     private void trierListe(List<Nomenclature> nomenclatures) // Methode qui permet de me retirer les matieres qui apparraissent plusieurs fois dans la liste de produits en gérant la quantité associée.
     {
         for(int i =0; i < nomenclatures.size(); i++)
@@ -147,6 +157,12 @@ public class ListeProduits extends Fragment{
         }
     }
 
+    /**
+     * Renvoie le nombre d'occurence dans la liste du nom passé en paramètres
+     * @param nomenclatures Liste de nomenclatures
+     * @param nom Nom à tester
+     * @return Nombre d'occurence dans la liste
+     */
     public int getCount(List<Nomenclature> nomenclatures, String nom) // Methode qui me renvoie le nombre d'occurences dans ma liste avec le nom passé en paramètre
     {
         int compteur = 0;

@@ -6,26 +6,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import junit.framework.Test;
-
-import java.lang.annotation.AnnotationFormatError;
 import java.util.ArrayList;
 import java.util.List;
 
-import barbeasts.plastprod.R;
 import other.GmailSender;
 
 /**
  * Created by christophe on 03/04/2015. For PlastProd Project
+ * Classe qui fait le lien entre JAVA et BDD, elle contient toutes les méthode CRUD(Create,Update,Delete)
+ * @author Christophe Gerard
+ * @version 1.0
  */
 public class DataBaseHandler extends SQLiteOpenHelper {
-
-    //Logcat tag
-    private static final String LOG = "DatabaseHelper";
-
     // Database version
     private static final int DATABASE_VERSION = 16;
 
@@ -153,10 +145,18 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             " INTEGER, " + AFFECTATION_DEVIS_QUANTITE + " INTEGER, FOREIGN KEY ( " + AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE + " ) REFERENCES " + TABLE_NOMENCLATURE + " (" + KEY_ID + " ), FOREIGN KEY (" +
             AFFECTATION_DEVIS_KEY_ID_DEVIS + " ) REFERENCES " + TABLE_DEVIS + " ( " + KEY_ID + " )); "  ;
 
+    /**
+     * Constructeur qui prend le Context en paramètre
+     * @param context Contexte de création
+     */
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    /**
+     * Methode qui crée toutes les tables ( Executée une seule fois à l'initialisation de l'appli)
+     * @param db Base de données SQLite
+     */
     @Override
     public void onCreate(SQLiteDatabase db)
     {
@@ -176,6 +176,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         this.createFakeMatiere(db);
     }
 
+    /**
+     * Méthode executée lorsque l'on fait évoluée la base faire une version supèrieur
+     * Elle permet de mettre à jour toutes les tables.
+     * @param db Base de données SQLite
+     * @param oldVersion Ancienne version de la base
+     * @param newVersion Nouvelle version de la base
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
@@ -198,6 +205,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     // ----------------------------------- Client table methods ------------------------------- //
     /* Create Client */
 
+    /**
+     * Persiste un client en BDD
+     * @param client Client à ajouté
+     * @return l'id du client persisté
+     */
     public long createClient(Client client)
     {
         try (SQLiteDatabase db = this.getWritableDatabase()) {
@@ -218,6 +230,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     /* Get Client */
 
+    /**
+     * Récupère un client selon son id
+     * @param id Id du client
+     * @return un objet Client
+     */
     public Client getClient(long id)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -245,6 +262,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
      * Getting all clients
      */
 
+    /**
+     * Retourne la liste de tous les clients
+     * @return Une liste d'objet Client
+     */
     public List<Client> getAllClients()
     {
         List<Client> clients = new ArrayList<>();
@@ -276,6 +297,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     /* Getting client from email */
+
+    /**
+     * Retourne un Client selon son email
+     * @param email Email du client
+     * @return un objet Client
+     */
     public Client getClientsFromEmail(String email)
     {
 
@@ -298,6 +325,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return client;
     }
 
+    /**
+     * Retourne une liste de Nomenclature pour l'id d'un client
+     * @param id Id du client
+     * @return une Liste d'objet Nomenclature
+     */
     public ArrayList<Nomenclature> getAllNomenclatureFromIdClient(long id)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -329,6 +361,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return listeNomenclatures;
     }
 
+    /**
+     * Retourne la liste de nomenclature pour un id de prospect
+     * @param id Id du prospect
+     * @return une liste d'objet Nomenclature
+     */
     public ArrayList<Nomenclature> getAllNomenclatureFromIdProspect(long id)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -361,6 +398,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     /* Updating Client */
+
+    /**
+     * Modifie un client
+     * @param c nouveau client
+     * @return un entier
+     */
     public int updateClient(Client c)
     {
         long id = c.getId();
@@ -377,6 +420,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     // ----------------------------------- Commande table methods ------------------------------- //
 
     // GetCommande from Id
+
+    /**
+     * Récupère une commande selon son id
+     * @param id Id de la commande
+     * @return un objet Commande
+     */
     public Commande getCommande(long id)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -398,9 +447,14 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return null;
     }
 
+    /**
+     * Retourne la liste de commande pour un id de client
+     * @param id Id du client
+     * @return une liste d'objet Commande
+     */
     public List<Commande> getAllCommandeByClient(long id)
     {
-        List<Commande> commandes = new ArrayList<Commande>();
+        List<Commande> commandes = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_COMMANDE + " WHERE " + COMMANDE_KEY_CLIENT_ID + " = " + id + " ORDER BY " + COMMANDE_KEY_DATECOMMANDE + " ASC ;"  ;
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -428,6 +482,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return commandes;
     }
 
+    /**
+     * Retourne toutes les commandes
+     * @return une liste d'objet Commande
+     */
     public List<Commande> getAllCommande()
     {
         List<Commande> listeCommande = new ArrayList<>();
@@ -458,6 +516,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         }
         return listeCommande;
     }
+
+    /**
+     * Retourne la liste des devis pour un prospect
+     * @param id Id du prospect
+     * @return une liste d'objet Devis
+     */
     public List<Devis> getAllDevisByProspect(long id)
     {
         List<Devis> listeDevis = new ArrayList<>();
@@ -485,6 +549,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return listeDevis;
     }
 
+    /**
+     * Retourne tous les devis
+     * @return une liste d'objet Devis
+     */
     public List<Devis> getAllDevis()
     {
         List<Devis> listeDevis = new ArrayList<>();
@@ -513,6 +581,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     /* Create Commande   */
+
+    /**
+     * Persiste une commande en BDD
+     * @param commande Commande à persister
+     * @return l'id de la commande persistée
+     */
     public long createCommande(Commande commande)
     {
         try(SQLiteDatabase db = this.getWritableDatabase())
@@ -538,6 +612,14 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Persiste l'affectation de la commande en BDD
+     * @param id_nomenclature Id de la nomenclature
+     * @param id_commande Id de la commande
+     * @param quantite Quantite de nomenclature
+     * @param db Base de données SQLite
+     * @return l'id de l'affectation de la commande
+     */
     /* Create AffectationCommande -> Appelée implicitement par la méthode createCommande */
     public long createAffectionCommande(long id_nomenclature,long id_commande,int quantite,SQLiteDatabase db)
     {
@@ -550,6 +632,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     /* Create Devis */
+
+    /**
+     * Persiste un devis en Base de données
+     * @param devis Devis à persister
+     * @return l'id du devis persisté
+     */
     public long createDevis(Devis devis)
     {
         try(SQLiteDatabase db = this.getWritableDatabase())
@@ -574,6 +662,15 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             return id_devis ;
         }
     }
+
+    /**
+     * Méthode qui permet l'affectation du devis
+     * @param id_nomenclature Id de la nomenclature
+     * @param id_devis Id du devis
+     * @param quantite Quantite de nomenclature pour ce devis
+     * @param db Base de données SQLite
+     * @return l'id de l'affection de devis
+     */
     /* Create AffectationDevis -> Appelée implicitement par la méthode createDevis */
     public long createAffectationDevis(long id_nomenclature, long id_devis,int quantite, SQLiteDatabase db)
     {
@@ -586,6 +683,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     // Get All Devis From id
+
+    /**
+     * Récupère la liste des devis pour un Id de prospect
+     * @param id Id du prospect
+     * @return une liste d'objet Devis
+     */
     public List<Devis> getAllDevisFromIdProspect(long id)
     {
         List<Devis> listeDevis = new ArrayList<>();
@@ -614,6 +717,16 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return listeDevis;
 
     }
+
+    /**
+     * Retourne le détails du devis sous forme de chaine de caractères
+     * @param id id du devis
+     * @param prixTotal prixTotal du devis
+     * @param idProspect id du prospect
+     * @param numDevis Numéro de devis
+     * @param sendEmail Booléen qui dit si on envoi le mail ou non
+     * @return le détails de devis sous forme de chaine de caractères
+     */
     public String getDetailsDevisFromIdDevis(long id,double prixTotal,long idProspect,int numDevis,boolean sendEmail) // Méthode qui envoi le mail avec le details du devis.
     {
         final StringBuilder details = new StringBuilder();
@@ -685,6 +798,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     /* Create Prospect */
 
+    /**
+     * Persiste le prospect en Base de données
+     * @param prospect Prospect à persister
+     * @return l'identifiant du prospect inseré
+     */
     public long createProspect(Prospect prospect)
     {
         try (SQLiteDatabase db = this.getWritableDatabase()) {
@@ -703,6 +821,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     /* Get Prospect */
+
+    /**
+     * Retourne le prospect selon un id
+     * @param id Id du prospect
+     * @return un objet Prospect
+     */
     public Prospect getProspect(long id)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -729,6 +853,10 @@ public class DataBaseHandler extends SQLiteOpenHelper {
      * Getting all prospects
      */
 
+    /**
+     * Retourne tous les prospects
+     * @return une liste d'objet Prospect
+     */
     public List<Prospect> getAllProspects()
     {
         List<Prospect> prospects = new ArrayList<>();
@@ -760,31 +888,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return prospects;
     }
 
-    /* Getting prospect from email */
-    public Prospect getProspectsFromEmail(String email)
-    {
-
-        String selectQuery = "SELECT * FROM " + TABLE_PROSPECT + " WHERE " + PROSPECT_KEY_EMAIL + " = " + "\"" + email + "\"";
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor c = db.rawQuery(selectQuery, null);
-        if(c!= null)
-            c.moveToFirst();
-
-        Prospect prospect = new Prospect();
-        assert c != null;
-        prospect.setId(c.getInt(c.getColumnIndex(KEY_ID)));
-        prospect.setNom(c.getString(c.getColumnIndex(PROSPECT_KEY_NOM)));
-        prospect.setPrenom((c.getString(c.getColumnIndex(PROSPECT_KEY_PRENOM))));
-        prospect.setAdresse((c.getString(c.getColumnIndex(PROSPECT_KEY_ADRESSE))));
-        prospect.setTelephone((c.getString(c.getColumnIndex(PROSPECT_KEY_TELEPHONE))));
-        prospect.setEmail((c.getString(c.getColumnIndex(PROSPECT_KEY_EMAIL))));
-        c.close();
-        return prospect;
-    }
-
-
     /* Updating Prospect */
+
+    /**
+     * Modifie un prospect
+     * @param p Nouveau Prospect
+     * @return un entier
+     */
     public int updateProspect(Prospect p)
     {
         long id = p.getId();
@@ -801,35 +911,51 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     /* Removing Prospect */
+
+    /**
+     * Supprime un prospect
+     * @param id ID du prospect
+     * @return un booléen
+     */
     public boolean removeProspect(long id) // Retirer le prospect
     {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_PROSPECT,KEY_ID + " = " + id,null) > 0;
     }
 
+    /**
+     * Supprime une commande
+     * @param idCommande Id de la commande
+     * @param idClient Id du client associé
+     * @return un booléen
+     */
     public boolean removeCommande(long idCommande,long idClient)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        if(db.delete(TABLE_COMMANDE,KEY_ID + " = " + idCommande + " AND " + COMMANDE_KEY_CLIENT_ID + " = " + idClient,null) > 0 && db.delete(TABLE_AFFECTATION_COMMANDE,AFFECTATION_COMMANDE_KEY_ID_COMMANDE + " = " + idCommande,null) > 0)
-        {
-            return true;
-        }
-        return false;
+        return (db.delete(TABLE_COMMANDE,KEY_ID + " = " + idCommande + " AND " + COMMANDE_KEY_CLIENT_ID + " = " + idClient,null) > 0 && db.delete(TABLE_AFFECTATION_COMMANDE,AFFECTATION_COMMANDE_KEY_ID_COMMANDE + " = " + idCommande,null) > 0);
     }
 
     /* Removing Devis */
+
+    /**
+     * Supprime un devis
+     * @param idDevis Id du devis à supprimer
+     * @param idProspect Id du prospect associé
+     * @return un booléen
+     */
     public boolean removeDevis(long idDevis,long idProspect) // Retirer le devis et toutes les affectation qui vont avec.
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        if(db.delete(TABLE_DEVIS,KEY_ID + " = " + idDevis + " AND " + DEVIS_KEY_ID_PROSPECT + " = " + idProspect,null) > 0 && db.delete(TABLE_AFFECTATION_DEVIS,AFFECTATION_DEVIS_KEY_ID_DEVIS + " = " + idDevis,null) > 0)
-        {
-            return true;
-        }
-        return false;
+        return (db.delete(TABLE_DEVIS,KEY_ID + " = " + idDevis + " AND " + DEVIS_KEY_ID_PROSPECT + " = " + idProspect,null) > 0 && db.delete(TABLE_AFFECTATION_DEVIS,AFFECTATION_DEVIS_KEY_ID_DEVIS + " = " + idDevis,null) > 0);
     }
 
     // ----------------------------------- User table methods ------------------------------- //
     /* Create user */
+
+    /**
+     * Méthode pour initialisé les commerciaux (utilisé pour le moment)
+     * @param db Base de données SQLite
+     */
     public void  createUser(SQLiteDatabase db)
     {
         ContentValues values = new ContentValues();
@@ -861,6 +987,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     // ----------------------------------- Matiere table methods ------------------------------- //
     // Get Quantite Matiere
+
+    /**
+     * Récupère la quantitée de matière
+     * @param id_nomenclature Id de la nomenclature
+     * @param id_matiere id de la matière
+     * @return un entier
+     */
     public int getQuantiteMatiere(long id_nomenclature,long id_matiere)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -877,6 +1010,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return -1;
     }
 
+    /**
+     * Retourne une matière selon l'id
+     * @param id Id de la matière
+     * @return un objet Matiere
+     */
     public Matiere getMatiere(long id)
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -889,13 +1027,17 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             matiere.setId(c.getInt(c.getColumnIndex(KEY_ID)));
             matiere.setNom(c.getString(c.getColumnIndex(MATIERE_KEY_NOM)));
             matiere.setPrix(c.getFloat(c.getColumnIndex(MATIERE_KEY_PRIX)));
-
+            c.close();
             return matiere;
         }
 
         return null;
     }
 
+    /**
+     * retourne toutes les matières
+     * @return une liste d'objet Matiere
+     */
     public ArrayList<Matiere> getAllMatieres()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -921,6 +1063,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return listeMatieres;
     }
 
+    /**
+     * Retourne la liste de matière associée à une nomenclature
+     * @param id_nomenclature id de la nomenclature
+     * @return une liste d'objet Matiere
+     */
     public ArrayList<Matiere> getAllMatiereForOneNomenclatureById(long id_nomenclature)
     {
         ArrayList<Matiere> listeMatiere = new ArrayList<Matiere>();
@@ -945,6 +1092,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
 
     // ----------------------------------- Nomenclature table methods ------------------------------- //
+
+    /**
+     * Retourne toutes les nomenclatures
+     * @return une liste d'objet Nomenclature
+     */
     public ArrayList<Nomenclature> getAllNomenclature()
     {
         ArrayList<Nomenclature> nomenclatures = new ArrayList<>();
@@ -968,6 +1120,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
         return nomenclatures;
     }
+
+    /**
+     * Retourne une nomenclature par son id
+     * @param id Id de la nomenclature
+     * @return un objet Nomenclature
+     */
     public Nomenclature getNomenclatureById(long id)
     {
         String selectQuery = "SELECT * FROM " + TABLE_NOMENCLATURE + " WHERE " + KEY_ID + " = " + id + ";";
@@ -988,6 +1146,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     /* Getting All Affectation Commande */
+
+    /**
+     * Retourne toutes les affectation de commande
+     * @return une liste d'objet AffectationCommande
+     */
     public List<AffectationCommande> getAllAffectationCommande()
     {
         List<AffectationCommande> listeAffectation = new ArrayList<>();
@@ -1012,7 +1175,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return listeAffectation;
     }
 
-    /* Getting All Affectation Commande */
+    /* Getting All Affectation Devis */
+
+    /**
+     * Retourne toutes les affectations de devis
+     * @return une liste d'objet AffectationDevis
+     */
     public List<AffectationDevis> getAllAffectationDevis()
     {
         List<AffectationDevis> listeAffectation = new ArrayList<>();
@@ -1026,7 +1194,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 do {
                     AffectationDevis affectationDevis = new AffectationDevis();
                     affectationDevis.setIdNomenclature(c.getLong(c.getColumnIndex(AFFECTATION_DEVIS_KEY_ID_NOMENCLATURE)));
-                    affectationDevis.setIdCommande(c.getLong(c.getColumnIndex(AFFECTATION_DEVIS_KEY_ID_DEVIS)));
+                    affectationDevis.setIdDevis(c.getLong(c.getColumnIndex(AFFECTATION_DEVIS_KEY_ID_DEVIS)));
                     affectationDevis.setQuantite(c.getInt(c.getColumnIndex(AFFECTATION_DEVIS_QUANTITE)));
                     affectationDevis.setId(c.getLong(c.getColumnIndex(KEY_ID)));
                     listeAffectation.add(affectationDevis);
@@ -1036,7 +1204,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         }
         return listeAffectation;
     }
+
     /* Getting AllAffectationMAtiere */
+    /**
+     * Retourne toutes les affectation de matières
+     * @return une liste d'objet AffectationMatiere
+     */
     public List<AffectationMatiere> getAllAffectationMatiere()
     {
         List<AffectationMatiere> affectationMatieres = new ArrayList<>();
@@ -1064,6 +1237,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     // ----------------------------------- Test table methods ------------------------------- //
     // Création de nomenclature.
+
+    /**
+     * Méthode qui simule des nomenclature(Utilisée pour le moment)
+     * @param db Base de données SQLite
+     */
     public void createFakeNomenclature(SQLiteDatabase db)
     {
         ContentValues values = new ContentValues();
@@ -1081,6 +1259,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     // Creation de matiere
+
+    /**
+     * Méthode qui simule des matières (Utilisée pour le moment)
+     * @param db Base de données SQLite
+     */
     public void createFakeMatiere(SQLiteDatabase db)
     {
         ContentValues values = new ContentValues();
@@ -1106,6 +1289,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     // CReate FakeAffectationMatiere
+
+    /**
+     * Méthode simule des affectation de matiere aux nomenclatures (Utilisée pour le moment)
+     * @param db Base de données SQLite
+     */
     public void createFakeAffectationMatiere(SQLiteDatabase db)
     {
         ContentValues values = new ContentValues();
@@ -1141,7 +1329,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
   // Méthode qui retourne le détails d'une commande
 
-    public String getDetailsCommandeFromIdCommande(long id,double prixTotal,int numDevis) // Méthode qui envoi le mail avec le details du devis.
+    /**
+     * Retourne le details d'une commande sous forme de chaine de caractères
+     * @param id Id de la commande
+     * @param prixTotal Prix total de la commande
+     * @return une chaine de caractères (détails de la commande)
+     */
+    public String getDetailsCommandeFromIdCommande(long id,double prixTotal) // Méthode qui envoi le mail avec le details du devis.
     {
         final StringBuilder details = new StringBuilder();
         String selectQuery = " SELECT " + TABLE_NOMENCLATURE + "." + NOMENCLATURE_KEY_NOM + " as NomNomenclature, " + TABLE_AFFECTATION_COMMANDE + "." + AFFECTATION_COMMANDE_KEY_QUANTITE + " as QuantiteNomenclature FROM " +
@@ -1189,6 +1383,13 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     // Methode qui test si un user existe
+
+    /**
+     * Test que l'utilisateur existe
+     * @param email Email de l'utilisateur
+     * @param mdp Mot de passe de l'utilisateur
+     * @return un long ( -1 si l'user n'existe pas, sinon l'index du user)
+     */
     public long UserExists(String email,String mdp)
     {
         String selectQuery = "SELECT * FROM " + TABLE_USER + " WHERE " + USER_KEY_EMAIL + " = " + "\"" + email + "\"" + " AND " + USER_KEY_MDP + " = " + "\"" + mdp + "\"" + ";";
@@ -1207,6 +1408,11 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return -1;
     }
 
+    /**
+     * Retourne un objet User selon son id
+     * @param id Id de l'user
+     * @return un objet User
+     */
     public User getUserById(long id)
     {
         User user=null;
@@ -1220,10 +1426,16 @@ public class DataBaseHandler extends SQLiteOpenHelper {
             user.setId(c.getLong(c.getColumnIndex(KEY_ID)));
             user.setEmail_user(c.getString(c.getColumnIndex(USER_KEY_EMAIL)));
             user.setMdp_user(c.getString(c.getColumnIndex(USER_KEY_MDP)));
+            c.close();
         }
         return user;
     }
 
+    /**
+     * Vérifie que l'email existe
+     * @param email email à tester
+     * @return un booléen ( true=existe, false= existe pas)
+     */
     public boolean isEmailProblem(String email)
     {
         String selectQuery = "SELECT * FROM " + TABLE_USER + " WHERE " + USER_KEY_EMAIL + " = " + "\"" +  email + "\"" + " ;";
