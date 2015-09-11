@@ -1,13 +1,10 @@
 package model;
 
-import android.accounts.AccountManager;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
@@ -29,16 +26,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.services.drive.DriveScopes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import BDD.Devis;
@@ -85,23 +74,6 @@ public class MainActivity extends Activity {
     private String[] navMenuTitles;
     private String[] navMenuTitlesRight;
 
-    /*
-     * Variable qui concerne l'API Drive de google.
-     */
-
-    com.google.api.services.drive.Drive mService;
-    GoogleAccountCredential credential;
-    final HttpTransport transport = AndroidHttp.newCompatibleTransport();
-    final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-    static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
-
-    // Fin des variables API DRIVE.
-
-    static final int REQUEST_ACCOUNT_PICKER = 1000;
-    static final int REQUEST_AUTHORIZATION = 1001;
-    private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = { DriveScopes.DRIVE_METADATA_READONLY };
-
     /**
      * Méthode qui crée l'activité
      * @param savedInstanceState Etat de l'application sauvegardé
@@ -110,21 +82,10 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         /*
         *  Partie qui concerne l'APi Drive
         */
 
-        // Initialize credentials and service object.
-        SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-        credential = GoogleAccountCredential.usingOAuth2(
-                getApplicationContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff())
-                .setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
-
-        mService = new com.google.api.services.drive.Drive.Builder(
-                transport, jsonFactory, credential).setApplicationName("PlastProd")
-                .build();
 
         mActionBar = getActionBar();
         if(mActionBar != null)
@@ -223,7 +184,7 @@ public class MainActivity extends Activity {
                   if(fragment != null)
                   {
                       String nomFragment = fragment.getClass().getName().replace("menu.","");
-                      switch(nomFragment)
+                      switch(nomFragment) // Switch sur le nom du fragment pour remplacer le titre courant par le bon.
                       {
                           case "HomeFragment" :
                               mTitle = navMenuTitles[0];
@@ -487,9 +448,7 @@ public class MainActivity extends Activity {
             mDrawerRightList.setSelection(position);
             setTitle(navMenuTitlesRight[position]);
             mDrawerLayout.closeDrawer(mDrawerRightList);
-        }
-        else
-        {
+        } else {
             // Error in creating fragment
             Log.e("MainActivity", "Error in creating fragment");
         }
@@ -518,7 +477,7 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * Cache les possibilité de faire des actions si le menu est ouvert
+     * Cache les possibilitées de faire des actions si le menu est ouvert
      * @param menu Menu
      * @return un booléen
      */
@@ -554,8 +513,7 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
@@ -605,11 +563,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    public com.google.api.services.drive.Drive getService()
-    {
-        return this.mService;
-    }
-
     /**
      * Check that Google Play services APK is installed and up to date. Will
      * launch an error dialog for the user to update Google Play Services if
@@ -630,15 +583,6 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * Starts an activity in Google Play Services so the user can pick an
-     * account.
-     */
-    public void chooseAccount() {
-        startActivityForResult(
-                credential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
-    }
-
-    /**
      * Checks whether the device currently has a network connection.
      * @return true if the device has a network connection, false otherwise.
      */
@@ -647,15 +591,6 @@ public class MainActivity extends Activity {
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
-    }
-
-    /**
-     * Retourne le numero de request authorization
-     * @return REQUEST_AUTHORIZATION (int)
-     */
-    public int getRequestAuthorization()
-    {
-        return REQUEST_AUTHORIZATION;
     }
 
     /**
@@ -677,52 +612,6 @@ public class MainActivity extends Activity {
         {
                 new ApiAsyncTask(this).execute(listeDevis);
         }
-    }
-
-    @Override
-    protected void onActivityResult(
-            int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch(requestCode) {
-            case REQUEST_GOOGLE_PLAY_SERVICES:
-                if (resultCode != RESULT_OK) {
-                    isGooglePlayServicesAvailable();
-                }
-                break;
-            case REQUEST_ACCOUNT_PICKER:
-                if (resultCode == RESULT_OK && data != null &&
-                        data.getExtras() != null) {
-                    String accountName =
-                            data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-                    if (accountName != null) {
-                        credential.setSelectedAccountName(accountName);
-                        SharedPreferences settings =
-                                getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = settings.edit();
-                        editor.putString(PREF_ACCOUNT_NAME, accountName);
-                        editor.commit();
-                    }
-                } else if (resultCode == RESULT_CANCELED) {
-                    Toast.makeText(this,"Account unspecified.",Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case REQUEST_AUTHORIZATION:
-                if (resultCode != RESULT_OK) {
-                    chooseAccount();
-                }
-                break;
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    /**
-     * Getting google credentials
-     * @return Google Credentials
-     */
-    public GoogleAccountCredential getCredential()
-    {
-        return this.credential;
     }
 }
 

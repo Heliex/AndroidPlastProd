@@ -8,18 +8,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.model.File;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import BDD.DataBaseHandler;
@@ -29,10 +29,9 @@ import barbeasts.plastprod.R;
 import model.MainActivity;
 
 /**
- * An asynchronous task that handles the Drive API call.
- * Placing the API calls in their own task ensures the UI stays responsive.
+ * An asynchronous task that handles the file on drive call.
  * @author Christophe Gerard
- * @version 1.0
+ * @version 1.5
  */
 public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<String>> {
     private MainActivity mActivity;
@@ -61,12 +60,17 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
      */
     @Override
     protected ArrayList<String> doInBackground(List<Devis>... params) {
-
         ArrayList<String> listeLigne = new ArrayList<>();
+
         listeDevis = params[0];
         try {
-            File file = mActivity.getService().files().get("1euyHlY_MKSznGcPh7itNCayl_-Z_8ouhWFtInxWqoXc").setFields("exportLinks").execute();
-            InputStream is = downloadFile(mActivity.getService(), file);
+            String fileID = "1euyHlY_MKSznGcPh7itNCayl_-Z_8ouhWFtInxWqoXc";
+            String apiKey = "AIzaSyCDY-8ewjiMR5Xv3YW0lXGi8-XatcHkmJc";
+            URL url = new URL("https://www.googleapis.com/drive/v2/files/" + fileID + "?key="+apiKey);
+            URLConnection connection = url.openConnection();
+            connection.setDoInput(true);
+            InputStream is = connection.getInputStream();
+            StringBuilder builder = new StringBuilder();
             if(is != null)
             {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -75,53 +79,58 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
                 {
                     while((line = reader.readLine()) != null)
                     {
-                        listeLigne.add(line);
+                        builder.append(line).append("\n");
                     }
-                }catch(IOException io)
+                    JSONObject json = new JSONObject(builder.toString());
+                    json = json.getJSONObject("exportLinks");
+                    String downloadUrl = json.getString("text/csv");
+                    listeLigne = getContent(downloadUrl,listeLigne);
+                    // Seulement quand j'ai mon url de Download je charge le contenu du document
+                }
+                catch(JSONException json)
                 {
-                    io.printStackTrace();
+                    json.printStackTrace();
                 }
             }
         } catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
 
             System.out.println(availabilityException.getConnectionStatusCode());
 
-        } catch (UserRecoverableAuthIOException userRecoverableException) {
-            mActivity.startActivityForResult(
-                    userRecoverableException.getIntent(),
-                    mActivity.getRequestAuthorization());
-
-        } catch (Exception e) {
-
-            System.out.println(e.getMessage());
         }
+        catch(MalformedURLException malformed)
+        {
+            malformed.printStackTrace();
+        }
+        catch(IOException io)
+        {
+            System.out.println(io.getMessage());
+        }
+
         return listeLigne;
     }
 
-    /**
-     * Download a file's content.
-     *
-     * @param service Drive API service instance.
-     * @param file Drive File instance.
-     * @return InputStream containing the file's content if successful,
-     *         {@code null} otherwise.
-     */
-    public static InputStream downloadFile(Drive service, File file) {
-        String downloadUrl = file.getExportLinks().get("text/csv");
-        System.out.println(downloadUrl);
-        if (downloadUrl != null && downloadUrl.length() > 0) {
-            try {
-                HttpResponse resp = service.getRequestFactory().buildGetRequest(new GenericUrl(downloadUrl)).execute();
-                return resp.getContent();
-            } catch (IOException e) {
-                // An error occurred.
-                e.printStackTrace();
-                return null;
+    // Récupère le contenu d'un document d'une url donné stocker dans une liste de ligne
+    public ArrayList<String> getContent(String url,ArrayList<String> listeLigne)
+    {
+        try {
+            URL contentOfDocument = new URL(url);
+            URLConnection connection = contentOfDocument.openConnection();
+            connection.setDoInput(true);
+            InputStream is = connection.getInputStream();
+            if (is != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                        listeLigne.add(line);
+                }
             }
-        } else {
-            // The file doesn't have any content stored on Drive.
-            return null;
         }
+         catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return listeLigne;
     }
 
     /**
@@ -158,7 +167,6 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
                 }
                 else if (indiceDevis != -1 && estAccepte.equals("Non"))
                 {
-                    System.out.println(estAccepte);
                     // Faire le traitement de la suppression de devis et la notifications.
                     Devis d = listeDevis.get(indiceDevis);
                     db.removeDevis(d.getId(),d.getId_prospect());
@@ -202,7 +210,7 @@ public class ApiAsyncTask extends AsyncTask<List<Devis>, Integer, ArrayList<Stri
                     TextView tx = (TextView)mActivity.getActionBar().getCustomView().findViewById(R.id.action_bar_title);
                     tx.setText(navMenuTitles[0]);
                 }
-                if(estAccepte.equals("Non") && maListDeDevis.size() > 0)
+                if(estAccepte.equals("Non"))
                 {
                     Toast.makeText(mActivity.getApplicationContext(),"Un devis à été réfusé, il à été supprimé de la liste des devis",Toast.LENGTH_SHORT).show();
                 }

@@ -13,6 +13,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import BDD.Client;
 import BDD.DataBaseHandler;
 import barbeasts.plastprod.R;
@@ -39,6 +42,14 @@ public class AjoutClient extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_ajout, container, false);
         final Button validerAjout = (Button)rootView.findViewById(R.id.validerAjout);
         final Button annulerAjout = (Button) rootView.findViewById(R.id.annulerAjout);
+        EditText date = (EditText) rootView.findViewById(R.id.TextDate);
+        // Set le champ date a la date courante.
+        Date currentDate = new Date();
+        String currentDateFormat = new SimpleDateFormat("dd/MM/yyyy").format(currentDate);
+        date.setText(currentDateFormat);
+        date.setFocusable(false);
+        date.setClickable(false);
+
         annulerAjout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

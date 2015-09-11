@@ -48,10 +48,6 @@ public class ValiderDevis extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_validerdevis, container, false);
         final DataBaseHandler db = new DataBaseHandler(getActivity().getApplicationContext());
         final ListView listeProspects = (ListView)rootView.findViewById(R.id.ListViewProspectDevisValider);
-        if(((MainActivity)getActivity()).getCredential().getSelectedAccountName() == null)
-        {
-            ((MainActivity)getActivity()).chooseAccount();
-        }
         List<Prospect> prospects;
         prospects = db.getAllProspects();
         if(prospects.size() > 0)
@@ -76,31 +72,15 @@ public class ValiderDevis extends Fragment {
                         // Test ici.
                         MainActivity main = (MainActivity)getActivity();
                         ArrayList<String> result = new ArrayList<String>();
-                        if(main.getCredential().getSelectedAccountName() == null)
-                        {
-                            main.chooseAccount();
-                            if(main.isDeviceOnline())
-                            {
-                                main.callApiAsyncTask(listeDevis);
 
-                            }
-                            else
-                            {
-                                Toast.makeText(getActivity().getApplicationContext(),"PAS DE CONNECTION MD R",Toast.LENGTH_SHORT).show();
-                            }
+                        if(main.isDeviceOnline())
+                        {
+                            main.callApiAsyncTask(listeDevis);
                         }
                         else
                         {
-                            if(main.isDeviceOnline())
-                            {
-                                main.callApiAsyncTask(listeDevis);
-                            }
-                            else
-                            {
-                                Toast.makeText(getActivity().getApplicationContext(),"PAS DE CONNECTION MD R",Toast.LENGTH_SHORT).show();
-                            }
+                            Toast.makeText(getActivity().getApplicationContext(),"PAS DE CONNECTION MD R",Toast.LENGTH_SHORT).show();
                         }
-
 
                         listeDevisAffichage.setVisibility(View.VISIBLE);
                         listeDevisAffichage.setOnItemClickListener(new AdapterView.OnItemClickListener() {

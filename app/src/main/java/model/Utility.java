@@ -18,7 +18,7 @@ public class Utility {
     public static ArrayList<String> startDates = new ArrayList<String>();
     public static ArrayList<String> endDates = new ArrayList<String>();
     public static ArrayList<String> descriptions = new ArrayList<String>();
-    public static final int INTERVALLE = 86400;
+    public static final int INTERVALLE = 86400; // Intervalle de 24h
 
     /**
      * Renvoi une liste de RDV
@@ -46,16 +46,20 @@ public class Utility {
             Long time = System.currentTimeMillis()/ 1000;
             Long tDebut = Long.parseLong(cursor.getString(3)) /1000;
             String date = getDate(Long.parseLong(cursor.getString(3)));
-            if((tDebut - time) < INTERVALLE && (tDebut - time) > 0)
+            if((tDebut - time) < INTERVALLE && (tDebut - time) > 0) // Si on est entre l'heure actuelle et H-24
             {
-                RDV rdv = new RDV(cursor.getString(1), getHeure(Long.parseLong(cursor.getString(3))), getHeure(Long.parseLong(cursor.getString(4))),date);
-                listeRDV.add(rdv);
+                if(cursor.getString(1) != null && cursor.getString(3) != null)
+                {
+                    RDV rdv = new RDV(cursor.getString(1), getHeure(Long.parseLong(cursor.getString(3))), getHeure(Long.parseLong(cursor.getString(4))), date);
+                    listeRDV.add(rdv);
+                }
             }
 
             CNames[i] = cursor.getString(1);
             cursor.moveToNext();
 
         }
+        cursor.close();
         return listeRDV;
     }
 
